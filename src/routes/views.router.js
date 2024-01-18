@@ -9,7 +9,6 @@ const manager = new ProductManager("./src/models/productos.json")
 //ROUTING
 
 /* ----------------------------------------GETs----------------------------------------------- */
-//Productos por querys
 router.get("/", async (req, res)=>{
     try {
         //traigo los productos
@@ -21,6 +20,18 @@ router.get("/", async (req, res)=>{
     } catch (err) {
         res.status(500).json({
             error: `Error al obtener los productos. Error: ${err}`
+        })
+    }
+})
+
+router.get("/realtimeproducts", async (req, res)=>{
+    try {
+        //renderizo realTimeProducts
+        res.render('realTimeProducts');
+
+    } catch (err) {
+        res.status(500).json({
+            error: `Error al obtener los productos en tiempo real. Error: ${err}`
         })
     }
 })
