@@ -67,5 +67,5 @@ io.on("connection", async(socket) => {
 
 //Listen
 server.listen(PUERTO, ()=>{
-    console.log(`Escuchando el puerto http//localhost:${PUERTO}`)
+    console.log(`Escuchando el puerto http://localhost:${PUERTO}`)
 })

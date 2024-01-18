@@ -1,13 +1,14 @@
 <h1>MIS PRODUCTOS</h1>
 <div class="cardsContainer">
     {{#each products}}
-    <div class="card">
-        <p>{{this.title}}</p>
-        <p>{{this.id}}</p>
-        <p>{{this.description}}</p>
-        <p>{{this.price}}</p>
-        <p>{{this.stock}}</p>
-        <p>{{this.status}}</p>
+
+    <div {{#if this.status}} class="card statusTrue" {{else}} class="card statusFalse" {{/if}}  >
+        <p><span>Titulo</span>: {{this.title}}</p>
+        <p><span>Descripción</span>: {{this.description}}</p>
+        <p><span>Precio</span>: {{this.price}}</p>
+        <p><span>ID</span>: {{this.id}}</p>
+        <p><span>Stock</span>: {{this.stock}}</p>
+        <p><span>Estado</span>: {{this.status}}</p>
     </div>
     {{/each}}
 </div>

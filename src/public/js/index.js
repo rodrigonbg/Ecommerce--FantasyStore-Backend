@@ -19,6 +19,13 @@ const agregarProducto = () =>{
     }
 
     socket.emit("agregarProducto", producto);
+    
+    document.getElementById("title").value = "";
+    document.getElementById("description").value  = "";
+    document.getElementById("price").value  = "";
+    document.getElementById("img").value  = "";
+    document.getElementById("code").value  = "";
+    document.getElementById("stock").value  = "";
 };
 
 //funcion para renderizar productos en 'realTimeProducts' en el cntenedor de prods 
@@ -31,13 +38,21 @@ const renderProds = (productos) =>{
     productos.forEach(prod => {
         //creo el card con etiqueta div para cada elemento y le agrego la clase 'card'
         const card = document.createElement("div");
-        card.classList.add("card");
+        card.classList.add("realTimeProd");
+
+        //clase condicional
+        if(prod.status){
+            card.classList.add("statusTrue");
+        }else{
+            card.classList.add("statusFalse");
+        }
 
         //creo el contenido de la card
         card.innerHTML= `
-                <p> ID: ${prod.id}</p>
-                <p> TITULO: ${prod.title}</p>
-                <p> PRECIO: ${prod.price}</p>
+                <p><span>ID</span> : ${prod.id}</p>
+                <p><span>TITULO</span> : ${prod.title}</p>
+                <p><span>PRECIO</span> : ${prod.price}</p>
+                <p><span>ESTADO</span> : ${prod.status}</p>
                 <button> Eliminar Producto </button>`;
 
         //agrego la card al contenedor
@@ -48,7 +63,6 @@ const renderProds = (productos) =>{
         btnEliminar.addEventListener("click", ()=>{
             eliminarProducto(prod.id)   
         })
-
 
     });
 }

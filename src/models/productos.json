@@ -129,15 +129,5 @@
     "code": "abc10",
     "status": true,
     "stock": 25
-  },
-  {
-    "id": 11,
-    "title": "producto 11",
-    "description": "descr de prod 11",
-    "price": "250",
-    "thumbnail": "\"SIn img\"",
-    "code": "abs778",
-    "status": true,
-    "stock": "56"
   }
 ]

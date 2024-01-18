@@ -1,27 +1,27 @@
 <h1>PRODUCTOS ACTUALIZADOS EN TIEMPO REAL</h1>
 
-<section class="productsContainer" id="productsContainer">
+<section class="realTimeContainer">
+    {{!-- -------------------- div con los productos -------------------------------- --}}
+    <div class="productsContainer" id="productsContainer">
 
+    </div>
+    
+    {{!-- --------------------Form para agregar prods-------------------------------- --}}
+    <form action="" class="addProductForm">
+        <h2>Formulario para agregar un producto</h2>
+        <input type="text" id="title" placeholder="Titulo">
+        <input type="text" id="description" placeholder="Descripción">
+        <input type="number" id="price" placeholder="Precio">
+        <input type="text" id="img" value="[]">
+        <input type="text" id="code" placeholder="Código">
+        <input type="number" id="stock" placeholder="Stock">
+        <select id="status">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+        </select>
+        <button type="button" id="btnAdd">Agregar Producto</button>
+    </form>
 </section>
-
-
-
-{{!-- --------------------Form para agregar prods-------------------------------- --}}
-<h1>Formulario para agregar un producto</h1>
-
-<form action="" class="addProductForm">
-    <input type="text" id="title" placeholder="Titulo">
-    <input type="text" id="description" placeholder="Descripción">
-    <input type="number" id="price" placeholder="Precio">
-    <input type="text" id="img" value="[]">
-    <input type="text" id="code" placeholder="Código">
-    <input type="number" id="stock" placeholder="Stock">
-    <select id="status">
-        <option value="true">Activo</option>
-        <option value="false">Inactivo</option>
-    </select>
-    <button type="button" id="btnAdd">Agregar Producto</button>
-</form>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.min.js" ></script>
 <script src="js/index.js"></script>
