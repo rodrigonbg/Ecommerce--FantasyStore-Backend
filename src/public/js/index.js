@@ -11,10 +11,14 @@ const agregarProducto = () =>{
     const producto ={
         title: document.getElementById("title").value ,
         description: document.getElementById("description").value ,
-        price: document.getElementById("price").value ,
+        categoria: document.getElementById("idCategory").options[document.getElementById("idCategory").selectedIndex].text,
+        idCategoria: document.getElementById("idCategory").value ,
         thumbnail: document.getElementById("img").value ,
-        code: document.getElementById("code").value ,
+        price: document.getElementById("price").value ,
+        onSale: document.getElementById("onSale").value ,
+        descuento: document.getElementById("descuento").value ,
         stock: document.getElementById("stock").value ,
+        code: document.getElementById("code").value ,
         status: document.getElementById("status").value === "true"
     }
 
@@ -22,10 +26,12 @@ const agregarProducto = () =>{
     
     document.getElementById("title").value = "";
     document.getElementById("description").value  = "";
-    document.getElementById("price").value  = "";
     document.getElementById("img").value  = "";
-    document.getElementById("code").value  = "";
+    document.getElementById("price").value  = "";
+    document.getElementById("descuento").value = "";
     document.getElementById("stock").value  = "";
+    document.getElementById("code").value  = "";
+
 };
 
 //funcion para renderizar productos en 'realTimeProducts' en el cntenedor de prods 
@@ -49,7 +55,7 @@ const renderProds = (productos) =>{
 
         //creo el contenido de la card
         card.innerHTML= `
-                <p><span>ID</span> : ${prod.id}</p>
+                <p><span>ID</span> : ${prod._id}</p>
                 <p><span>TITULO</span> : ${prod.title}</p>
                 <p><span>PRECIO</span> : ${prod.price}</p>
                 <p><span>ESTADO</span> : ${prod.status}</p>
@@ -61,7 +67,7 @@ const renderProds = (productos) =>{
         //Agrego el evento 'EliminarProducto'
         const btnEliminar = card.querySelector("button")
         btnEliminar.addEventListener("click", ()=>{
-            eliminarProducto(prod.id)   
+            eliminarProducto(prod._id)   
         })
 
     });
