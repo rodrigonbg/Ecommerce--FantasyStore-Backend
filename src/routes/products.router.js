@@ -3,11 +3,13 @@ const router = express.Router();
 
 
 //product manager
-const ProductManager = require("../controller/product-manager.js")
+//const ProductManager = require("../controller/product-manager.js")
 //Instancia de productManager
-const manager = new ProductManager("./src/models/productos.json")
+//const manager = new ProductManager("./src/models/productos.json")
 //manager.setProducts(manager.products)  //Crear el arrchivo json con array vacío
 
+//models
+const productModel = require("../models/products.models");
 
 
 //ROUTING
@@ -15,6 +17,25 @@ const manager = new ProductManager("./src/models/productos.json")
 /* ----------------------------------------GETs----------------------------------------------- */
 //Productos por querys
 router.get("/", async (req, res)=>{
+    try {
+        //Cargamos el array de productos
+        const arrayProductos = await productModel.find();
+
+        //Guardamos el query
+        let limit = parseInt(req.query.limit);
+
+        //Si hay limite, filtaramos el array, de lo contrario mostramos todos los elementos
+        if(limit){
+            const arrayConLimite = arrayProductos.slice(0, limit)
+            return res.send(arrayConLimite)
+        }else{
+            return res.send(arrayProductos)
+        }
+    } catch (error) {
+        return res.send(`Error al mostrar los productos. Error: ${error}`)
+    }
+})
+/* router.get("/", async (req, res)=>{
     try {
         //Cargamos el array de productos
         const arrayProductos = await manager.readProducts()
@@ -32,10 +53,27 @@ router.get("/", async (req, res)=>{
     } catch (error) {
         return res.send(`Error al mostrar los productos. Error: ${error}`)
     }
-})
+}) */
 
 //productos por ID
 router.get("/:pid", async (req, res)=>{
+    try{
+        //Me guardo el id 
+        let pid = req.params.pid
+
+        //guardo el prod con ese id
+        const prod = await productModel.findById(pid);
+
+        if(prod){
+            return res.send(prod)
+        }else{
+            return res.send(`El ID: ${pid} del producto es incorrecto.`)
+        }
+    }catch(error){
+        return res.send(`Error al mostrar el producto de ID ${req.params.pid}. Error (${error})`)
+    }
+})
+/* router.get("/:pid", async (req, res)=>{
     try{
         //Me guardo el id 
         let pid = parseInt(req.params.pid)
@@ -51,11 +89,38 @@ router.get("/:pid", async (req, res)=>{
     }catch(error){
         return res.send(`Error al mostrar el producto de ID ${pid}. Error (${error})`)
     }
-})
+}) */
 
 
 /* ----------------------------------------POST----------------------------------------------- */
 router.post("/", async (req, res)=>{
+    try {
+        //info del producto desde el body
+        let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code } = req.body;
+
+        const newProduct = new productModel({
+            title: title,
+            description: description,
+            categoria: categoria,
+            idCategoria: idCategoria,
+            thumbnail: thumbnail,
+            price: price,
+            onSale: onSale,
+            descuento: descuento,
+            stock: stock,
+            alt: alt,
+            status: status,
+            code: code
+        })
+
+        //agrego el producto (Con ID auto generado)
+        await newProduct.save()
+            .then((resp)=> res.send (`Producto agregado, ${resp}`))
+    } catch (error) {
+        return res.send(`Error al cargar el nuevo producto. Error: ${error}`)
+    }
+})
+/* router.post("/", async (req, res)=>{
     try {
         //info del producto desde el body
         let {title, description, price, thumbnail, code, status=true, stock} = req.body;
@@ -76,11 +141,42 @@ router.post("/", async (req, res)=>{
     } catch (error) {
         return res.send(`Error al cargar el nuevo producto. Error: ${error}`)
     }
-})
+}) */
 
 
 /* ----------------------------------------PUT----------------------------------------------- */
 router.put("/:pid", async (req, res)=>{
+    try {
+        //Me guardo el id 
+        let pid = req.params.pid;
+
+        //info del producto desde el body
+        let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code } = req.body;
+
+        const updatedProduct = ({
+            title: title,
+            description: description,
+            categoria: categoria,
+            idCategoria: idCategoria,
+            thumbnail: thumbnail,
+            price: price,
+            onSale: onSale,
+            descuento: descuento,
+            stock: stock,
+            alt: alt,
+            status: status,
+            code: code
+        })
+
+        //actualizo el producto (sin actualizar ID)
+        await productModel.findByIdAndUpdate(pid, updatedProduct)
+            .then((resp)=> res.send (`Producto actualizado, ${resp}`))
+        
+    } catch (error) {
+        res.send(`Error al actualizar el producto. ERROR ${error}`)
+    }
+})
+/* router.put("/:pid", async (req, res)=>{
     try {
         //Me guardo el id 
         let pid = parseInt(req.params.pid)
@@ -105,11 +201,22 @@ router.put("/:pid", async (req, res)=>{
     } catch (error) {
         res.send(`Error al actualizar el producto. ERROR ${error}`)
     }
-})
+}) */
 
 
 /* ----------------------------------------DELETE----------------------------------------------- */
 router.delete("/:pid", async (req, res)=>{
+    try {
+        //Me guardo el id 
+        let pid = req.params.pid;
+        await productModel.findByIdAndDelete(pid)
+            .then((resp)=> res.send (`Producto eliminado, ${resp}`))
+
+    }catch(error){
+        return res.send(`Error al eliminar el producto. ERROR ${error}`)
+    }
+})
+/* router.delete("/:pid", async (req, res)=>{
     try {
         //Me guardo el id 
         let pid = parseInt(req.params.pid)
@@ -119,7 +226,7 @@ router.delete("/:pid", async (req, res)=>{
     }catch(error){
         return res.send(`Error al eliminar el producto. ERROR ${error}`)
     }
-})
+}) */
 
 
 

@@ -76,4 +76,17 @@ router.get("/uploadProduct", async (req, res)=>{
     }
 })
 
+
+router.get("/chat", async (req, res)=>{
+    try {
+        //renderizo la vista del chat
+        res.render('chat');
+
+    } catch (err) {
+        res.status(500).json({
+            error: `Error al obtener los chats. Error: ${err}`
+        })
+    }
+})
+
 module.exports = router;

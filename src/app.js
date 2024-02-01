@@ -4,6 +4,7 @@ const socket = require("socket.io");
 
 const db = require("../src/database.js")
 const productsModel = require("./models/products.models.js");
+const messageModel = require("../src/models/messages.models.js")
 
 
 const PUERTO = 8080;
@@ -76,11 +77,23 @@ io.on("connection", async(socket) => {
         //una vez agregado el producto, volvemos a enviar el array de productos
         io.sockets.emit("productos", await productsModel.find());
     })
+
+//----------------------------------------------------------------------------------
+    socket.on('loadMsgs', async ()=>{
+        //envio los mensajes al cliente conectado    
+        io.emit('messages', await messageModel.find())
+    });
+
+    //escucho el evento de un mensaje nuevo
+    socket.on('newMessage', async (msg)=>{
+        const newMsg = new messageModel(msg)
+        await newMsg.save()
+
+        //envio los mensajes a los usuarios conectados 
+        io.emit('messages', await messageModel.find());
+    })
+
 })
-
-
-
-
 
 
 //Listen

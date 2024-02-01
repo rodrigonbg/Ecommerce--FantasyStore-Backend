@@ -1,4 +1,3 @@
-const { Int32 } = require("mongodb");
 const mongoose = require("mongoose");
 
 //colleccion
@@ -6,11 +5,10 @@ const messagesCollection = 'messages';
 
 //Esquema del modelo de carritos
 const  messageSchema = new mongoose.Schema({
-    id: Number,
-    message: String
-});
+    user:String, 
+    message: String});
 
 //Definimos el modelo
-const  messagesModel= mongoose.model(messagesCollection ,messagesSchema);
+const  messagesModel= mongoose.model(messagesCollection ,messageSchema);
 
 module.exports = messagesModel;
