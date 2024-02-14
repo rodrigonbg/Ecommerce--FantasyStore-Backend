@@ -1,0 +1,29 @@
+<header>
+    <h1>Carritos de compra</h1>
+</header>
+<main>
+    <section class="cartsSection">
+        {{#each carts}}
+        <div class="cart">
+            <p class="id"><strong>ID de carrito: </strong>{{this.cartId}}</p>
+            <div class="cartItems">
+                {{#each this.products}}
+                <div class="prodItem">
+                    <p>Producto: {{this.title}}</p>
+                    <p>precio: {{this.price}}</p>
+                    <p>onSale {{this.onSale}}</p>
+                    {{#if this.onSale}}
+                    <p>Descuento: {{this.descuento}}% </p>
+                    {{/if}}
+                    <p>Categoría: {{this.categoria}}</p>
+                    <p>Cantidad: {{this.quantity}}</p>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        {{/each}}
+    </section>
+</main>
+<footer>
+
+</footer>

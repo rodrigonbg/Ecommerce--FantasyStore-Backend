@@ -6,10 +6,10 @@ const db = require("../src/database.js")
 const productsModel = require("./models/products.models.js");
 const messageModel = require("../src/models/messages.models.js")
 
-
 const PUERTO = 8080;
 const app = express();
 const server = http.createServer(app);
+
 //instancia socket del servidor
 const io = socket(server);
 
@@ -30,7 +30,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("./src/public"))
 
-
 //Express-handlebars
 const exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs.engine()); //-> le digo a express que cuando encuentre un archivo con la extensión 'handlebars', use el motor de plantillas handlebars.
@@ -45,14 +44,6 @@ const viewsRouter = require("./routes/views.router.js");
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
-
-
-
-
-//OBTENGO EL ARRAY DE PRODUCTOS
-//const ProductManager = require("./controller/product-manager.js");
-//const productManager = new ProductManager("./src/models/productos.json");
-
 
 //escucho el evento 'connection'
 io.on("connection", async(socket) => {
@@ -94,7 +85,6 @@ io.on("connection", async(socket) => {
     })
 
 })
-
 
 //Listen
 server.listen(PUERTO, ()=>{

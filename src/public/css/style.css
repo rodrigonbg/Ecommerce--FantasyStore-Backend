@@ -6,7 +6,7 @@ h1{
     text-align: center;
 }
 
-/* PRODUCTS VIEWA */
+/*------------------------------------------------- PRODUCTS VIEWS */
 .cardsContainer{
     display: flex;
     justify-content: space-between;
@@ -40,10 +40,49 @@ h1{
     background-color: rgb(155, 116, 116);
 }
 
+.busqueda{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .nav{
+        display: flex;
+        justify-content: space-evenly;
+        width: 40vw;
+        padding-bottom: 20px;
+        .pagination{
+            text-align: center;
+            width: 50%;
+        }
+        .btn{
+            width: 25%
+        }
+        a{
+            text-decoration: none;
+            color: black;
+            font-size: large;
+
+        }
+        .selected_page{
+            color: rgb(57, 131, 69);
+        }
+    }
+    .filtros{        
+        display: flex;
+        justify-content: space-evenly;
+        width: 100vw;
+        text-align: center;
+
+        div{
+            background-color: rgb(175, 187, 187);
+        }
+    }
+}
 
 
 
-/* REAL TIME VIEWS */
+
+/* --------------------------------------------------------------REAL TIME VIEWS */
 .realTimeContainer{
     display: flex;
     flex-wrap: nowrap;
@@ -156,4 +195,34 @@ h1{
 }
 .otherMsg{
     background-color:  rgb(182, 182, 182);
+}
+
+/*------------------------------------------------- CARTS VIEWS */
+
+.cart{
+    p{
+        margin: 1px;
+    }
+    padding: 10px;
+    text-align: center;
+    background-color: rgb(173, 172, 172);
+    margin :10px 0;
+    .id{
+        margin-bottom: 10px;
+    }
+    .cartItems{
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+        .prodItem{
+            background-color: gray;
+            border: 1px solid black;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 15vw;
+        }
+    }
 }
