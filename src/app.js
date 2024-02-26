@@ -1,10 +1,12 @@
 const express = require("express");
 const http = require("http");
 const socket = require("socket.io");
-
 const db = require("../src/database.js")
 const productsModel = require("./models/products.models.js");
-const messageModel = require("../src/models/messages.models.js")
+
+const cookieParser =  require('cookie-parser');
+const MongoStore = require("connect-mongo")
+const session = require('express-session')
 
 const PUERTO = 8080;
 const app = express();
@@ -29,6 +31,16 @@ app.use(multer({storage}).single("image"));
 app.use(express.json()); 
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("./src/public"))
+app.use(cookieParser())
+app.use(session({
+    secret: 'secretPass',
+    resaved: true,
+    saveUnitialized:true,
+    store: MongoStore.create({
+        mongoUrl: "mongodb+srv://rodrigonbg:AtlasPass361713@cluster0.cik8wio.mongodb.net/E-Commerce-Fantasy-Store?retryWrites=true&w=majority",
+        ttl: 600 //10 minutos
+    })
+}))
 
 //Express-handlebars
 const exphbs = require("express-handlebars");
@@ -40,9 +52,13 @@ app.set("views", "./src/views"); //-> le digo a express dopnde tiene que ir a bu
 const productsRouter = require("./routes/products.router.js");
 const cartsRouter = require("./routes/carts.router.js");
 const viewsRouter = require("./routes/views.router.js");
+const usersRouter = require("./routes/users.router.js");
+const sessionsRouter = require("./routes/sessions.router.js");
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/session", sessionsRouter);
 app.use("/", viewsRouter);
 
 //escucho el evento 'connection'
@@ -68,22 +84,6 @@ io.on("connection", async(socket) => {
         //una vez agregado el producto, volvemos a enviar el array de productos
         io.sockets.emit("productos", await productsModel.find());
     })
-
-//----------------------------------------------------------------------------------
-    socket.on('loadMsgs', async ()=>{
-        //envio los mensajes al cliente conectado    
-        io.emit('messages', await messageModel.find())
-    });
-
-    //escucho el evento de un mensaje nuevo
-    socket.on('newMessage', async (msg)=>{
-        const newMsg = new messageModel(msg)
-        await newMsg.save()
-
-        //envio los mensajes a los usuarios conectados 
-        io.emit('messages', await messageModel.find());
-    })
-
 })
 
 //Listen

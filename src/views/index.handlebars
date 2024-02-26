@@ -2,21 +2,44 @@
     <h1>MIS PRODUCTOS</h1>
 </header>
 <main>
+    {{#if info.session}}
+    <section class="logedUser">
+        <div>
+            <h2>Bienvenido/a {{info.user.first_name}} {{info.user.last_name}}</h2>
+            <p>
+                mail: {{info.user.email}} 
+                {{#if info.admin}}
+                <span>Administrador</span>
+                {{/if}}
+            </p>
+        </div>
+        <form action="">
+            <button><a href="/api/session/logout">LOG-OUT</a></button>
+        </form>   
+    </section>
+    {{else}}
+    <section class="notLogedUser">
+        <h2>Bienvenido/a</h2>
+        <form action="">
+            <button><a href="/loginForm">LOG-IN</a></button>
+        </form>    
+    </section>
+    {{/if}}
 
     <section  class="busqueda">
         <div class="nav">
-            {{#if products.hasPrevPage}}
-            <a class="btn" href={{products.prevLink}}>Pagina anterior |</a>
+            {{#if info.hasPrevPage}}
+            <a class="btn" href={{info.prevLink}}>Pagina anterior |</a>
             {{else}}
             <a class="btn"></a>
             {{/if}}
             <div class="pagination">
-                {{#each products.arrayPages}}
+                {{#each info.arrayPages}}
                     <a href={{this.link}} {{#if this.selected}} class="selected_page" {{/if}}>{{this.page}}</a>
                 {{/each}}
             </div>
-            {{#if products.hasNextPage}}
-            <a class="btn" href={{products.nextLink}}>| Pagina siguiente</a>
+            {{#if info.hasNextPage}}
+            <a class="btn" href={{info.nextLink}}>| Pagina siguiente</a>
             {{else}}
             <a class="btn" ></a>
             {{/if}}
@@ -79,7 +102,7 @@
     </section>
 
     <div class="cardsContainer">
-        {{#each products.payload}}
+        {{#each info.payload}}
         <div {{#if this.status}} class="card statusTrue" {{else}} class="card statusFalse" {{/if}}  >
             <p><span>Titulo</span>: {{this.title}}</p>
             <p><span>Precio</span>: {{this.price}}</p>

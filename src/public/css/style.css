@@ -7,6 +7,70 @@ h1{
 }
 
 /*------------------------------------------------- PRODUCTS VIEWS */
+.logedUser{
+    display: flex;
+    margin: 2% 5%;
+    justify-content: space-between;
+    align-items: center;
+    div{
+        p{
+            color: gray;
+            span{
+                color:rgb(84, 102, 92);
+                background-color: rgb(202, 198, 198);
+                margin-left: 5px;
+            }
+        }
+    }
+    form{
+        height: auto;
+
+        button{
+            height: auto;
+            background-color: rgb(146, 94, 94);
+            border-radius: 10px;
+            height: 4rem;
+            a{
+                cursor: pointer;
+                padding: 22px 18px 28px 18px;
+                height: 4rem;
+                text-decoration: none;
+                color: white;
+            }
+        }
+    }
+}
+
+.notLogedUser{
+    display: flex;
+    margin: 2% 5%;
+    justify-content: space-between;
+    align-items: center;
+    div{
+        p{
+            color: gray;
+        }
+    }
+    form{
+        height: auto;
+
+        button{
+            height: auto;
+            background-color: rgb(117, 192, 151);
+            border-radius: 10px;
+            height: 4rem;
+            a{
+                cursor: pointer;
+                padding: 22px 18px 28px 18px;
+                height: 4rem;
+                text-decoration: none;
+                color: white;
+            }
+        }
+    }
+}
+
+
 .cardsContainer{
     display: flex;
     justify-content: space-between;
@@ -139,64 +203,6 @@ h1{
     }
 }
 
-.sendMsgContainer{
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    background-color: rgb(182, 182, 182);
-    padding: 10px 0;
-    margin: 0;
-    input{
-        border: none;
-        border-radius: 10px;
-        padding: 10px 0;
-        width: 60vw;
-    }
-    button{
-        border: none;
-        border-radius: 10px;
-        padding: 10px 0;
-        width: 10vw;
-    }
-    
-}
-
-
-.msgContainer{
-    height: 80vh;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin: 5px;
-    overflow-y: scroll;
-}
-.msg{
-    padding: 5px;
-    width: 40vw;
-    height: auto;
-    
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    p{
-        text-wrap: wrap;
-        margin: 0;
-    }
-    .mail{
-        color: rgb(248, 248, 255);
-    }
-}
-.myMsg{
-    background-color: rgb(113, 209, 137);
-    align-self: flex-end;
-}
-.otherMsg{
-    background-color:  rgb(182, 182, 182);
-}
-
 /*------------------------------------------------- CARTS VIEWS */
 
 .cart{
@@ -223,6 +229,39 @@ h1{
             flex-direction: column;
             justify-content: space-around;
             width: 15vw;
+        }
+    }
+}
+
+/*------------------------------------------------- LOGIN FORM */
+.login{
+    margin: 2% 5%;
+    .loginForm{
+        display: flex;
+        flex-direction: column;
+        input{
+            margin: 0 0 2% 0;
+        }
+        p{
+            margin:0 ;
+        }
+    }
+}
+
+/*------------------------------------------------- SINGIN FORM */
+.singin{
+    margin: 2% 5%;
+    .singinForm{
+        display: flex;
+        flex-direction: column;
+        input{
+            margin: 0 0 2% 0;
+        }
+        p{
+            margin:0 ;
+        }
+        button{
+            cursor: pointer;
         }
     }
 }

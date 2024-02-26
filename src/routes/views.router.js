@@ -6,7 +6,8 @@ const ProductManager = require("../dao/db/product-manager-db")
 const productManager = new ProductManager()
 
 //cart manager
-const CartManager = require("../dao/db/cart-manager-db")
+const CartManager = require("../dao/db/cart-manager-db");
+const session = require("express-session");
 const cartManager = new CartManager()
 
 
@@ -59,8 +60,8 @@ router.get("/", async (req, res)=>{
 
         // Convertir queryObject (el resto de las queries) en un string para agregarlo al link al cambiar de pagina
         let queryString = Object.keys(queryObject)
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryObject[key])}`)
-        .join('&');
+            .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryObject[key])}`)
+            .join('&');
 
         //Creo un array con las paginas y la que está seleccionada para poder renderizar 
         //los numeritos en index
@@ -90,16 +91,29 @@ router.get("/", async (req, res)=>{
             nextLink: (!products.hasNextPage)? null : `?limit=${limit}&page=${products.nextPage}&priceOrder=${priceOrder}&${queryString}`,
             arrayPages,
             selectedPage: true,
-            cartsId: cartsId
+            cartsId: cartsId,
+
+            session: req.session.login === true,
+            user: req.session.user,
+            admin: req.session.rol === 'admin',
         }
-        
+
         //le paso la respuesta al index y lo renderizo
-        res.render('index',{products: resp});
+        res.render('index',{info: resp});
         
     } catch (err) {
         res.status(500).json({
             error: `Error al obtener los productos. Error: ${err}`
         })
+    }
+})
+
+//Ver usuario conectado
+router.get('/user', (req, res)=>{
+    if(req.session.user){
+        res.send(`user registrado: ${req.session.user} rol: ${req.session.rol}`)
+    }else{
+        res.send('No hay usuario registrado')
     }
 })
 
@@ -175,10 +189,18 @@ router.get("/carts/:cid", async (req, res)=>{
 })
 
 //Vista de productos en tiempo real
-router.get("/realtimeproducts", async (req, res)=>{
+router.get("/admin", async (req, res)=>{
     try {
         //renderizo realTimeProducts
-        res.render('realTimeProducts');
+        if(req.session.login){
+            if(req.session.rol === 'admin'){
+                res.render('admin');
+            }else{
+                res.send('Solo usuarios admin pueden acceder a este contenido');
+            }
+        }else{
+            res.redirect('/loginForm')
+        }
 
     } catch (err) {
         res.status(500).json({
@@ -187,17 +209,35 @@ router.get("/realtimeproducts", async (req, res)=>{
     }
 })
 
-//Vista del chat 
-router.get("/chat", async (req, res)=>{
+//Vista de login (iniciar sesion)
+router.get("/loginForm", async (req, res)=>{
     try {
-        //renderizo la vista del chat
-        res.render('chat');
+        if(req.session.login){
+            res.send({msg: "Ya hay un usuario registrado"})
+        }else{
+            //renderizo login
+            res.render('loginForm');
+        }
 
     } catch (err) {
-        res.status(500).json({
-            error: `Error al obtener los chats. Error: ${err}`
-        })
+        res.send(`Error de vista login. Error: ${err}`)
     }
 })
+
+//Vista de singin (registrarse)
+router.get("/singinForm", async (req, res)=>{
+    try {
+        if(req.session.login){
+            res.send({msg: "Primero debes cerrar la sesión actual para registrarte."})
+        }else{
+            //renderizo login
+            res.render('singinForm');
+        }
+
+    } catch (err) {
+        res.send(`Error de vista sing in. Error: ${err}`)
+    }
+})
+
 
 module.exports = router;
