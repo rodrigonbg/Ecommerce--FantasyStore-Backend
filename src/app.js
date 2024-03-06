@@ -48,6 +48,13 @@ app.engine("handlebars", exphbs.engine()); //-> le digo a express que cuando enc
 app.set("view engine", "handlebars");
 app.set("views", "./src/views"); //-> le digo a express dopnde tiene que ir a buscar los archivos "handlebars"
 
+//Passport
+const passport = require('passport')
+const initializePassport = require('./config/passport.config.js')
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
 //Routing 
 const productsRouter = require("./routes/products.router.js");
 const cartsRouter = require("./routes/carts.router.js");
