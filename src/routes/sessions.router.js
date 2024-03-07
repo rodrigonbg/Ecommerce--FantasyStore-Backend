@@ -27,6 +27,8 @@ const passport = require("passport");
     }
 })
  */
+
+
 //Logout (cerrar session)
 router.get('/logout', async (req, res)=>{
     if (req.session.login) { 
@@ -36,8 +38,10 @@ router.get('/logout', async (req, res)=>{
 })
 
 /////PASSPORT/////////
+
+//local
 router.post('/login',
-    passport.authenticate('login', {failureRedirect : '/api/session/failLogin'}),
+    passport.authenticate('login', {failureRedirect : '/api/sessions/failLogin'}),
     async (req, res)=>{
         if(!req.user) return res.status(400).send({status: 'error', message: 'Credenciales invalidas'})
         req.session.user = {
@@ -46,6 +50,7 @@ router.post('/login',
             age : req.user.age,
             email : req.user.email,
         };
+        (req.user.email === "admincoder@coder.com")? req.session.rol = 'admin' :  req.session.rol = 'usuario';
         req.session.login = true;
         res.status(200).redirect('/')
     }
@@ -56,5 +61,13 @@ router.get('/failLogin', (req,res)=> {
     }
 )
 
+//github
+router.get('/github', passport.authenticate('github', {scope : ['user:email']}), async (req, res)=>{})
+
+router.get('/githubcallback', passport.authenticate('github', {failureRedirect : '/loginForm'}), async (req, res)=>{
+    req.session.user = req.user;
+    req.session.login = true;
+    res.redirect('/')
+})
 
 module.exports = router;

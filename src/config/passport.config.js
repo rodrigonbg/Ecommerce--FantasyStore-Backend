@@ -11,6 +11,12 @@ const LocalStrategy  = local.Strategy;
 //estrategia github
 const GithubStrategy  = github.Strategy;
 
+/* 
+App ID: 851023
+Client ID: Iv1.11d64c1fa3cb63e0 
+Client secret : c99836d1197c68c06ca2f050ef69ea72c0501529
+*/
+
 //inicializador de middlewares de passport
 const initializePassport = () => {
     
@@ -61,6 +67,38 @@ const initializePassport = () => {
             } catch (error) {
                 return done(error)
             }
+        })
+    )
+
+    passport.use('github', 
+        new GithubStrategy({
+            clientID: 'Iv1.11d64c1fa3cb63e0',
+            clientSecret: 'c99836d1197c68c06ca2f050ef69ea72c0501529',
+            callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+        }, 
+        async (accessToken, refreshToken, profile, done)=>{
+            //en profile._json tengo los datos que quiero
+            const user = await UserModel.findOne({email : profile._json.email })
+            console.log(profile._json)
+            try {
+                //una vez buscado el user, si no existe, lo creamos. de lo contrario lo retornamos
+                if (!user){
+                    const newUser = {
+                        first_name : profile._json.name,
+                        last_name : "",
+                        age : 10,
+                        email : profile._json.email,
+                        password : ''
+                    }
+                    const result = await UserModel.create(newUser);
+                    return done(null, result)
+                }else{
+                    return done(null, user);
+                }
+            } catch (error) {
+                return done (error)
+            }
+            
         })
     )
 

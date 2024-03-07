@@ -4,7 +4,7 @@
 
 <main>
     <div class="login">
-        <form class="loginForm" action="http://localhost:8080/api/session/login"  method="POST">
+        <form class="loginForm" action="http://localhost:8080/api/sessions/login"  method="POST">
             <label for="email">Ingese su correo electronico</label>
             <input type="text" name="email" id="email" placeholder="Correo"/>
             
@@ -13,6 +13,8 @@
             
             <button>INGRESAR</button>
             <p>para registrarte, <a href="singinForm">click aqui.</a></p>
+            <p>inicia sesión o registrate con <a href="/api/sessions/github">GITHUB.</a></p>
+
         </form>
     </div>
 </main>

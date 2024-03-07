@@ -65,7 +65,7 @@ const sessionsRouter = require("./routes/sessions.router.js");
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/session", sessionsRouter);
+app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
 
 //escucho el evento 'connection'
