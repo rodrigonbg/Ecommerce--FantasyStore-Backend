@@ -8,7 +8,9 @@ const cookieParser =  require('cookie-parser');
 const MongoStore = require("connect-mongo")
 const session = require('express-session')
 
-const PUERTO = 8080;
+const configObject = require('./config/dotenv.config.js')
+const PUERTO = configObject.port;
+const mongo_url = configObject.mongo_url;
 const app = express();
 const server = http.createServer(app);
 
@@ -37,7 +39,7 @@ app.use(session({
     resaved: true,
     saveUnitialized:true,
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://rodrigonbg:AtlasPass361713@cluster0.cik8wio.mongodb.net/E-Commerce-Fantasy-Store?retryWrites=true&w=majority",
+        mongoUrl: mongo_url,
         ttl: 600 //10 minutos
     })
 }))

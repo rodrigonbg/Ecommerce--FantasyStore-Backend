@@ -3,6 +3,7 @@ const router = express.Router();
 const UserModel = require('../models/user.models')
 const {isValidPassword} = require ('../utils/hashBcrypt');
 const passport = require("passport");
+const configObject = require('../config/dotenv.config.js')
 
 //Login (iniciar session)
 /* router.post('/login', async (req, res)=>{
@@ -50,7 +51,7 @@ router.post('/login',
             age : req.user.age,
             email : req.user.email,
         };
-        (req.user.email === "admincoder@coder.com")? req.session.rol = 'admin' :  req.session.rol = 'usuario';
+        (req.user.email === configObject.admin_email)? req.session.rol = 'admin' :  req.session.rol = 'usuario';
         req.session.login = true;
         res.status(200).redirect('/')
     }
