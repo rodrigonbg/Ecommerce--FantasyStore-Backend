@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const UserModel = require('../models/user.models')
-const {isValidPassword} = require ('../utils/hashBcrypt');
+
 const passport = require("passport");
 const configObject = require('../config/dotenv.config.js')
+
+//Sessions Controller
+const SessionsController = require('../controller/sessionsController.js');
+const sessionsController = new SessionsController();
 
 //Login (iniciar session)
 /* router.post('/login', async (req, res)=>{
@@ -31,44 +34,16 @@ const configObject = require('../config/dotenv.config.js')
 
 
 //Logout (cerrar session)
-router.get('/logout', async (req, res)=>{
-    if (req.session.login) { 
-        req.session.destroy() //Destruir la session actual
-        res.status(200).redirect('/')
-    }
-})
+router.get('/logout', sessionsController.logout)
 
 /////PASSPORT/////////
 
 //local
-router.post('/login',
-    passport.authenticate('login', {failureRedirect : '/api/sessions/failLogin'}),
-    async (req, res)=>{
-        if(!req.user) return res.status(400).send({status: 'error', message: 'Credenciales invalidas'})
-        req.session.user = {
-            first_name : req.user.first_name,
-            last_name : req.user.last_name,
-            age : req.user.age,
-            email : req.user.email,
-        };
-        (req.user.email === configObject.admin_email)? req.session.rol = 'admin' :  req.session.rol = 'usuario';
-        req.session.login = true;
-        res.status(200).redirect('/')
-    }
-)
-
-router.get('/failLogin', (req,res)=> {
-    res.send({error: 'fallo de la estrategia'})
-    }
-)
+router.post('/login', passport.authenticate('login', {failureRedirect : '/api/sessions/failLogin'}), sessionsController.login)
+router.get('/failLogin', sessionsController.failLogin)
 
 //github
-router.get('/github', passport.authenticate('github', {scope : ['user:email']}), async (req, res)=>{})
-
-router.get('/githubcallback', passport.authenticate('github', {failureRedirect : '/loginForm'}), async (req, res)=>{
-    req.session.user = req.user;
-    req.session.login = true;
-    res.redirect('/')
-})
+router.get('/github', passport.authenticate('github', {scope : ['user:email']}), sessionsController.github)
+router.get('/githubcallback', passport.authenticate('github', {failureRedirect : '/loginForm'}), sessionsController.githubcallback)
 
 module.exports = router;

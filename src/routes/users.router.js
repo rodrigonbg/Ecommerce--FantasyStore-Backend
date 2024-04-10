@@ -1,8 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const UserModel = require('../models/user.models');
-const { createHash } = require('../utils/hashBcrypt');
+
 const passport = require("passport");
+
+//Sessions Controller
+const SessionsController = require('../controller/sessionsController.js');
+const sessionsController = new SessionsController();
+
+//User Controller
+const UserController = require('../controller/userController.js');
+const userController = new UserController();
 
 /* crear un usuario (singin) */
 /* router.post('/', async (req,res)=>{
@@ -26,24 +33,10 @@ const passport = require("passport");
 }) */
 
 //////PASSPORT///////////
-router.post('/', 
-    passport.authenticate('register', {failureRedirect: '/failedRegister'}), 
-    async (req,res)=>{
-        if(!req.user) return res.status(400).send({status: 'error', message: 'Credenciales invalidas'})
-        req.session.user = {
-            first_name : req.user.first_name,
-            last_name : req.user.last_name,
-            age : req.user.age,
-            email : req.user.email,
-        };
-        req.session.login = true;
-        res.status(200).redirect('/')
-    }
-)
 
-router.get('/failedRegister', (req,res)=> {
-    res.send({error: 'registro fallido'})
-})
+//Registro con el middleware de passport y luego hago el login
+router.post('/', passport.authenticate('register', {failureRedirect: '/failedRegister'}), sessionsController.login)
+router.get('/failedRegister',userController.failRegister)
 
 
 module.exports = router;

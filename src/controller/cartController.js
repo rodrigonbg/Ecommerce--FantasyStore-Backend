@@ -1,12 +1,12 @@
-const CartsServices = require("../services/cartServices.js");
-const cartsServices = new CartsServices();
+const CartsRepository = require("../repositories/cart.repository.js");
+const cartsRepository = new CartsRepository();
 
 class CartsController {
 
     //ruta ¨/¨, metodo GET
     async getCarts(req, res){
         try {
-            await cartsServices.getCarts()
+            await cartsRepository.getCarts()
             .then(respuesta => res.send(respuesta))
         } catch (error) {
             return res.send(`Error al procesar la solicitud a nivel ruta. ERROR ${error}`)
@@ -19,7 +19,7 @@ class CartsController {
             //Me guardo el id del carrito
             let cid = req.params.cid;
             
-            await cartsServices.getCartbyId(cid)
+            await cartsRepository.getCartbyId(cid)
                 .then(respuesta => res.send(respuesta))
         } catch (error) {
             return `Ocurrio un error al obtener el carrito a nivel ruta. ${error}`
@@ -29,7 +29,7 @@ class CartsController {
     //ruta ¨/¨, metodo POST
     async createCart(req, res){
         try {
-            await cartsServices.createCart()
+            await cartsRepository.createCart()
                 .then(respuesta => res.send(respuesta))
         } catch (error) {
             return `Error al crear el nuevo carrito de compras a nivel ruta. ${error}`
@@ -47,7 +47,7 @@ class CartsController {
         
             let quantity = req.params.quantity
         
-            await cartsServices.addProductToCart(cid, pid, quantity)
+            await cartsRepository.addProductToCart(cid, pid, quantity)
                 .then((respuesta)=> res.send(respuesta))   
         } catch (error) {
             res.send(`Error al procesar la solicitud de agregar producto al carrito a nivel ruta. ERROR ${error}`)
@@ -60,7 +60,7 @@ class CartsController {
             let cid = req.params.cid
             let arrayProds = req.body
         
-            await cartsServices.updateProductsWithArrayInCart(cid, arrayProds)//por defecto es vacío
+            await cartsRepository.updateProductsWithArrayInCart(cid, arrayProds)//por defecto es vacío
                 .then((respuesta)=> res.send(respuesta))
                 .then(()=>{res.status(201)})
         } catch (error) {
@@ -74,7 +74,7 @@ class CartsController {
             let cid = req.params.cid
             let pid = req.params.pid
             let quantity = req.body.quantity
-            await cartsServices.updateQuantityOfProdInCart(cid, pid, quantity)
+            await cartsRepository.updateQuantityOfProdInCart(cid, pid, quantity)
                 .then((respuesta)=> res.send(respuesta))
                 .then(()=>{res.status(201)})
         } catch (error) {
@@ -90,7 +90,7 @@ class CartsController {
             let pid = req.params.pid
             
             //Elimino el carrito
-            await cartsServices.deleteProductFromCart(cid, pid)
+            await cartsRepository.deleteProductFromCart(cid, pid)
                 .then(respuesta => res.send(respuesta))
                 .catch(err => res.status(400).send(`Error al intentar borrar el carrito ${err}`))
 
@@ -106,7 +106,7 @@ class CartsController {
             let cid = req.params.cid
             
             //Elimino el carrito
-            await cartsServices.deleteCart(cid)
+            await cartsRepository.deleteCart(cid)
                 .then(respuesta => res.send(respuesta))
                 .catch(err => res.status(400).send(`Error al intentar borrar el carrito ${err}`))
             

@@ -1,13 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-//Cart manager
-//const CartManager = require("../dao/db/cart-manager-db")
-//const cartManager = new  CartManager()
-
 //Cart Controller
 const CartController = require("../controller/cartController.js")
-const cartController = new  CartController()
+const cartController = new CartController()
 
 //ROUTING
 

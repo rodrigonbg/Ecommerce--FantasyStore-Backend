@@ -1,5 +1,5 @@
-const ProductServices = require("../services/productServices.js");
-const productServices = new ProductServices();
+const ProductRepository = require("../repositories/product.repository.js");
+const productRepository = new ProductRepository();
 
 class ProductController {
 
@@ -24,7 +24,7 @@ class ProductController {
             }
     
             //Cargamos el array de productos con los querys, el limiete, la page y el orden
-            const arrayProductos = await productServices.getProducts({queryObject, limit, page, order});
+            const arrayProductos = await productRepository.getProducts({queryObject, limit, page, order});
             return res.send(arrayProductos)
     
         } catch (error) {
@@ -39,7 +39,7 @@ class ProductController {
             let pid = req.params.pid
     
             //guardo el prod con ese id
-            const prod = await productServices.getProductById(pid);
+            const prod = await productRepository.getProductById(pid);
     
             if(prod){
                 return res.send(prod)
@@ -56,7 +56,7 @@ class ProductController {
         try {
             //info del producto desde el body
             //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code } = req.body;
-            await productServices.addProduct(req.body)
+            await productRepository.addProduct(req.body)
                 .then(respuesta => res.send(respuesta))
         } catch (error) {
             return res.send(`Error al subir el nuevo producto. Error: ${error}`)
@@ -71,7 +71,7 @@ class ProductController {
     
             //info del producto desde el body
             //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code } = req.body;
-            await productServices.updateProduct(pid ,req.body)
+            await productRepository.updateProduct(pid ,req.body)
                 .then(respuesta => res.send(respuesta))
         } catch (error) {
             res.send(`Error al actualizar el producto. ERROR ${error}`)
@@ -83,7 +83,7 @@ class ProductController {
         try {
             //Me guardo el id 
             let pid = req.params.pid;
-            await productServices.deleteProduct(pid)
+            await productRepository.deleteProduct(pid)
                 .then(respuesta => res.send(respuesta))
     
         }catch(error){
