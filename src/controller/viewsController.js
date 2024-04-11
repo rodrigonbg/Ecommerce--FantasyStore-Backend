@@ -108,6 +108,7 @@ class viewsController{
     async renderConectedUser(req, res){
         if(req.user){
             const profile = new UserProfileDTO(req.user.first_name, req.user.last_name, req.session.rol, req.user.email);
+            console.log(req.user)
             res.render( "profile", { user : profile} )
         }else{
             res.send('No hay usuario logueado')

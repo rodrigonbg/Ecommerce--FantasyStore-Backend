@@ -5,6 +5,7 @@ const github = require ('passport-github2');
 const UserModel = require ('../models/user.models')
 const { createHash, isValidPassword }= require ('../utils/hashBcrypt')
 
+
 //estrategia local
 const LocalStrategy  = local.Strategy;
 
@@ -44,6 +45,9 @@ const initializePassport = () => {
 
                 //genermaos el user y lo mandamos con done
                 const  result = await UserModel.create(newUser);
+
+
+                //Falta Aplicar DTO
                 return done(null, result);
 
             } catch (error) {

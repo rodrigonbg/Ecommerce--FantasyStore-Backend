@@ -180,6 +180,23 @@ class CartsRepository {
             return(`Error al eliminar el carrito. Error: ${error}`)
         }
     }
+
+    async emptyCart(idCart){
+        try {
+            const cart = await cartsModel.findById(id);
+            if(!cart){
+                throw new Error('El carrito no existe.')
+            }
+            cart.products = [];
+            cart.markModified('products')
+            await cart.save();
+            return `Carrito vaciado`
+        } catch (error) {
+            return error
+        }
+    }   
+
+
 }
 
 module.exports = CartsRepository ;

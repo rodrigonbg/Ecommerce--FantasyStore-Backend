@@ -113,5 +113,43 @@ class ProductRepository{
             return(`Error al actualizar el producto: ${err}`)
         }
     }
+
+    async subtractStock(id, amountToSubtract){
+        try{
+
+            //TRaigo el prod de la bd y lo desestructuro
+            let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status, stock, alt} = await getProductById(id);
+
+            if(stock - amountToSubtract >=0){
+                const updatedProduct ={
+                    title: title,
+                    description: description,
+                    categoria: categoria,
+                    idCategoria: idCategoria,
+                    thumbnail: thumbnail,
+                    price: price,
+                    onSale: onSale,
+                    descuento: descuento,
+                    stock: stock - amountToSubtract,
+                    code: code,
+                    status: status,
+                    alt: alt
+                }
+
+                const updated = await productModel.findByIdAndUpdate(id, updatedProduct)
+                if (!updated){
+                    return `Producto con ID ${id} no encontrado`
+                }else{
+                    return `Producto actualizado ${updated}`
+                }
+
+            }else{
+                throw new Error ('EL stock no es suficiente')
+            }
+
+        }catch(err){
+            return(`Error al actualizar el producto: ${err}`)
+        }
+    }
 }
  module.exports = ProductRepository;
