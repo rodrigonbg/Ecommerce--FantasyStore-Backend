@@ -20,6 +20,7 @@ Client secret : c99836d1197c68c06ca2f050ef69ea72c0501529
 //inicializador de middlewares de passport
 const initializePassport = () => {
     
+    //La estrategia despues de usarla me genera el req.user con la info
     passport.use('register', //nombre de la estrategia
         new LocalStrategy({
             passReqToCallback: true, //acceso al objeto req
@@ -41,7 +42,7 @@ const initializePassport = () => {
                     password: createHash(password)
                 }
 
-                //genermaos el usre y lo mandamos con done
+                //genermaos el user y lo mandamos con done
                 const  result = await UserModel.create(newUser);
                 return done(null, result);
 

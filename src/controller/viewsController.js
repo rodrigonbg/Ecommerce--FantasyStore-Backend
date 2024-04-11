@@ -4,6 +4,7 @@ const productRepository = new ProductRepository();
 const CartsRepository = require("../repositories/cart.repository.js");
 const cartsRepository = new CartsRepository();
 
+const UserProfileDTO = require("../dto/userProfile.dto.js");
 
 class viewsController{
 
@@ -105,10 +106,11 @@ class viewsController{
     //Vista del usuario conectado
     //ruta ¨/user¨, metodo GET
     async renderConectedUser(req, res){
-        if(req.session.user){
-            res.send(`user registrado: ${req.session.user} rol: ${req.session.rol}`)
+        if(req.user){
+            const profile = new UserProfileDTO(req.user.first_name, req.user.last_name, req.session.rol, req.user.email);
+            res.render( "profile", { user : profile} )
         }else{
-            res.send('No hay usuario registrado')
+            res.send('No hay usuario logueado')
         }
     }
     

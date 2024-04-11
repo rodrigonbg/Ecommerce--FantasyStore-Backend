@@ -1,3 +1,4 @@
+const configObject = require('../config/dotenv.config.js')
 
 class sessionsController{
 
