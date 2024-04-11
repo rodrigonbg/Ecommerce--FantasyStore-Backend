@@ -5,6 +5,8 @@ const router = express.Router();
 const CartController = require("../controller/cartController.js")
 const cartController = new CartController()
 
+const {authAdminAccess, authUserAccess, isLoged} = require('../middleware/profileAccess.js')
+
 //ROUTING
 
 /* ----------------------------------------GETs----------------------------------------------- */

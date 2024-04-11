@@ -5,6 +5,8 @@ const router = express.Router();
 const ProductController = require('../controller/productController.js');
 const productcontroller = new ProductController();
 
+const {authAdminAccess, authUserAccess, isLoged} = require('../middleware/profileAccess.js')
+
 //ROUTING
 /* ----------------------------------------GETs----------------------------------------------- */
 //Productos por querys
@@ -15,14 +17,14 @@ router.get("/:pid", productcontroller.getProductById)
 
 /* ----------------------------------------POSTs----------------------------------------------- */
 //Subir un producto a la base de datos
-router.post("/", productcontroller.addProduct)
+router.post("/", authAdminAccess, productcontroller.addProduct)
 
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar un producto en la base de datos
-router.put("/:pid", productcontroller.updateProduct)
+router.put("/:pid", authAdminAccess, productcontroller.updateProduct)
 
 /* ----------------------------------------DELETEs----------------------------------------------- */
 //Eliminar un producto de la base de datos
-router.delete("/:pid", productcontroller.deleteProduct)
+router.delete("/:pid", authAdminAccess, productcontroller.deleteProduct)
 
 module.exports = router;

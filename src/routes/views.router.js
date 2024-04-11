@@ -5,6 +5,7 @@ const router = express.Router();
 const ViewsController = require('../controller/viewsController.js');
 const viewsController = new ViewsController();
 
+const {authAdminAccess, authUserAccess, isLoged} = require('../middleware/profileAccess.js')
 
 //ROUTING
 
@@ -13,16 +14,16 @@ const viewsController = new ViewsController();
 router.get("/", viewsController.renderProducts)
 
 //Ver usuario conectado
-router.get('/user', viewsController.renderConectedUser)
+router.get('/user', isLoged, viewsController.renderConectedUser)
 
  //Vista de los carritos
-router.get("/carts", viewsController.renderCarts)
+router.get("/carts", isLoged, authUserAccess, viewsController.renderCarts)
 
 //Viste de un carrto
-router.get("/carts/:cid", viewsController.renderCart)
+router.get("/carts/:cid", isLoged, authUserAccess, viewsController.renderCart)
 
 //Vista de productos en tiempo real
-router.get("/admin", viewsController.renderRealTimeProducts)
+router.get("/admin", isLoged, authAdminAccess, viewsController.renderRealTimeProducts)
 
 //Vista de login (iniciar sesion)
 router.get("/loginForm", viewsController.renderLoginForm)

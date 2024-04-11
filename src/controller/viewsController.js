@@ -192,15 +192,7 @@ class viewsController{
     async renderRealTimeProducts(req, res){
         try {
             //renderizo realTimeProducts
-            if(req.session.login){
-                if(req.session.rol === 'admin'){
-                    res.render('admin');
-                }else{
-                    res.send('Solo usuarios admin pueden acceder a este contenido');
-                }
-            }else{
-                res.redirect('/loginForm')
-            }
+            res.render('admin');
     
         } catch (err) {
             res.status(500).json({
