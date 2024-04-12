@@ -118,7 +118,7 @@ class ProductRepository{
         try{
 
             //TRaigo el prod de la bd y lo desestructuro
-            let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status, stock, alt} = await getProductById(id);
+            let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status, stock, alt} = await this.getProductById(id);
 
             if(stock - amountToSubtract >=0){
                 const updatedProduct ={

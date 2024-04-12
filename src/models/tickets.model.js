@@ -24,9 +24,30 @@ const  ticketsSchema = new mongoose.Schema({
     products: [
         {
             product: {
-                type: mongoose.Schema.Types.ObjectId,
-                required: true,
-                ref: 'products'
+                _id: {
+                    type  : mongoose.Schema.Types.ObjectId,
+                    require: true
+                },
+                title: {
+                    type  : String,
+                    require: true
+                },
+                price: {
+                    type  : Number,
+                    require: true
+                },
+                onSale: {
+                    type  : Boolean,
+                    require: true
+                },
+                descuento: {
+                    type  : Number,
+                    require: true
+                },
+                code: {
+                    type  : String,
+                    require: true
+                },
             },
             quantity: {
                 type: Number,

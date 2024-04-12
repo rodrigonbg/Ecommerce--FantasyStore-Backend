@@ -1,6 +1,9 @@
 const CartsRepository = require("../repositories/cart.repository.js");
 const cartsRepository = new CartsRepository();
 
+const UserRepository = require("../repositories/user.repository.js");
+const userRepository = new UserRepository();
+
 const ProductsRepository = require("../repositories/product.repository.js");
 const productsRepository = new ProductsRepository();
 
@@ -68,38 +71,53 @@ class CartsController {
             //Me guardo el id del carrito y traigo el carrito
             let cid = req.params.cid
             const cart = await cartsRepository.getCartbyId(cid);
-
+            
+            
             if (cart){
                 let amount = 0;
                 let cartNonStock = [];
                 let purchase = [];
 
-                if (cart.products.lenght > 0){
-
+                if (cart.products.length > 0){
+                    
                     cart.products.forEach(async prod => {
-                        const producto = await productsRepository.getProductById(prod.products._id);
-                        
+                        const productoBD = await productsRepository.getProductById(prod.product._id);
+                                               
                         //Si hay Stock, aumento el precio y resto el stock de los productos en la bd
-                        if(producto.stock >= prod.stock){
-                            purchase.push(prod)
-                            amount += (prod.products.price - (prod.products.descuento * prod.products.price /100))* prod.stock
-                            await productsRepository.subtractStock(prod.products._id ,prod.stock);
+                        if(productoBD.stock >= prod.quantity){
+                            
+                            //Me creo el prod a guardar en el ticket
+                            const {_id, title, price, onSale, descuento, code}= prod.product;
+                            const ticketProd = {
+                                _id: _id,
+                                title: title,
+                                price: price,
+                                onSale :onSale,
+                                descuento: descuento,
+                                code: code
+                            }
+                            
+                            purchase.push({product: ticketProd, quantity: prod.quantity})
+                            amount += (prod.product.price - (prod.product.descuento * prod.product.price /100)) * prod.quantity
+                            const updatedProd = await productsRepository.subtractStock(prod.product._id ,prod.quantity);
                         }else{
                             //si no hay stock lo agrego a otro arreglo para gestionarlo luego
                             cartNonStock.push(prod);
                         }
                     });
 
-                    //Generlo el ticket con el total de la compra 
-                    const ticket = await ticketRepository.addTicket(amount, req.user.mail, purchase);
-
+                    const user = await userRepository.getUserbyCartId(cid);
+                    
+                    //Genero el ticket con el total de la compra 
+                    const ticket = await ticketRepository.addTicket(amount, user.email, purchase)
+                    
                     //actualizo el carrito con solo los prods que no se pudieron comprar.
                     await cartsRepository.updateProductsWithArrayInCart(cid, cartNonStock)
                     
                     res.send(ticket);
                     
                 }else{
-                    throw new Error( "EL carrito está vacío.")
+                    res.send( "EL carrito está vacío.")
                 }
 
             }else{

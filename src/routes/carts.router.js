@@ -16,6 +16,7 @@ router.get("/", cartController.getCarts)
 //carrito por ID
 router.get("/:cid", cartController.getCartbyId)
 
+
 /* ----------------------------------------POSTs----------------------------------------------- */
 //Crear un nuevo carrito
 router.post("/", cartController.createCart)
@@ -24,7 +25,7 @@ router.post("/", cartController.createCart)
 router.post("/:cid/products/:pid", cartController.addProductToCart)
 
 //Finalizar compra, generar ticket
-router.get("/:cid/purchase", cartController.finishPurchase)
+router.post("/:cid/purchase", cartController.finishPurchase)
 
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar carrito con arreglo
