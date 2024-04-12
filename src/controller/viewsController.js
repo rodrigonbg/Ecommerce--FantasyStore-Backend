@@ -12,6 +12,7 @@ class viewsController{
     //ruta ¨/¨, metodo GET
     async renderProducts(req, res){
         try {
+
             //Guardamos los query (recordar que el query se levantan con ?limit=5&page=2...)
             let { limit, page, priceOrder, ...queryObject} = req.query
     

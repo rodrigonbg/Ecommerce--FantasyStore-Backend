@@ -71,30 +71,32 @@ class CartsController {
 
             if (cart){
                 let amount = 0;
+                let cartNonStock = [];
+                let purchase = [];
 
                 if (cart.products.lenght > 0){
-                    //Controlar que haya stock y aumentar el precio total de la compra 
+
                     cart.products.forEach(async prod => {
                         const producto = await productsRepository.getProductById(prod.products._id);
+                        
+                        //Si hay Stock, aumento el precio y resto el stock de los productos en la bd
                         if(producto.stock >= prod.stock){
+                            purchase.push(prod)
                             amount += (prod.products.price - (prod.products.descuento * prod.products.price /100))* prod.stock
+                            await productsRepository.subtractStock(prod.products._id ,prod.stock);
                         }else{
-                            throw new Error(`El producto de id ${prod.products._id} no tinee stock suficiente para la compra.`)
+                            //si no hay stock lo agrego a otro arreglo para gestionarlo luego
+                            cartNonStock.push(prod);
                         }
                     });
 
-                    //Si hay stock suficicente para todos los articulos del carrito, los descontamos del stock en la bd 
-                    cart.products.forEach(async prod => {
-                       await productsRepository.subtractStock(prod.products._id ,prod.stock);
-                    });
+                    //Generlo el ticket con el total de la compra 
+                    const ticket = await ticketRepository.addTicket(amount, req.user.mail, purchase);
 
-                    //Generlo el ticket
-                    const respuesta = await ticketRepository.addTicket(amount, req.user.mail);
-
-                    //Vacio el carrito
-                    await cartsRepository.emptyCart(cid);
-
-                    res.send(respuesta);
+                    //actualizo el carrito con solo los prods que no se pudieron comprar.
+                    await cartsRepository.updateProductsWithArrayInCart(cid, cartNonStock)
+                    
+                    res.send(ticket);
                     
                 }else{
                     throw new Error( "EL carrito está vacío.")

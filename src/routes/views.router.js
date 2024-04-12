@@ -11,7 +11,7 @@ const {authAdminAccess, authNotAdminAccess, authNotUserAccess, authUserAccess, i
 
 /* ----------------------------------------GETs----------------------------------------------- */
 //Vista de los productos
-router.get("/", authNotAdminAccess, viewsController.renderProducts)
+router.get("/", viewsController.renderProducts)
 
 //Ver usuario conectado
 router.get('/user', isLoged, viewsController.renderConectedUser)

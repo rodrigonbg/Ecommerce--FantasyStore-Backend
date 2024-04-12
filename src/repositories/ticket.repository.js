@@ -2,7 +2,7 @@ const ticketModel = require("../models/tickets.model.js");
 
 class TicketsRepository{
     
-    async addTicket(amount, mail){
+    async addTicket(amount, mail, prods){
         const str = Math.random().toString(36).substring(2);//String randome
         const date =  new Date();
 
@@ -10,7 +10,8 @@ class TicketsRepository{
             code : str,
             purchase_datetime: date,
             amount: amount,
-            purchaser: mail
+            purchaser: mail,
+            products: prods
         })
 
         //guardo el nuevo ticket
