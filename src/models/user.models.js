@@ -23,7 +23,15 @@ const  userSchema = new mongoose.Schema({
     },
     password:{
         type:String,
+    },
+    cart:{
+        type:mongoose.Schema.Types.ObjectId
+    },
+    rol:{
+        type:String,
+        required:true
     }
+
 })
 
 const UserModel = mongoose.model(usersCollection, userSchema)

@@ -5,7 +5,10 @@ const github = require ('passport-github2');
 const UserModel = require ('../models/user.models')
 const { createHash, isValidPassword }= require ('../utils/hashBcrypt')
 
+const CartsRepository = require("../repositories/cart.repository.js");
+const cartsRepository = new CartsRepository();
 
+const configObject = require('../config/dotenv.config.js')
 //estrategia local
 const LocalStrategy  = local.Strategy;
 
@@ -35,19 +38,24 @@ const initializePassport = () => {
                 
                 if (user) return done(null, false); //user no disponible
                 
+                
+                //genermaos el user y lo mandamos con done
+                const rol = (email === configObject.admin_email)? 'admin':'usuario';
                 const newUser ={
                     first_name,
                     last_name,
                     email,
                     age,
-                    password: createHash(password)
+                    password: createHash(password), 
+                    rol : rol
+                }
+                //creo y agrego un carrito solo si no se es admin 
+                if (rol === 'usuario') {
+                    newUser.cart = await cartsRepository.createCart().then(res=> res._id);
                 }
 
-                //genermaos el user y lo mandamos con done
                 const  result = await UserModel.create(newUser);
 
-
-                //Falta Aplicar DTO
                 return done(null, result);
 
             } catch (error) {
@@ -88,13 +96,22 @@ const initializePassport = () => {
             try {
                 //una vez buscado el user, si no existe, lo creamos. de lo contrario lo retornamos
                 if (!user){
+
+                    const rol = (email === configObject.admin_email)? 'admin':'usuario';
                     const newUser = {
                         first_name : profile._json.name,
                         last_name : "",
                         age : 10,
                         email : profile._json.email,
-                        password : ''
+                        password : '',
+                        cart: idCart,
+                        rol: rol
                     }
+                    //creo y agrego un carrito solo si no se es admin 
+                    if (rol === 'usuario') {
+                        newUser.cart = await cartsRepository.createCart().then(res=> res._id);
+                    }
+
                     const result = await UserModel.create(newUser);
                     return done(null, result)
                 }else{

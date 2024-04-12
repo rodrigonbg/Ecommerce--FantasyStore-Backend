@@ -10,7 +10,6 @@ class CartsRepository {
             
             //Guardo el carrito en la base de datos
             const respuesta = await newCart.save()
-                .then((cart) => `carrito  guardado con id ${cart._id}`) 
             return respuesta
         } catch (error) {
             return `Error al crear el nuevo carrito de compras. ${error}`
