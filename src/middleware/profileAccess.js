@@ -43,10 +43,20 @@ function isLoged(req, res, next, redirect='/loginForm'){
     }
 }
 
+//Permite acceso solo si no se está logueado, y si no, redirecciona
+function isNotLoged(req, res, next, redirect='/loginForm'){
+    if(!req.session.login){
+        next();
+    }else{
+        res.send('Ya estás logueado')
+    }
+}
+
 module.exports = {
     authAdminAccess,
     authUserAccess,
     authNotAdminAccess,
     authNotUserAccess,
-    isLoged
+    isLoged,
+    isNotLoged
 };
