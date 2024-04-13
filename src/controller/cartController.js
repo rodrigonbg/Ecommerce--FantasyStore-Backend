@@ -105,11 +105,9 @@ class CartsController {
                             cartNonStock.push(prod);
                         }
                     });
-
-                    const user = await userRepository.getUserbyCartId(cid);
                     
                     //Genero el ticket con el total de la compra 
-                    const ticket = await ticketRepository.addTicket(amount, user.email, purchase)
+                    const ticket = await ticketRepository.addTicket(amount, req.user.correo, purchase)
                     
                     //actualizo el carrito con solo los prods que no se pudieron comprar.
                     await cartsRepository.updateProductsWithArrayInCart(cid, cartNonStock)
