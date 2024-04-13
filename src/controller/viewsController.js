@@ -107,6 +107,7 @@ class viewsController{
         }
     }
 
+    
     //Vista del usuario conectado
     //ruta ¨/user¨, metodo GET
     async renderConectedUser(req, res){
