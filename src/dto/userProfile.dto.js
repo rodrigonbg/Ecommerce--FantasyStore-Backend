@@ -1,9 +1,13 @@
 class userProfileDTO{
-    constructor(firstName, lastName, rol, correo){
+    constructor(ID, firstName, lastName, rol, correo, cart){
+        this._id = ID,
         this.firstName = firstName;
         this.lastName = lastName;
         this.rol = rol;
         this.correo = correo;
+        if(cart){
+            this.cart = cart.toString()
+        }
     }
 }
 

@@ -26,6 +26,7 @@ router.post("/:cid/products/:pid", cartController.addProductToCart)
 
 //Finalizar compra, generar ticket
 router.post("/:cid/purchase", cartController.finishPurchase)
+router.get("/:cid/purchase", cartController.finishPurchase)
 
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar carrito con arreglo

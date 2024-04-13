@@ -11,8 +11,9 @@ class viewsController{
     //Vista de los productos
     //ruta ¨/¨, metodo GET
     async renderProducts(req, res){
+        console.log('renderProds ',req.user)
+        console.log('renderProds',req.session)
         try {
-
             //Guardamos los query (recordar que el query se levantan con ?limit=5&page=2...)
             let { limit, page, priceOrder, ...queryObject} = req.query
     
@@ -90,10 +91,12 @@ class viewsController{
                 cartsId: cartsId,
     
                 session: req.session.login === true,
-                user: req.session.user,
-                admin: req.session.rol === 'admin',
             }
-    
+            if(req.user){
+                resp.user = req.user
+                resp.admin = req.user.rol === 'admin'
+            }
+
             //le paso la respuesta al index y lo renderizo
             res.render('index',{info: resp});
             
@@ -108,8 +111,7 @@ class viewsController{
     //ruta ¨/user¨, metodo GET
     async renderConectedUser(req, res){
         if(req.user){
-            const profile = new UserProfileDTO(req.user.first_name, req.user.last_name, req.session.rol, req.user.email);
-            console.log(req.user)
+            const profile = new UserProfileDTO(req.user._id ,req.user.firstName, req.user.lastName, req.user.rol, req.user.correo, req.user.cart);
             res.render( "profile", { user : profile} )
         }else{
             res.send('No hay usuario logueado')

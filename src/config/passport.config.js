@@ -1,6 +1,7 @@
 const passport = require ('passport');
 const local = require ('passport-local');
 const github = require ('passport-github2');
+const DTOUser =  require('../dto/userProfile.dto.js')
 
 const UserModel = require ('../models/user.models')
 const { createHash, isValidPassword }= require ('../utils/hashBcrypt')
@@ -130,7 +131,8 @@ const initializePassport = () => {
 
     passport.deserializeUser( async (id ,done) =>{
         const user = await UserModel.findById({_id : id});
-        done(null, user);
+        const dtoUser = new DTOUser(user._id, user.first_name, user.last_name, user.rol, user.email, user.cart);
+        done(null, dtoUser);
     })
 
 }
