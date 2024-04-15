@@ -19,7 +19,7 @@ class sessionsController{
 
     //ruta ¨/failLogin¨, metodo GET
     async failLogin (req, res){
-        res.send({error: 'fallo de la estrategia'})
+        res.send({error: 'error al iniciar sesion'})
     }
 
     //ruta ¨/github¨, metodo GET con github-passport

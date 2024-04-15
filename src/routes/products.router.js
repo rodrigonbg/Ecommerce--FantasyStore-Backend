@@ -11,6 +11,7 @@ const {authAdminAccess, authUserAccess, isLoged} = require('../middleware/profil
 /* ----------------------------------------GETs----------------------------------------------- */
 //Productos por querys
 router.get("/", productcontroller.getProducts)
+router.get("/mockingproducts", productcontroller.getProductsFaker)
 
 //productos por ID
 router.get("/:pid", productcontroller.getProductById)

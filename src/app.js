@@ -13,6 +13,7 @@ const PUERTO = configObject.port;
 const mongo_url = configObject.mongo_url;
 const app = express();
 const server = http.createServer(app);
+const flash = require('connect-flash');
 
 //instancia socket del servidor
 const io = socket(server);
@@ -44,6 +45,7 @@ app.use(session({
     })
 }))
 
+
 //Express-handlebars
 const exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs.engine()); //-> le digo a express que cuando encuentre un archivo con la extensión 'handlebars', use el motor de plantillas handlebars.
@@ -56,6 +58,7 @@ const initializePassport = require('./config/passport.config.js')
 initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(flash());
 
 //Routing 
 const productsRouter = require("./routes/products.router.js");

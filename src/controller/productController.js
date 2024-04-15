@@ -1,7 +1,22 @@
 const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
+const generarProducto = require('../utils/mocks.js')
 
 class ProductController {
+
+    getProductsFaker(req, res){
+        try {
+            //Cargamos el array de productos
+            const arrayProductos = []
+            for( let i=0 ; i<100 ; i++ ){
+                arrayProductos.push(generarProducto())
+            }
+
+            return res.send(arrayProductos)
+        } catch (error) {
+            return res.send(`Error al mostrar los productos con faker. Error: ${error}`)
+        }
+    }
 
     //ruta ¨/¨, metodo GET
     async getProducts(req, res){

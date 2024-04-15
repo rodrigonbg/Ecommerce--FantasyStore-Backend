@@ -73,9 +73,9 @@ const initializePassport = () => {
             try {
                 const user = await UserModel.findOne({ email: email.toLowerCase()});
 
-                if(!user) return done(null, false) //No existe el usuario
+                if(!user) return done('Usuario no encontrado.') //No existe el usuario
 
-                if(!isValidPassword(password, user)) return done (null,false)//la contrasena es incorrecta
+                if(!isValidPassword(password, user)) return done ('Contraseña incorrecta.')//la contrasena es incorrecta
 
                 return done(null, user)
             } catch (error) {
