@@ -5,7 +5,9 @@ const router = express.Router();
 const CartController = require("../controller/cartController.js")
 const cartController = new CartController()
 
+//Midlewares
 //const {authAdminAccess, authUserAccess, isLoged} = require('../middleware/profileAccess.js')
+const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
 
 //ROUTING
 
@@ -22,7 +24,7 @@ router.get("/:cid", cartController.getCartbyId)
 router.post("/", cartController.createCart)
 
 //Agregar prod a carrito
-router.post("/:cid/products/:pid", cartController.addProductToCart)
+router.post("/:cid/products/:pid", handleErrorAgregarACarrito, cartController.addProductToCart)
 
 //Finalizar compra, generar ticket
 router.post("/:cid/purchase", cartController.finishPurchase)

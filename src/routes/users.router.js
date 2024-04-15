@@ -11,6 +11,10 @@ const sessionsController = new SessionsController();
 const UserController = require('../controller/userController.js');
 const userController = new UserController();
 
+//Midlewares
+const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
+
+
 /* crear un usuario (singin) */
 /* router.post('/', async (req,res)=>{
     const {first_name,  last_name, email , password, repeatPass, age} = req.body;
@@ -35,7 +39,7 @@ const userController = new UserController();
 //////PASSPORT///////////
 
 //Registro con el middleware de passport y luego hago el login
-router.post('/', passport.authenticate('register', {failureRedirect: '/failedRegister'}), sessionsController.login)
+router.post('/',handleErrorCrearUser, passport.authenticate('register', {failureRedirect: '/failedRegister'}), sessionsController.login)
 router.get('/failedRegister',userController.failRegister)
 
 

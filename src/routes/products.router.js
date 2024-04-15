@@ -5,7 +5,9 @@ const router = express.Router();
 const ProductController = require('../controller/productController.js');
 const productcontroller = new ProductController();
 
+//Midlewares
 const {authAdminAccess, authUserAccess, isLoged} = require('../middleware/profileAccess.js')
+const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
 
 //ROUTING
 /* ----------------------------------------GETs----------------------------------------------- */
@@ -18,7 +20,7 @@ router.get("/:pid", productcontroller.getProductById)
 
 /* ----------------------------------------POSTs----------------------------------------------- */
 //Subir un producto a la base de datos
-router.post("/", authAdminAccess, productcontroller.addProduct)
+router.post("/", authAdminAccess, handleErrorCrearProducto, productcontroller.addProduct)
 
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar un producto en la base de datos
