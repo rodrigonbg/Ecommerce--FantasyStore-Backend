@@ -15,6 +15,11 @@ const app = express();
 const server = http.createServer(app);
 const flash = require('connect-flash');
 
+//Logger
+const addLogger = require("./utils/logger.js");
+app.use(addLogger);
+
+
 //instancia socket del servidor
 const io = socket(server);
 
@@ -72,6 +77,17 @@ app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
+
+app.get( "/loggerTest" , (req,res) => {
+    req.logger.fatal('Mensaje de fatal desde logger /loggerTest');
+    req.logger.error('Mensaje de error desde logger /loggerTest');
+    req.logger.warning('Mensaje de warning desde logger /loggerTest');
+    req.logger.info('Mensaje de info desde logger /loggerTest');
+    req.logger.http('Mensaje de http desde logger /loggerTest');
+    req.logger.debug('Mensaje de debug desde logger /loggerTest');
+
+    res.send(200, 'loggers working')
+})
 
 //escucho el evento 'connection'
 io.on("connection", async(socket) => {
