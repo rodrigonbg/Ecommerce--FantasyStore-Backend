@@ -55,7 +55,9 @@ const initializePassport = () => {
                     newUser.cart = await cartsRepository.createCart().then(res=> res._id);
                 }
 
-                const  result = await UserModel.create(newUser);
+                const  result = await UserModel.create(newUser).then(()=>{
+                    req.logger.info('User creado con local passport')
+                });
 
                 return done(null, result);
 
@@ -113,7 +115,10 @@ const initializePassport = () => {
                         newUser.cart = await cartsRepository.createCart().then(res=> res._id);
                     }
 
-                    const result = await UserModel.create(newUser);
+                    const result = await UserModel.create(newUser).then(()=>{
+                        req.logger.info('User creado con github passport')
+                    });
+
                     return done(null, result)
                 }else{
                     return done(null, user);

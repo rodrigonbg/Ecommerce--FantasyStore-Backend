@@ -18,6 +18,6 @@ const configObject = {
     admin_pass : process.env.ADMIN_PASSWORD
 }
 
-console.log ('***********', configObject)
+console.log ('Objeto de configuracion gral:', configObject)
 
 module.exports = configObject;

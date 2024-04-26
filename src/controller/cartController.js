@@ -19,7 +19,10 @@ class CartsController {
         try {
             await cartsRepository.getCarts()
             .then(respuesta => res.send(respuesta))
+            .then(()=> req.logger.info('carritos obtenidos con exito'))
+
         } catch (error) {
+            req.logger.error('No se pudieron obtener los carritos: ', error)
             return res.send(`Error al procesar la solicitud a nivel ruta. ERROR ${error}`)
         }
     }
@@ -32,7 +35,9 @@ class CartsController {
             
             await cartsRepository.getCartbyId(cid)
                 .then(respuesta => res.send(respuesta))
+                .then(()=> req.logger.info('carrito por id obtenido con exito'))
         } catch (error) {
+            req.logger.error('No se pudo obtener el carrito por id. ', error)
             return `Ocurrio un error al obtener el carrito a nivel ruta. ${error}`
         }
     }
@@ -42,7 +47,9 @@ class CartsController {
         try {
             await cartsRepository.createCart()
                 .then(respuesta => res.send(respuesta))
+                .then(()=> req.logger.info('carrito nuevo creado con exito'))
         } catch (error) {
+            req.logger.error('No se pudo crear el carrito.', error)
             return `Error al crear el nuevo carrito de compras a nivel ruta. ${error}`
         }
     }
@@ -59,8 +66,10 @@ class CartsController {
             let quantity = req.params.quantity
         
             await cartsRepository.addProductToCart(cid, pid, quantity)
-                .then((respuesta)=> res.send(respuesta))   
+                .then((respuesta)=> res.send(respuesta))
+                .then(()=> req.logger.info(`producto de id: ${pid} agregado a carrito de id: ${cid} con exito`))
         } catch (error) {
+            req.logger.error('error al agregar producto a carrito.', error)
             res.send(`Error al procesar la solicitud de agregar producto al carrito a nivel ruta. ERROR ${error}`)
         }
     }
@@ -108,9 +117,16 @@ class CartsController {
                     
                     //Genero el ticket con el total de la compra 
                     const ticket = await ticketRepository.addTicket(amount, req.user.correo, purchase)
-                    
+                                        .then(()=> {
+                                            req.logger.info('nuevo ticket generado')
+                                        })
+                                        .catch((error)=>{
+                                            req.logger.error(`error al generar el ticket, ${error}`)
+                                        })
+
                     //actualizo el carrito con solo los prods que no se pudieron comprar.
                     await cartsRepository.updateProductsWithArrayInCart(cid, cartNonStock)
+                                        .then(()=>req.logger.info('carrito actualizado'))
                     
                     res.send(ticket);
                     
@@ -122,6 +138,7 @@ class CartsController {
                 res.status(404).send('No se ha encontrado un carrito con ese ID')
             }
         } catch (error) {
+            req.logger.error('error al finalizar la compra.', error)
             res.send(error)
         }
     }
@@ -147,9 +164,10 @@ class CartsController {
             let pid = req.params.pid
             let quantity = req.body.quantity
             await cartsRepository.updateQuantityOfProdInCart(cid, pid, quantity)
-                .then((respuesta)=> res.send(respuesta))
-                .then(()=>{res.status(201)})
+                .then((respuesta)=> res.status(201).send(respuesta))
+                .then(()=>{req.logger.error('cantidad de prod en carrito actualizada.')})
         } catch (error) {
+            req.logger.error('No se pudo actualizar cantidad en carrito.', error)
             res.send(`Error al actualizar cantidad del producto en carrito a nivel ruta. ERROR ${error}`)
         }
     }
@@ -167,6 +185,7 @@ class CartsController {
                 .catch(err => res.status(400).send(`Error al intentar borrar el carrito ${err}`))
 
         }catch(error){
+            req.logger.error('No se pudo borrar producto del carrito.', error)
             return res.send(`Error al procesar la solicitud a nivel ruta. ERROR ${error}`)
         }
     }
@@ -183,6 +202,7 @@ class CartsController {
                 .catch(err => res.status(400).send(`Error al intentar borrar el carrito ${err}`))
             
         }catch(error){
+            req.logger.error('No se pudo borrar el carrito.', error)
             return res.send(`Error al procesar la solicitud a nivel ruta. ERROR ${error}`)
         }
     }

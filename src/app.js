@@ -86,7 +86,7 @@ app.get( "/loggerTest" , (req,res) => {
     req.logger.http('Mensaje de http desde logger /loggerTest');
     req.logger.debug('Mensaje de debug desde logger /loggerTest');
 
-    res.send(200, 'loggers working')
+    res.status(200).send('loggers working')
 })
 
 //escucho el evento 'connection'

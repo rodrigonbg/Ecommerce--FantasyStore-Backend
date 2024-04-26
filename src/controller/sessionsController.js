@@ -14,7 +14,9 @@ class sessionsController{
     async login (req, res){
         if(!req.user) return res.status(400).send({status: 'error', message: 'Credenciales invalidas'})
         req.session.login = true;
+        req.logger.info('Sesion iniciada con local passport')
         res.status(200).redirect('/')
+
     }
 
     //ruta ¨/failLogin¨, metodo GET
@@ -24,13 +26,14 @@ class sessionsController{
 
     //ruta ¨/github¨, metodo GET con github-passport
     async github (req, res){
-        
+       
     }
 
     //ruta ¨/githubcallback¨, metodo GET con github-passport
     async githubcallback (req, res){
         req.session.user = req.user;
         req.session.login = true;
+        req.logger.info('Sesion iniciada con github')
         res.redirect('/')
     }
 }
