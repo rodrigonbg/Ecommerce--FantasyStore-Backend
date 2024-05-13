@@ -8,6 +8,7 @@ const ProductsRepository = require("../repositories/product.repository.js");
 const productsRepository = new ProductsRepository();
 
 const TicketRepository = require("../repositories/ticket.repository.js");
+const { sendPurchaseMail } = require("../services/emailsManager.js");
 const ticketRepository = new TicketRepository();
 
 
@@ -80,6 +81,7 @@ class CartsController {
             //Me guardo el id del carrito y traigo el carrito
             let cid = req.params.cid
             const cart = await cartsRepository.getCartbyId(cid);
+            const user = await userRepository.getUserbyCartId(cid);
             
             
             if (cart){
@@ -89,7 +91,7 @@ class CartsController {
 
                 if (cart.products.length > 0){
                     
-                    cart.products.forEach(async prod => {
+                    for (const prod of cart.products){
                         const productoBD = await productsRepository.getProductById(prod.product._id);
                                                
                         //Si hay Stock, aumento el precio y resto el stock de los productos en la bd
@@ -113,22 +115,28 @@ class CartsController {
                             //si no hay stock lo agrego a otro arreglo para gestionarlo luego
                             cartNonStock.push(prod);
                         }
-                    });
+                    };
                     
-                    //Genero el ticket con el total de la compra 
-                    const ticket = await ticketRepository.addTicket(amount, req.user.correo, purchase)
-                                        .then(()=> {
-                                            req.logger.info('nuevo ticket generado')
-                                        })
-                                        .catch((error)=>{
-                                            req.logger.error(`error al generar el ticket, ${error}`)
-                                        })
+                    if(purchase.length > 0){
+                        //Genero el ticket con el total de la compra 
+                        const ticket = await ticketRepository.addTicket(amount, user.email, purchase)
+                                            .then((ticket)=> {
+                                                req.logger.info('nuevo ticket generado')
+                                                return ticket;
+                                            })
+                                            .catch((error)=>{
+                                                req.logger.error(`error al generar el ticket, ${error}`)
+                                            })
 
-                    //actualizo el carrito con solo los prods que no se pudieron comprar.
-                    await cartsRepository.updateProductsWithArrayInCart(cid, cartNonStock)
-                                        .then(()=>req.logger.info('carrito actualizado'))
-                    
-                    res.send(ticket);
+                        //actualizo el carrito con solo los prods que no se pudieron comprar.
+                        await cartsRepository.updateProductsWithArrayInCart(cid, cartNonStock)
+                                            .then(()=>req.logger.info('carrito actualizado'))
+
+                        await sendPurchaseMail(user.email, user.first_name, ticket);
+                        res.send(ticket);
+                    }else{
+                        res.send('no hay productos con suficiente stock en este carrito.')
+                    }
                     
                 }else{
                     res.send( "EL carrito está vacío.")
