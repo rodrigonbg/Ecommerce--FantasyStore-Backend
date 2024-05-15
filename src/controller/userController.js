@@ -47,9 +47,15 @@ class userController{
                 throw `No existe un usuario con ese email.`
             }
 
-            if((user.resetToken.token !== token) || (user.resetToken.exipresAt < new Date())){ //expirtesAt < date now tambien cero
+            if((user.resetToken.token !== token)){
                 throw `Token invalido.`
             }
+            
+   
+            if(user.resetToken.exipresAt < new Date()){ //expirtesAt < date now tambien cero
+                throw `Token vencido.`
+            }
+            
    
             if (isValidPassword(password, user)){
                 throw `No se puede ingresar la misma contraseña.`
