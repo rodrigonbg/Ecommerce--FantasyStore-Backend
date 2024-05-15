@@ -31,4 +31,10 @@ router.get("/loginForm", viewsController.renderLoginForm)
 //Vista de singin (registrarse)
 router.get("/singinForm", viewsController.renderSinginForm)
 
+//Vista de solicitud de restablecimiento de contraseña
+router.get("/reset-password", viewsController.renderResetPassword)
+
+//Vista de solicitud de restablecimiento de contraseña
+router.get("/password", viewsController.renderNewPasswordForm)
+
 module.exports = router;

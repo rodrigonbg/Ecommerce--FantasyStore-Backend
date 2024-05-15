@@ -238,6 +238,40 @@ class viewsController{
         }
     }
     
+    
+    //Vista de 'enviar correo de restablecimiento'
+    //ruta ¨/reset-password¨, metodo GET
+    async renderResetPassword(req, res){
+        try {
+            if(req.session.login){
+                res.send({msg: "Usted ya tiene una sesion iniciada."})
+            }else{
+                //renderizo
+                res.render('resetPassword');
+            }
+    
+        } catch (err) {
+            res.send(`Error de vista de solicitud de restablecimiento de contraseña. Error: ${err}`)
+        }
+    }
+
+    //Vista de 'restablecimiento de contraseña'
+    //ruta ¨/password¨, metodo GET
+    async renderNewPasswordForm(req, res){
+        try {
+            if(req.session.login){
+                res.send({msg: "no puede estár logueado para resetear la contraseña."})
+            }else{
+                //renderizo
+                res.render('newPasswordForm');
+            }
+    
+        } catch (err) {
+            res.send(`Error de vista de formulario de restablecimiento de contraseña. Error: ${err}`)
+        }
+    }
+    
+
 }
 
 module.exports = viewsController;

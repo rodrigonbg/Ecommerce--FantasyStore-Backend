@@ -37,10 +37,14 @@ const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrit
 }) */
 
 //////PASSPORT///////////
-
 //Registro con el middleware de passport y luego hago el login
 router.post('/',handleErrorCrearUser, passport.authenticate('register', {failureRedirect: '/failedRegister'}), sessionsController.login)
 router.get('/failedRegister',userController.failRegister)
 
+//Enviar mail para resetear contraseña
+router.post('/requestPasswordReset', userController.requestPasswordResetEmail)
+
+//Cambiar contraseña con token
+router.post('/passwordReset', userController.passwordReset)
 
 module.exports = router;
