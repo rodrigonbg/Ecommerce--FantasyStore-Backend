@@ -28,7 +28,9 @@ const  userSchema = new mongoose.Schema({
     },
     rol:{
         type:String,
-        required:true
+        enum: ['admin', 'usuario', 'premium'],
+        required:true,
+        default : 'usuario'
     },
     resetToken:{
         token: String,

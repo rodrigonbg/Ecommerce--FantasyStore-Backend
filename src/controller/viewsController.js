@@ -197,7 +197,8 @@ class viewsController{
     async renderRealTimeProducts(req, res){
         try {
             //renderizo realTimeProducts
-            res.render('admin');
+            const rol = req.user.rol;
+            res.render('realTimeProducts',{rol});
     
         } catch (err) {
             res.status(500).json({

@@ -1,5 +1,7 @@
 const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
+const UserRepository = require("../repositories/user.repository.js");
+const userRepository = new UserRepository();
 const generarProducto = require('../utils/mocks.js')
 
 class ProductController {
@@ -69,10 +71,16 @@ class ProductController {
     //ruta ¨/¨, metodo POST
     async addProduct(req, res){
         try {
+            const rol = req.user.rol;
+            console.log(rol)
+            if ((req.user.rol === 'usuario')){
+                throw ('No tienes permisos para agregar un producto.')
+            }
+            req.body.owner = (rol === 'premium') ? req.user.correo : 'admin';
             //info del producto desde el body
-            //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code } = req.body;
+            //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code, owner } = req.body;
             await productRepository.addProduct(req.body)
-                .then(respuesta => res.send(respuesta))
+                .then(respuesta => res.redirect("/realTimeProducts"))
         } catch (error) {
             return res.send(`Error al subir el nuevo producto. Error: ${error}`)
         }

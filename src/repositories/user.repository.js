@@ -47,23 +47,22 @@ class UserRepository{
 
     //Funicon para guardar un token en un usuario por 1 hora
     async saveTokenInUser(user, token){
-        user.resetToken = {
-            token: token,
-            expiresAt: new Date( Date.now() + 3600000)//en 1hora
+        try {
+            user.resetToken = {
+                token: token,
+                expiresAt: new Date( Date.now() + 3600000)//en 1hora
+            }
+            await user.save()
+        } catch (error) {
+            throw `Ocurrio un error al guardar el token. ${error}`
         }
-        await user.save()
     }
 
     //Funcion para cambiar el rol de un usuario
-    async changeUserRol(userId, newRol){
+    async changeUserRol(user, newRol){
         try {
-            const user = await this.getUserbyId(userId);
-            if(!user){
-                throw `No existe un usuario con ese id.`
-            }else{
-                user.rol = newRol;
-                await user.save();
-            }
+            user.rol = newRol.toLowerCase();
+            await user.save();
         } catch (error) {
             throw `Ocurrio un error al cambiar el rol. ${error}`
         }

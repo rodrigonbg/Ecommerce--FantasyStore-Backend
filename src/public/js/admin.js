@@ -6,9 +6,9 @@ const eliminarProducto = (id) => {
     socket.emit("eliminarProducto", id)
 }
 
-//Funcion para agregar producto que envia el evento 'agregarProducto' al servidor junto con el prod.
+//Funcion para agregar producto. El prod se envia desde el formulario solo vacía los campos y emite el evento de recargar la pagina 
 const agregarProducto = () =>{
-    const producto ={
+/*     const producto ={
         title: document.getElementById("title").value ,
         description: document.getElementById("description").value ,
         categoria: document.getElementById("idCategory").options[document.getElementById("idCategory").selectedIndex].text,
@@ -21,9 +21,9 @@ const agregarProducto = () =>{
         code: document.getElementById("code").value ,
         status: document.getElementById("status").value === "true"
     }
+    socket.emit("agregarProducto", producto); */
+    socket.emit("refreshProds", producto); 
 
-    socket.emit("agregarProducto", producto);
-    
     document.getElementById("title").value = "";
     document.getElementById("description").value  = "";
     document.getElementById("img").value  = "";
@@ -82,3 +82,10 @@ socket.on('productos', (data)=> {
 document.getElementById("btnAdd").addEventListener("click", ()=>{
     agregarProducto()
 })
+
+function updateCategoryName() {
+    const select = document.getElementById('idCategory');
+    const hiddenInput = document.getElementById('categoria');
+    const selectedOption = select.options[select.selectedIndex];
+    hiddenInput.value = selectedOption.text;
+}

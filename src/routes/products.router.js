@@ -6,7 +6,7 @@ const ProductController = require('../controller/productController.js');
 const productcontroller = new ProductController();
 
 //Midlewares
-const {authAdminAccess, authUserAccess, isLoged} = require('../middleware/profileAccess.js')
+const {authAdminAccess, authUserAccess, isLoged, authNotUserAccess} = require('../middleware/profileAccess.js')
 const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
 
 //ROUTING
@@ -19,8 +19,8 @@ router.get("/mockingproducts", productcontroller.getProductsFaker)
 router.get("/:pid", productcontroller.getProductById)
 
 /* ----------------------------------------POSTs----------------------------------------------- */
-//Subir un producto a la base de datos
-router.post("/", authAdminAccess, handleErrorCrearProducto, productcontroller.addProduct)
+//Subir un producto a la base de datos (no usuario, admin o premium)
+router.post("/", authNotUserAccess, handleErrorCrearProducto, productcontroller.addProduct)
 
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar un producto en la base de datos

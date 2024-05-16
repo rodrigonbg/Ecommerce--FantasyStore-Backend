@@ -105,9 +105,12 @@ io.on("connection", async(socket) => {
     })
 
     //escucho el evento 'agregarProducto' que envia el cliente
-    socket.on('agregarProducto', async(producto) =>{
+/*     socket.on('agregarProducto', async(producto) =>{
         const newProd = new productsModel(producto)
-        await newProd.save();
+        await newProd.save(); */
+
+    //Evento para refrescar los productos
+    socket.on('refreshProds', async(producto) =>{
 
         //una vez agregado el producto, volvemos a enviar el array de productos
         io.sockets.emit("productos", await productsModel.find());

@@ -5,7 +5,7 @@ const infoErrorCrearProducto = (prod) => {
     Hay datos que estan incompletos o no son válidos. 
     Necesitamos recibir los siguientes datos: 
     - title: String. Dato recibido-->  ${prod.title}
-    - descripcion: String. Dato recibido-->  ${prod.descripcion}
+    - description: String. Dato recibido-->  ${prod.description}
     - categoría: String. Dato recibido-->  ${prod.categoria}
     - idCategoria: Number. Dato recibido-->  ${prod.idCategoria}
     - thumbnail: Array of strings. Dato recibido-->  ${prod.thumbnail}
@@ -13,7 +13,6 @@ const infoErrorCrearProducto = (prod) => {
     - onSale: Boolean. Dato recibido-->  ${prod.onSale}
     - descuento: Number. Dato recibido-->  ${prod.descuento}
     - stock: Number. Dato recibido-->  ${prod.stock}
-    - alt: String. Dato recibido-->  ${prod.alt}
     - status: Boolean. Dato recibido-->  ${prod.status}
     - code: String. Dato recibido-->  ${prod.code}
     `

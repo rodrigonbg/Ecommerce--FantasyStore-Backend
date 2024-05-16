@@ -38,7 +38,7 @@ const initializePassport = () => {
                 const user = await UserModel.findOne({ email: email.toLowerCase()});
                 
                 if (user) return done(null, false); //user no disponible
-                
+                console.log("hau vida aki")
                 
                 //genermaos el user y lo mandamos con done
                 const rol = (email === configObject.admin_email)? 'admin':'usuario';
@@ -55,13 +55,15 @@ const initializePassport = () => {
                     newUser.cart = await cartsRepository.createCart().then(res=> res._id);
                 }
 
-                const  result = await UserModel.create(newUser).then(()=>{
+                const  result = await UserModel.create(newUser).then((res)=>{
                     req.logger.info('User creado con local passport')
+                    return res
                 });
-
+                
                 return done(null, result);
 
             } catch (error) {
+                res.send(error)
                 return done(error)
             }
         })

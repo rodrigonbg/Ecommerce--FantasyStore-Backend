@@ -1,6 +1,6 @@
 //Permite acceso solo al admin
 function authAdminAccess(req, res, next){
-    if (req.session.rol !== 'admin'){
+    if (req.user.rol !== 'admin'){
         res.send('Funcionalidad solo para administradoress')
     }else{
         next()
@@ -9,7 +9,7 @@ function authAdminAccess(req, res, next){
 
 //Permite acceso a cualqiuiera que no sea admin
 function authNotAdminAccess(req, res, next){
-    if (req.session.rol !== 'admin'){
+    if (req.user.rol !== 'admin'){
         next()
     }else{
         res.send('Funcionalidad solo para administradoress')
@@ -18,8 +18,8 @@ function authNotAdminAccess(req, res, next){
 
 //Permite acceso solo al usuario
 function authUserAccess(req, res, next){
-    if (req.session.rol !== 'usuario'){
-        res.send('Funcionalidad solo para usuarios no administradoress')
+    if (req.user.rol !== 'usuario'){
+        res.send('Funcionalidad solo para rol usuario')
     }else{
         next()
     }
@@ -27,10 +27,10 @@ function authUserAccess(req, res, next){
 
 //Permite acceso a cualquiera que no sea usuario
 function authNotUserAccess(req, res, next){
-    if (req.session.rol !== 'usuario'){
+    if (req.user.rol !== 'usuario'){
         next()
     }else{
-        res.send('Funcionalidad solo para usuarios no administradoress')
+        res.send('Funcionalidad solo para rol no usuarios')
     }
 }
 

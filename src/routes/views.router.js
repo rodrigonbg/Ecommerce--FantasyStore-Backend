@@ -23,7 +23,7 @@ router.get("/carts", isLoged, authAdminAccess, viewsController.renderCarts)
 router.get("/carts/:cid", isLoged, viewsController.renderCart)
 
 //Vista de productos en tiempo real
-router.get("/admin", isLoged, authAdminAccess, viewsController.renderRealTimeProducts)
+router.get("/realTimeProducts", isLoged, authNotUserAccess, viewsController.renderRealTimeProducts)
 
 //Vista de login (iniciar sesion)
 router.get("/loginForm", viewsController.renderLoginForm)

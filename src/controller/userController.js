@@ -68,6 +68,38 @@ class userController{
         }
 
     }
+
+    //ruta ¨//premium/:uid¨, metodo POST
+    async changeUserRol(req,res){
+        try {
+            //Me guardo el id del user
+            let uid = req.params.uid;
+
+            const user = await userRepository.getUserbyId(uid);
+            if(!user){
+                throw `No existe un usuario con ese id.`
+            }
+
+            if(user.rol === 'usuario'){
+                await userRepository.changeUserRol(user, 'premium')
+                    .then(()=> {
+                        req.logger.info(`rol de user con id ${uid}, cambiado de usuario a premium`)
+                        res.redirect('/')}
+                    )
+            }else if(user.rol === 'premium'){
+                await userRepository.changeUserRol(user, 'usuario')
+                    .then(()=> {
+                        req.logger.info(`rol de user con id ${uid}, cambiado de premium a usuario`)
+                        res.redirect('/')}
+                    )
+            }        
+
+        } catch (error) {
+            req.logger.error('error al camiar el rol del user.', error)
+            res.send(error)
+        }
+
+    }
 }
 
 module.exports = userController;

@@ -5,7 +5,7 @@ class ProductRepository{
     async addProduct(Objeto){
         try {
             //Desestructuro el objeto para hacer las validaciones.
-            let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status = true, stock, alt} = Objeto;
+            let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status = true, stock, alt, owner} = Objeto;
     
             //valido campos no vacios y que code no se repita
             if(!title || !description || !categoria || !idCategoria || !price || !thumbnail || !code || !stock){
@@ -28,9 +28,11 @@ class ProductRepository{
                     stock: stock,
                     code: code,
                     status: status,
-                    alt: alt
+                    alt: alt? alt: title
                 })
 
+                owner? newProduct.owner = owner : newProduct.owner ='admin'
+                
                 //cuando tengo e nuevo producto, lo guardo
                 const respuesta = await  newProduct.save(); 
                 return `Producto agregado: ${respuesta}`

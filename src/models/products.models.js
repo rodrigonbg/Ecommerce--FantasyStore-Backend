@@ -18,7 +18,8 @@ const  productSchema = new mongoose.Schema({
     stock: { type: Number, require: true},
     alt: { type: String, require: false},
     status: { type: Boolean, require: true},
-    code: { type: String, require: true, unique: true}
+    code: { type: String, require: true, unique: true},
+    owner: { type: String, require: true, default:'admin'}
 });
 
 //Plugin de paginate
