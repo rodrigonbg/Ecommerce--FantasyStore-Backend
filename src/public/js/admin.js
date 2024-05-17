@@ -22,15 +22,17 @@ const agregarProducto = () =>{
         status: document.getElementById("status").value === "true"
     }
     socket.emit("agregarProducto", producto); */
-    socket.emit("refreshProds", producto); 
 
-    document.getElementById("title").value = "";
+    //El prod se manda desde el form, solo refrescamos
+    socket.emit("refreshProds",null); 
+
+/*     document.getElementById("title").value = "";
     document.getElementById("description").value  = "";
     document.getElementById("img").value  = "";
     document.getElementById("price").value  = "";
     document.getElementById("descuento").value = "";
     document.getElementById("stock").value  = "";
-    document.getElementById("code").value  = "";
+    document.getElementById("code").value  = ""; */
 
 };
 
@@ -59,6 +61,7 @@ const renderProds = (productos) =>{
                 <p><span>TITULO</span> : ${prod.title}</p>
                 <p><span>PRECIO</span> : ${prod.price}</p>
                 <p><span>ESTADO</span> : ${prod.status}</p>
+                <p><span>OWNER</span> : ${prod.owner}</p>
                 <button> Eliminar Producto </button>`;
 
         //agrego la card al contenedor
@@ -74,8 +77,8 @@ const renderProds = (productos) =>{
 }
 
 //escucho el evento 'productos' del server para renderizar los productos
-socket.on('productos', (data)=> {
-    renderProds(data)
+socket.on('productos', (productosRecibidos)=> {
+    renderProds(productosRecibidos)
 });
 
 //agrego el evento al boton de agregar producto

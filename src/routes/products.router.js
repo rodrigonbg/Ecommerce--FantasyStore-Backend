@@ -19,8 +19,11 @@ router.get("/mockingproducts", productcontroller.getProductsFaker)
 router.get("/:pid", productcontroller.getProductById)
 
 /* ----------------------------------------POSTs----------------------------------------------- */
-//Subir un producto a la base de datos (no usuario, admin o premium)
-router.post("/", authNotUserAccess, handleErrorCrearProducto, productcontroller.addProduct)
+//Subir un producto a la base de datos (admin)
+router.post("/admin", authAdminAccess, handleErrorCrearProducto, productcontroller.addProductAdmin)
+
+//Subir un producto a la base de datos (premium)
+router.post("/premium", authNotUserAccess, handleErrorCrearProducto, productcontroller.addProductPremium)
 
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar un producto en la base de datos
@@ -28,6 +31,9 @@ router.put("/:pid", authAdminAccess, productcontroller.updateProduct)
 
 /* ----------------------------------------DELETEs----------------------------------------------- */
 //Eliminar un producto de la base de datos
-router.delete("/:pid", authAdminAccess, productcontroller.deleteProduct)
+router.delete("/:pid", authNotUserAccess, productcontroller.deleteProduct)
+
+//Eliminar un producto de la base de datos(admin)
+router.post("/premium/:pid", authNotUserAccess, productcontroller.deleteProductPremium)
 
 module.exports = router;

@@ -98,8 +98,8 @@ io.on("connection", async(socket) => {
 
     //escucho el evento 'eliminarProducto' que envía el cliente
     socket.on("eliminarProducto", async (id)=>{
-        await productsModel.findByIdAndDelete(id);
 
+        await productsModel.findByIdAndDelete(id);
         //una vez eliminado el producto, volvemos a enviar el array de productos
         io.sockets.emit("productos", await productsModel.find());
     })
@@ -110,9 +110,9 @@ io.on("connection", async(socket) => {
         await newProd.save(); */
 
     //Evento para refrescar los productos
-    socket.on('refreshProds', async(producto) =>{
+    socket.on('refreshProds', async() =>{
 
-        //una vez agregado el producto, volvemos a enviar el array de productos
+        //una vez agregado el producto desde el back, volvemos a enviar el array de productos
         io.sockets.emit("productos", await productsModel.find());
     })
 })

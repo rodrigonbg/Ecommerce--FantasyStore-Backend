@@ -25,6 +25,15 @@ function authUserAccess(req, res, next){
     }
 }
 
+//Permite acceso solo aluser premium
+function authPremiumAccess(req, res, next){
+    if (req.user.rol !== 'premium'){
+        res.send('Funcionalidad solo para rol premium')
+    }else{
+        next()
+    }
+}
+
 //Permite acceso a cualquiera que no sea usuario
 function authNotUserAccess(req, res, next){
     if (req.user.rol !== 'usuario'){
@@ -55,6 +64,7 @@ function isNotLoged(req, res, next, redirect='/loginForm'){
 module.exports = {
     authAdminAccess,
     authUserAccess,
+    authPremiumAccess,
     authNotAdminAccess,
     authNotUserAccess,
     isLoged,

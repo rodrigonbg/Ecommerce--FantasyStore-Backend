@@ -68,11 +68,11 @@ class ProductController {
         }
     }
 
-    //ruta ¨/¨, metodo POST
-    async addProduct(req, res){
+    //ruta ¨/admin¨, metodo POST
+    async addProductAdmin(req, res){
         try {
             const rol = req.user.rol;
-            console.log(rol)
+  
             if ((req.user.rol === 'usuario')){
                 throw ('No tienes permisos para agregar un producto.')
             }
@@ -80,7 +80,25 @@ class ProductController {
             //info del producto desde el body
             //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code, owner } = req.body;
             await productRepository.addProduct(req.body)
-                .then(respuesta => res.redirect("/realTimeProducts"))
+                .then(respuesta => res.redirect("/admin"))
+        } catch (error) {
+            return res.send(`Error al subir el nuevo producto. Error: ${error}`)
+        }
+    }
+
+    //ruta ¨/premium¨, metodo POST
+    async addProductPremium(req, res){
+        try {
+            const rol = req.user.rol;
+
+            if ((req.user.rol === 'usuario')){
+                throw ('No tienes permisos para agregar un producto.')
+            }
+            req.body.owner = (rol === 'premium') ? req.user.correo : 'admin';
+            //info del producto desde el body
+            //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code, owner } = req.body;
+            await productRepository.addProduct(req.body)
+                .then(respuesta => res.redirect("/premiumProducts"))
         } catch (error) {
             return res.send(`Error al subir el nuevo producto. Error: ${error}`)
         }
@@ -106,14 +124,47 @@ class ProductController {
         try {
             //Me guardo el id 
             let pid = req.params.pid;
-            await productRepository.deleteProduct(pid)
-                .then(respuesta => res.send(respuesta))
-    
+            const prod = await this.getProductById(pid);
+            const owner = prod.owner;
+
+            if (owner === 'admin'){
+                return await productRepository.deleteProduct(pid)
+                    .then(respuesta => res.send(respuesta))
+            }
+            if(owner === req.user.correo){
+                return await productRepository.deleteProduct(pid)
+                    .then(respuesta => res.send(respuesta))
+            }
+            throw ('No tienes permisos para eliminar un producto.')
+
         }catch(error){
             return res.send(`Error al eliminar el producto. ERROR ${error}`)
         }
     }
 
+    //ruta ¨/premium/:pid¨, metodo DELETE
+    async deleteProductPremium(req, res){
+        try {
+            //Me guardo el id 
+            let pid = req.params.pid;
+            const prod = await productRepository.getProductById(pid)
+            const owner = prod.owner;
+            console.log(prod)
+
+            if (owner === 'admin'){
+                return await productRepository.deleteProduct(pid)
+                    .then(respuesta => res.redirect('/premiumProducts'))
+            }
+            if(owner === req.user.correo){
+                return await productRepository.deleteProduct(pid)
+                    .then(respuesta => res.redirect('/premiumProducts'))
+            }
+            throw ('No tienes permisos para eliminar un producto.')
+
+        }catch(error){
+            return res.send(`Error al eliminar el producto. ERROR ${error}`)
+        }
+    }
 }
 
 module.exports = ProductController;

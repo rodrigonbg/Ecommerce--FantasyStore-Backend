@@ -198,11 +198,42 @@ class viewsController{
         try {
             //renderizo realTimeProducts
             const rol = req.user.rol;
-            res.render('realTimeProducts',{rol});
+            res.render('admin',{rol});
     
         } catch (err) {
             res.status(500).json({
                 error: `Error al obtener los productos en tiempo real. Error: ${err}`
+            })
+        }
+    }
+
+    async renderPremiumProducts(req, res){
+        try {
+            //renderizo realTimeProducts
+            const prods = await productRepository.getProductsByOwner(req.user.correo);
+            
+            const products = prods.map(prod => {
+                return{
+                    title: prod.title,
+                    description: prod.descripcion,
+                    price:  prod.price,
+                    descuento: prod.descuento,
+                    id: prod._id,
+                    stock:  prod.stock,
+                    status: prod.status,
+                    owner: prod.owner
+                }
+            })
+
+            const payload ={
+                products,
+                user: req.user                
+            }
+            res.render('premiumProducts',{payload});
+    
+        } catch (err) {
+            res.status(500).json({
+                error: `Error al obtener los productos de usuario premium. Error: ${err}`
             })
         }
     }

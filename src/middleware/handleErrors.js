@@ -24,6 +24,7 @@ const handleErrorCrearProducto = (req, res, next)=>{
         const Status = typeof(JSON.parse(status)) !== 'boolean'
         const Code = code? typeof(code) !== 'string' : true
 
+
         if (Title || Description || Categoria || IdCategoria || Thumbnail || Price || OnSale || Descuento || Stock || Status || Code){
             throw CustomError.crearError({
                 nombre: "Crear Producto",

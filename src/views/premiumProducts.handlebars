@@ -1,0 +1,57 @@
+<h1>PRODUCTOS USUARIO PREMIUM. user: {{payload.user.correo}}</h1>
+
+<section class="realTimeContainer">
+    {{!-- -------------------- div con los productos -------------------------------- --}}
+    <div class="productsContainer" id="productsContainer">
+        {{#each payload.products}}
+            <div class="realTimeProd">
+                <p><span>ID</span> : {{this.id}}</p>
+                <p><span>TITULO</span> : {{this.title}}</p>
+                <p><span>PRECIO</span> : ${{this.price}}</p>
+                <p><span>ESTADO</span> : {{this.status}}</p>
+                <p><span>OWNER</span> : {{this.owner}}</p>
+
+                <form action="/api/products/premium/{{this.id}}" method="POST">
+                    <button type="submit"> Eliminar Producto </button>
+                </form>
+            </div>
+        {{/each}}
+    </div>
+    
+    {{!-- --------------------Form para agregar prods-------------------------------- --}}
+    <form action="/api/products/premium" method="POST" class="addProductForm">
+        <h2>Formulario para agregar un producto</h2>
+        <input name="title" type="text" id="title" placeholder="Titulo">
+        <input type="text" id="description" placeholder="Descripción" name="description">
+
+        <select id="idCategory" name="idCategoria" onchange="updateCategoryName()">
+            <option value=1>dormitorio</option>
+            <option value=2>living</option>
+            <option value=3>oficina</option>
+            <option value=4>comedor</option>
+        </select>
+
+         <!-- Campo oculto para el nombre de la categoría -->
+        <input type="hidden" id="categoria" name="categoria" value="dormitorio">
+
+        <input type="text" id="img" value="[]" placeholder="imagenes (predefinido array vacio)" name="thumbnail">
+        <input type="number" id="price" placeholder="Precio" name="price">
+
+        <select id="onSale" name="onSale">
+            <option value="false">FULL PRICE</option>
+            <option value="true">SALE</option>
+        </select>
+
+        <input type="number" id="descuento" placeholder="Descuento" name="descuento">
+        <input type="number" id="stock" placeholder="Stock" name="stock">
+        <input type="text" id="code" placeholder="Código" name="code">
+
+
+        <select id="status" name="status">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+        </select>
+
+        <button type="submit" id="btnAdd">Agregar Producto</button>
+    </form>
+</section>

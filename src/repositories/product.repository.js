@@ -57,6 +57,15 @@ class ProductRepository{
         }    
     }
 
+    async getProductsByOwner (email) {
+        try {
+            const products = await productModel.find({ owner: email })
+            return products;
+        } catch (error) {
+            return (`Error al obtener los productos.`)
+        }    
+    }
+
     async getProductById(id) {
         try {
             const product = await productModel.findById(id);
