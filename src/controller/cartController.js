@@ -64,7 +64,7 @@ class CartsController {
             //Me guardo el id del prod
             let pid = req.params.pid
         
-            let quantity = req.params.quantity
+            let quantity = req.body.quantity
         
             await cartsRepository.addProductToCart(cid, pid, quantity)
                 .then((respuesta)=> res.send(respuesta))

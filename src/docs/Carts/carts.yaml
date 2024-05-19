@@ -1,0 +1,646 @@
+paths:
+  /api/carts:
+    get:
+      summary: Obtenemos todos los carritos exstentes de la BD
+      tags:
+        - Carts
+      responses:
+        '200':
+          description: Se obtienen todos los carritos existentes de la BD correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/carts"
+        '404':
+          description: No se encontraron los carritos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Error interno del servidor. No se pudieron obtener los carritos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Creamos un carrito vacío en la base de datos
+      tags:
+        - Carts
+      responses:
+        '201':
+          description: Carrito creado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/carts"
+        '400':
+          description: Solicitud incorrecta. Datos inválidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '401':
+          description: No autenticado. Se requiere autenticación.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Prohibido. No tienes permiso para crear un carrito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/carts/{cid}:
+    get:
+      summary: Obtenemos un carrito por id de la BD
+      tags:
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        required: true
+        description: id del carrito que se quiere obtener de la BD
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Se obtienen el carrito requerido con id de la BD correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/carts"
+        '400':
+          description: Solicitud incorrecta. Los parámetros de consulta no son válidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: No se encontró el carrito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Error interno del servidor. No se pudo obtener el carrito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+            summary: Eliminamos un producto como usuario premium de la BD
+    put:
+      summary: Actualizamos un carrito segun su id con arreglo
+      tags:
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        required: true
+        description: id del carrito que se quiere actualizar en la BD
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateCart"
+      responses:
+        '200':
+          description: Carrito actualizado correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/carts"
+        '400':
+          description: Solicitud incorrecta. Datos inválidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '401':
+          description: No autenticado. Se requiere autenticación.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Prohibido. No tienes permiso para actualizar este carrito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: carrito no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Eliminamos un carrito por id de la BD
+      tags:
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        required: true
+        description: id del carrito que se quiere eliminar de la BD
+        schema:
+          type: string
+      responses:
+        '200':
+          description: carrito eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/carts"
+        '401':
+          description: No autenticado. Se requiere autenticación.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Prohibido. No tienes permiso para eliminar este carrito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: carrito no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/createCart"
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Finalizamos la compra vaciando el carrito (solo los productos con stock suficiente) y generando un ticket de compra.
+      tags:
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        required: true
+        description: id del carrito que se quiere comprar de la BD
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Ticket creado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/tickets"
+        '400':
+          description: Solicitud incorrecta. Datos inválidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '401':
+          description: No autenticado. Se requiere autenticación.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Prohibido. No tienes permisos para finalizar la compra.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agregar un producto (pid) a un carrito (cid)
+      tags:
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        required: true
+        description: id del carrito que se quiere obtener de la BD
+        schema:
+          type: string
+      - name: pid
+        in: path
+        required: true
+        description: id del producto que se quiere obtener de la BD
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content: 
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/quantityOfProduct"
+      responses:
+        '201':
+          description: Producto agregado a carrito correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/carts"
+        '400':
+          description: Solicitud incorrecta. Datos inválidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '401':
+          description: No autenticado. Se requiere autenticación.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Prohibido. No tienes permiso para realizar esta acción.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Actualizamos la cantidad de un producto en el carrito
+      tags:
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        required: true
+        description: id del carrito que se quiere actualizar en la BD
+        schema:
+          type: string
+      - name: pid
+        in: path
+        required: true
+        description: id del producto que se quiere obtener de la BD
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/quantityOfProduct"
+      responses:
+        '200':
+          description: Carrito actualizado correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/carts"
+        '400':
+          description: Solicitud incorrecta. Datos inválidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '401':
+          description: No autenticado. Se requiere autenticación.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Prohibido. No tienes permiso para actualizar este carrito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: carrito no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Eliminamos un producto (pid) de un carrito (cid)
+      tags:
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        required: true
+        description: id del carrito que se quiere actualizar en la BD
+        schema:
+          type: string
+      - name: pid
+        in: path
+        required: true
+        description: id del producto que se quiere eliminar del carrito
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Producto eliminado de carrito correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/carts"
+        '401':
+          description: No autenticado. Se requiere autenticación.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Prohibido. No tienes permiso para eliminar este producto de este carrito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: Recursos no encontrados.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/createCart"
+
+components:
+  schemas:
+    product: #Esquema de un producto
+      type: object
+      properties: 
+        _id: 
+          type: ObjectId
+          description: Id autogenerado por MongoDB
+          require: true
+        title: 
+          type: string
+          description: Titulo del producto
+          require: true
+        descripcion: 
+          type: string
+          description: Descripcion del producto
+          require: true
+        categoria:
+          type: string
+          description: Categoría a la que pertenece el producto
+          require: true
+        idCategoria:
+          type: number
+          description: Id de la categoria a la que pertenece el producto
+          require: true
+        thumbnail:
+          type: array
+          description: Array de rutas con las imagenes del producto
+          require: false
+        price:
+          type: number
+          description: Precio del producto
+          require: true
+        onSale:
+          type: boolean
+          description: boolean para identificar si el producto esta en Sale o Fullprice
+          require: true 
+        descuento:
+          type: number
+          description: Valor porcentual de rebaja en caso de que el producto esté en Sale
+          require: true
+        stock:
+          type: number
+          description: Stock disponible del producto
+          require: true
+        alt:
+          type: string
+          description: alt para las imagenes del producto
+          require: false
+        status:
+          type: boolean
+          description: Identificador para saber si el producto está activo o no
+          require: true
+        code:
+          type: string
+          description: código único que identifica el producto
+          require: true
+        owner:
+          type: string
+          description: Mail del dueño o vendedor del producto
+          require: true
+      example:
+        _id: ObjectId('65b98f0a894980775b28249a')
+        title: Biblioteca
+        descripcion: Biblioteca de madera blanca con 4 cajones...
+        categoria: oficina
+        idCategoria: 3
+        thumbnail: ['ruta1', 'ruta2']
+        price: 1999
+        onSale: true
+        descuento: 29
+        stock: 19
+        alt: biblioteca
+        status: true
+        code: abc004
+        owner: admin
+    ItemRef: #único item en el array. par de datos, producto y cantidad
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/product'
+          require: true
+        quantity:
+          type: integer
+          description: Cantidad del producto cargado en el carrito.
+          require: true
+          example: 2
+      example: {product: "60d5ec49f3b5b5416c76e6d1", quantity: 2}    
+    ItemsArray: #array de Item referenciados arriba
+      type: array
+      items:
+        $ref: '#/components/schemas/ItemRef'
+      example: [{product: "85d5ec49f3b5b5416c76e6d1", quantity: 2}, {product: "60d5ec49f3b5b5416c76e6d1", quantity: 3}] 
+    carts: #Carrito referneciando el array de productos
+      type: object
+      properties:
+        products:
+          $ref: '#/components/schemas/ItemsArray'
+      example:  {
+                  [
+                    {product: "85d5ec49f3b5b5416c76e6d2", quantity: 2}, 
+                    {product: "60d5ec49f3b5b5416c76e6d1", quantity: 3}
+                  ]
+                } 
+    tickets: #ticket de la compra.
+      type: object
+      properties:
+        code:
+          type: string
+          description: Código del ticket
+          require: true
+          example: "lb6ic98fa"
+        purchase_datetime:
+          type: string
+          format: date-time
+          require: true
+          description: Fecha y hora de la compra
+          example: "2024-05-13T20:41:35.879+00:00"
+        amount:
+          type: number
+          description: Monto total de la compra
+          require: true
+          example: 4257.87
+        purchaser:
+          type: string
+          description: Email del comprador
+          require: true
+          example: "JohnDoe@example.com"
+        products:
+          $ref: '#/components/schemas/ItemsArray'
+          require: true
+    Error: #Schema para los casos de error
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+  
+  requestBodies:
+    updateCart:
+      type: object
+      properties: 
+        title: 
+          type: string
+          description: Titulo del producto
+          require: true
+        descripcion: 
+          type: string
+          description: Descripcion del producto
+          require: true
+        categoria:
+          type: string
+          description: Categoría a la que pertenece el producto
+          require: true
+        idCategoria:
+          type: number
+          description: Id de la categoria a la que pertenece el producto
+          require: true
+        thumbnail:
+          type: array
+          description: Array de rutas con las imagenes del producto
+          require: false
+        price:
+          type: number
+          description: Precio del producto
+          require: true
+        onSale:
+          type: boolean
+          description: boolean para identificar si el producto esta en Sale o Fullprice
+          require: true
+        descuento:
+          type: number
+          description: Valor porcentual de rebaja en caso de que el producto esté en Sale
+          require: true
+        stock:
+          type: number
+          description: Stock disponible del producto
+        alt:
+          type: string
+          description: alt para las imagenes del producto
+          require: false
+        status:
+          type: boolean
+          description: Identificador para saber si el producto está activo o no
+          require: true
+        code:
+          type: string
+          description: código único que identifica el producto
+          require: true
+        owner:
+          type: string
+          description: Mail del dueño o vendedor del producto
+          require: true
+      example: 
+        title: Biblioteca
+        descripcion: Biblioteca de madera blanca con 4 cajones...
+        categoria: oficina
+        idCategoria: 3
+        thumbnail: ['ruta1', 'ruta2']
+        price: 1999
+        onSale: true
+        descuento: 29
+        stock: 19
+        alt: biblioteca
+        status: true
+        code: abc004
+        owner: admin
+    quantityOfProduct:
+      type: object
+      properties:
+        quantity: integer
+      example:
+        quantity: 1
