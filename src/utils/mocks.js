@@ -14,7 +14,8 @@ const generarProducto = ()=>{
         alt: faker.commerce.product(),
         status: booleanValue = faker.datatype.boolean(),
         code: faker.commerce.isbn(10),
-        descuento : parseInt(faker.commerce.price({ min: 0, max: 99 }))
+        descuento : parseInt(faker.commerce.price({ min: 0, max: 99 })),
+        owner : 'admin'
     }
     let onSale = (prod.descuento > 0)? true : false;
     prod.onSale = onSale;

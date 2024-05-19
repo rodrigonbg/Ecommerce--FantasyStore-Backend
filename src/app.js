@@ -19,7 +19,6 @@ const flash = require('connect-flash');
 const addLogger = require("./utils/logger.js");
 app.use(addLogger);
 
-
 //instancia socket del servidor
 const io = socket(server);
 
@@ -50,7 +49,6 @@ app.use(session({
     })
 }))
 
-
 //Express-handlebars
 const exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs.engine()); //-> le digo a express que cuando encuentre un archivo con la extensión 'handlebars', use el motor de plantillas handlebars.
@@ -77,6 +75,22 @@ app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
+
+//Swagger: 
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUiExpress = require("swagger-ui-express");
+const swaggerOptions = {
+    definition: {
+        openapi: "3.0.1",
+        info: {
+            title: "Documentacion del e-commerce Fantasy Store",
+            description: "E-commerce para venta de productos relacionados al hogar y su equipamiento."
+        }
+    },
+    apis: ["./src/docs/**/*.yaml"]
+}
+const specs = swaggerJSDoc(swaggerOptions);
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 app.get( "/loggerTest" , (req,res) => {
     req.logger.fatal('Mensaje de fatal desde logger /loggerTest');
