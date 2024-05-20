@@ -53,7 +53,7 @@ class ProductRepository{
                 });
             return products;
         } catch (error) {
-            return (`Error al obtener los productos.`)
+            throw error;
         }    
     }
 
@@ -62,21 +62,16 @@ class ProductRepository{
             const products = await productModel.find({ owner: email })
             return products;
         } catch (error) {
-            return (`Error al obtener los productos.`)
+            throw error;
         }    
     }
 
     async getProductById(id) {
         try {
             const product = await productModel.findById(id);
-
-            if (!product){
-                return `No se encontró el producto con id ${id}`
-            }else{
-                return product
-            }
+            return product
         } catch (error) {
-            return (`Error al obtener el producto.`)
+            throw error
         }
     }
 
@@ -90,7 +85,7 @@ class ProductRepository{
                 return `Producto Eliminado ${deletedProd}`
             }
         } catch (error) {
-            return(`Error al eliminar el producto: ${error}`)
+            throw error
         }
     }
 
@@ -98,6 +93,7 @@ class ProductRepository{
         try{
             //Desestructuro el producto actualizado y creo un nuevo objeto para agregarlo al array de productos.
             let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status = true, stock, alt} = updatedProd;
+
             const updatedProduct ={
                 title: title,
                 description: description,
@@ -116,12 +112,15 @@ class ProductRepository{
             const updated = await productModel.findByIdAndUpdate(id, updatedProduct)
      
             if (!updated){
-                return `Producto con ID ${id} no encontrado`
-            }else{
-                return `Producto actualizado ${updated}`
+                const error = new Error()
+                error.message = `No se encontró un producto con el id: ${id}`
+                error.name('Product not found')
+                throw error
             }
-        }catch(err){
-            return(`Error al actualizar el producto: ${err}`)
+            return updated;
+
+        }catch(error){
+            throw error
         }
     }
 
@@ -158,8 +157,8 @@ class ProductRepository{
                 throw new Error ('EL stock no es suficiente')
             }
 
-        }catch(err){
-            return(`Error al actualizar el producto: ${err}`)
+        }catch(error){
+            throw error
         }
     }
 }

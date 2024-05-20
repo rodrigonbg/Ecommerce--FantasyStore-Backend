@@ -24,20 +24,20 @@ const handleErrorCrearProducto = (req, res, next)=>{
         const Status = typeof(JSON.parse(status)) !== 'boolean'
         const Code = code? typeof(code) !== 'string' : true
 
-
         if (Title || Description || Categoria || IdCategoria || Thumbnail || Price || OnSale || Descuento || Stock || Status || Code){
-            throw CustomError.crearError({
+            const error = CustomError.crearError({
                 nombre: "Crear Producto",
                 causa: infoErrorCrearProducto({title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, status, code}),
                 mensaje: "Error en los datos para crar un Producto.",
                 codigo: idError.TIPO_INVALIDO
             });
+            res.status(400).send({status:400, message: error.toString()})
+            throw error
         }
         next()
     }catch (error) {
-        res.send(error)
+        return error
     }
-
 }
 
 const handleErrorCrearUser = (req, res, next)=>{
@@ -56,17 +56,19 @@ const handleErrorCrearUser = (req, res, next)=>{
         //const Cart = cart? false : true
         
         if (First_name || Email || Password || Last_name || Age){//No me fijo en el rol y el cart porqe se agregan en el apso siguiente por local passport
-            throw CustomError.crearError({
+            const error = CustomError.crearError({
                 nombre: "Crear User",
                 causa: infoErrorCrearUser({first_name, last_name, email, age, password, cart, rol}),
                 mensaje: "Error en los datos para crar un usuario.",
                 codigo: idError.TIPO_INVALIDO
             });
+            res.status(400).send({status:400, message: error.toString()})
+            throw error
         }
         
         next()
     } catch (error) {
-        res.send(error)
+        return error
     }
 }
 
@@ -79,12 +81,14 @@ const handleErrorAgregarACarrito = async (req, res, next)=>{
         const Cid = cid? typeof(cid) !== 'string' : true 
         
         if (Cid || Pid){
-            throw CustomError.crearError({
+            const error = CustomError.crearError({
                 nombre: "Agregar a carrito",
                 causa: infoErrorAgregarACarrito(pid, cid),
                 mensaje: "Error en los datos para agregar un prod a un carrito.",
                 codigo: idError.TIPO_INVALIDO
             });
+            res.status(400).send({status:400, message: error.toString()})
+            throw error
 
         }else{
             //Devuelven el elemento o un strign. 
@@ -97,18 +101,20 @@ const handleErrorAgregarACarrito = async (req, res, next)=>{
 
             //Si uno no es valido, entro al if            
             if(!Cart || !Prod){
-                throw CustomError.crearError({
+                const error = CustomError.crearError({
                     nombre: "Agregar prod al carrito",
                     causa: infoErrorAgregarACarrito(pid, cid, Prod, Cart),
                     mensaje: "No se encontraron documentos en la BD para los datos recibidos",
                     codigo: idError.BD
                 });
+                res.status(400).send({status:400, message: error.toString()})
+                throw error
             }
         }            
         next()
         
     } catch (error) {
-        res.send(error)
+        return error
     }
 }
 

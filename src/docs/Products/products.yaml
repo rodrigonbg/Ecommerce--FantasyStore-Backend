@@ -13,6 +13,12 @@ paths:
                 type: array
                 items:
                   $ref: "#components/schemas/products"
+        '400':
+          description: Solicitud incorrecta. Los parámetros de consulta no son válidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         '404':
           description: No se encontraron productos.
           content:
@@ -25,6 +31,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  
   /api/products/mockingproducts:
     get:
       summary: Obtenemos 100 productos falsos creados con faker
@@ -57,6 +64,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  
   /api/products/{pid}:
     get:
       summary: Obtenemos un productos por id de la BD
@@ -85,7 +93,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
         '404':
-          description: No se encontró el productos.
+          description: No se encontró el producto con ID <pid>.
           content:
             application/json:
               schema:
@@ -180,6 +188,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '400':
+          description: Solicitud incorrecta. Datos inválidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         '403':
           description: Prohibido. No tienes permiso para eliminar este producto.
           content:
@@ -198,6 +212,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  
   /api/products/admin:
     post:
       summary: Cargamos un producto como admin a la BD
@@ -242,6 +257,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  
   /api/products/premium:
     post:
       summary: Cargamos un producto como usuario premium a la BD
@@ -286,6 +302,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  
   /api/products/premium/{pid}:
     delete:
       summary: Eliminamos un producto como usuario premium de la BD
@@ -307,6 +324,12 @@ paths:
                 type: array
                 items:
                   $ref: "#components/schemas/products"
+        '400':
+          description: Solicitud incorrecta. Los parámetros de consulta no son válidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         '401':
           description: No autenticado. Se requiere autenticación.
           content:
@@ -331,6 +354,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
 components:
   schemas:
     products:
