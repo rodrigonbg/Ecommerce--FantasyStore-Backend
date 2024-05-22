@@ -12,7 +12,7 @@ class CartsRepository {
             const respuesta = await newCart.save()
             return respuesta
         } catch (error) {
-            return `Error al crear el nuevo carrito de compras. ${error}`
+           throw error
         }
     }
 
@@ -20,39 +20,58 @@ class CartsRepository {
         try {
             return await cartsModel.find()
         } catch (error) {
-            return `Ocurrio un error al obtener los carritos. ${error}`
+            throw error
         }
     }
 
     async getCartbyId(id) {
         try {
             const cart = await cartsModel.findById(id)
-
-            if(!cart){
-                return `No existe un carrito de compra asociado al ID ${id}`
-            }else{
-                return cart
+            if ( !cart ) {//Valido que el carrito exista
+                const error = new Error()
+                error.message = `No se encontró el carrito con el id: ${id}`
+                error.name('Cart not found')
+                throw error
             }
+            return cart
         } catch (error) {
-            return `Ocurrio un error al obtener el carrito. ${error}`
+            throw error
         }
     }
 
     async addProductToCart(idCart, idProd, quantityProd=1){
         //Para agregar un producto al carrito, le paso directamente el id del carrito, del prod y la cantidad que por defecto es 1
         //Si el prod ya está en el carrito, actualizo la acantidad. De lo contrario lo agrego.
-
         try {
-            //me traigo el carrito y el producto
-            const cart = await cartsModel.findById(idCart)
-            const prod = await productsModel.findById(idProd)
+            
+            if(!idCart || !idProd){
+                const error = new Error()
+                error.message = `Parametros invalidos`
+                error.name('Parametros invalidos')
+                throw error
+            }
 
-            if ( !cart ) {//Valido que el carrito exista
-                return `ÈL carrito de ID "${idCart}" no existe.`;
-            }else if(!prod){//Valido que el producto tambien exista
-                return `El producto de ID "${idProd}" no existe.`;
-            }else if (prod.status != true){
-                return `Este producto se encuentra inactivo.`;
+            const cart = await cartsModel.findById(idCart)
+            if(!cart){
+                const error = new Error()
+                error.message = `No se encontró el carrito con el id: ${idCart}`
+                error.name('Cart not found')
+                throw error
+            }
+
+            const prod = await productsModel.findById(idProd)
+            if(!prod){
+                const error = new Error()
+                error.message = `No se encontró el Producto con el id: ${idCart}`
+                error.name('Product not found')
+                throw error
+            }
+
+            if (prod.status != true){
+                const error = new Error()
+                error.message = `Este producto se encuentra inactivo.`
+                error.name('Inactive Product')
+                throw error
             }
 
             //Veo si en el carrito está el producto
@@ -69,10 +88,9 @@ class CartsRepository {
             cart.markModified('products')
 
             //Finalmente guardo el carrito actualizado
-            await cart.save();
-            return `Carrito actualizado`
+            return await cart.save();
         } catch (error) {
-            return (`Error al agregar producto al carrito. Error: ${error}`)
+            throw error
         }
     }
 
@@ -83,7 +101,10 @@ class CartsRepository {
             const cart = await cartsModel.findById(idCart)
 
             if ( !cart ) {//Valido que el carrito exista
-                return `ÈL carrito de ID "${idCart}" no existe.`;
+                const error = new Error()
+                error.message = `No se encontró el carrito con el id: ${idCart}`
+                error.name('Cart not found')
+                throw error
             }
             
             //actualizo el carrito
@@ -93,27 +114,50 @@ class CartsRepository {
             cart.markModified('products')
 
             //Finalmente guardo el carrito actualizado
-            await cart.save();
-            return `Carrito actualizado`
+            return await cart.save();
         } catch (error) {
-            return (`Error al agregar producto al carrito. Error: ${error}`)
+            throw error
         }
     }
 
     async updateQuantityOfProdInCart(idCart, idProd, quantityProd){
         try {
-            //me traigo el carrito y el producto
-            const cart = await cartsModel.findById(idCart)
-            const prod = await productsModel.findById(idProd)
+            if(!idCart || !idProd || !quantityProd){
+                const error = new Error()
+                error.message = `Todos los parametros y la cantidad de productos son necesarios`
+                error.name('Parametros invalidos')
+                throw error
+            }
+            
+            if(!Number.isInteger(parseInt(quantityProd))){
+                const error = new Error()
+                error.message = `La cantidad del producto debe ser un entero.`
+                error.name('Parametros invalidos')
+                throw error
+            }
 
-            if ( !cart ) {//Valido que el carrito exista
-                return `ÈL carrito de ID "${idCart}" no existe.`;
-            }else if(!prod){//Valido que el producto tambien exista
-                return `El producto de ID "${idProd}" no existe.`;
-            }else if (prod.status != true){
-                return `Este producto se encuentra inactivo.`;
-            }else if(!quantityProd){
-                return `Debe ingresar una cantidad de producto`;
+            const cart = await cartsModel.findById(idCart)
+            if(!cart){
+                const error = new Error()
+                error.message = `No se encontró el carrito con el id: ${idCart}`
+                error.name('Cart not found')
+                throw error
+            }
+
+            const prod = await productsModel.findById(idProd)
+            if(!prod){
+                const error = new Error()
+                error.message = `No se encontró el producto con el id: ${idProd}`
+                error.name('Product not found')
+                throw error
+            }
+
+           if (prod.status != true){
+                const error = new Error()
+                error.message = `Este producto se encuentra inactivo.`
+                error.name('Inactive product')
+                throw error
+ 
             }
 
             //Veo si en el carrito está el producto
@@ -122,80 +166,74 @@ class CartsRepository {
             if (indexInCart !== -1) {//Si el producto está en el carrito, actualizo la cantidad
                 cart.products[indexInCart].quantity = quantityProd;
             }else{//Si el prod no está, informo del error
-                return  `No se ha encontrado el producto de ID "${idProd}" en su carrito.`
+                const error = new Error()
+                error.message = `No se encontró el producto con el id: ${idProd} en el carrito.`
+                error.name('Product not found in cart')
+                throw error
             }
 
             //Marcamos la propiedad 'products' como modificada antes de guardar
             cart.markModified('products')
 
-            //Finalmente guardo el carrito actualizado
-            await cart.save();
-            return `Cantidad actualizada`
+            return await cart.save();
         } catch (error) {
-            return (`Error al agregar producto al carrito. Error: ${error}`)
+            throw error
         }
     }
 
     async deleteProductFromCart(idCart, idProd){
         try {
-            //me traigo el carrito y el producto
-            const cart = await cartsModel.findById(idCart)
-
-            //Promero veo que exita el carrito
-            if(!cart){
-                return `El  carrito con ID "${idCart}" no existe.`
-            }else{
-                //Veo si en el carrito está el producto
-                const indexInCart = cart.products.findIndex((prod) => prod.product._id.toString() === idProd)
-    
-                if (indexInCart !== -1) {//Si el producto está en el carrito, lo borro
-                    cart.products.splice(indexInCart, 1);
-                }else{//Si el prod no está, evio mensaje
-                    return `El  producto con ID "${idProd}" no se encuentra en este carrito.` 
-                }
+            if(!idCart || !idProd){
+                const error = new Error()
+                error.message = `Parametros invalidos`
+                error.name('Parametros invalidos')
+                throw error
             }
 
+            const cart = await cartsModel.findById(idCart)
+            if(!cart){
+                const error = new Error()
+                error.message = `No se encontró el carrito con el id: ${idCart}`
+                error.name('Cart not found')
+                throw error
+            }
+
+            //Veo si en el carrito está el producto
+            const indexInCart = cart.products.findIndex((prod) => prod.product._id.toString() === idProd)
+    
+            if (indexInCart !== -1) {//Si el producto está en el carrito, lo borro
+                cart.products.splice(indexInCart, 1);
+            }else{//Si el prod no está, evio mensaje
+                const error = new Error()
+                error.message = `El  producto con ID "${idProd}" no se encuentra en este carrito.`
+                error.name('Product not found in cart')
+                throw error
+            }
+            
             //Marcamos la propiedad 'products' como modificada antes de guardar
             cart.markModified('products')
-
-            //Finalmente guardo el carrito actualizado
-            await cart.save();
-            return `Carrito actualizado`
+            return await cart.save()
             
         } catch (error) {
-            return (`Error al agregar quitar producto del carrito. Error: ${error}`)
+            throw error
         }
     }
 
     async deleteCart(idCart){
         try {
             const cart = await cartsModel.findByIdAndDelete(idCart);
-            if (!cart){
-                return `No  existe un carrito con el ID "${idCart}"`;
-            }else{
-                return `Carrito de ID: ${idCart} borrado con exito.`
+            if ( !cart ) {//Valido que el carrito exista
+                const error = new Error()
+                error.message = `No se encontró el carrito con el id: ${idCart}`
+                error.name('Cart not found')
+                throw error
             }
+            return cart
+
         } catch (error) {
-            return(`Error al eliminar el carrito. Error: ${error}`)
+           throw error
         }
     }
-
-    async emptyCart(idCart){
-        try {
-            const cart = await cartsModel.findById(id);
-            if(!cart){
-                throw new Error('El carrito no existe.')
-            }
-            cart.products = [];
-            cart.markModified('products')
-            await cart.save();
-            return `Carrito vaciado`
-        } catch (error) {
-            return error
-        }
-    }   
-
-
 }
 
 module.exports = CartsRepository ;

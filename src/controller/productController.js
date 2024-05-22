@@ -49,14 +49,14 @@ class ProductController {
             const arrayProductos = await productRepository.getProducts({queryObject, limit, page, order});
 
             if (!arrayProductos || arrayProductos.length === 0) {
-                return res.status(404).json({message: "No se encontraron productos."});
+                return res.status(404).json({status:404, message: "No se encontraron productos."});
             }
 
             return res.status(200).send(arrayProductos)
     
         } catch (error) {
             // Por defecto, si ocurre un error no especificado
-            return res.status(500).json({
+            return res.status(500).json({status:500,
                 message: `Error interno del servidor. No se pudieron obtener los productos. Error: ${error}`
             });
         }

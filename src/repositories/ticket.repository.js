@@ -4,8 +4,29 @@ class TicketsRepository{
     
     async addTicket(amount, mail, prods){
         try {
+
+            if(!amount || !mail || !prods){
+                const error = new Error()
+                error.message = `Datos insuficientes para generar el ticket de compra.`
+                error.name('Error de datos')
+                throw error
+            }
+            if(! Array.isArray(prods)){
+                const error = new Error()
+                error.message = `Mal formato de productos.`
+                error.name('Error de datos')
+                throw error
+            }
+            if(prods.length === 0){
+                const error = new Error()
+                error.message = `Es necesario algun producto para finalizar la compra.`
+                error.name('Error de datos')
+                throw error
+            }
+
             const str = Math.random().toString(36).substring(2);//String randome
             const date =  new Date();
+
             const newTicket = new TicketsModel({
                 code : str,
                 purchase_datetime: date,
@@ -18,7 +39,7 @@ class TicketsRepository{
             const ticket = await newTicket.save().then(res => res).catch(err => err); 
             return ticket
         } catch (error) {
-            return error
+            throw error
         }
     }
 
