@@ -19,7 +19,7 @@ class UserRepository{
 
     async getUserbyEmail(email) {
         try {
-            const user = await userModel.findOne({ email: email }); 
+            const user = await userModel.findOne({ email: email.toLowerCase() }); 
 
             if(!user){
                 throw `No existe un usuario con ese email.`

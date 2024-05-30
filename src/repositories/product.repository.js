@@ -8,13 +8,13 @@ class ProductRepository{
             let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status = true, stock, alt, owner} = Objeto;
     
             //valido campos no vacios y que code no se repita
-            if(!title || !description || !categoria || !idCategoria || !price || !thumbnail || !code || !stock){
-                return ('Deben completarse todos los campos.\n');
+            if(!title || !description || !categoria || !idCategoria || !price || !code || !stock){
+                throw new Error ('Deben completarse todos los campos.\n');
             }
             
             const existeProd = await productModel.findOne({code: code});
             if (existeProd){
-                return ('El código debe ser único.\n');
+                throw new Error('El código debe ser único.\n');
             }else{
                 const newProduct = new productModel({
                     title: title,
@@ -30,15 +30,13 @@ class ProductRepository{
                     status: status,
                     alt: alt? alt: title
                 })
-
                 owner? newProduct.owner = owner : newProduct.owner ='admin'
                 
-                //cuando tengo e nuevo producto, lo guardo
-                const respuesta = await  newProduct.save(); 
-                return `Producto agregado: ${respuesta}`
+                const result = await newProduct.save(); 
+                return result 
             }
         } catch (error) {
-            return (`Error al agregar el nuevo producto.`)
+           throw error
         }
     }
     
@@ -69,6 +67,15 @@ class ProductRepository{
     async getProductById(id) {
         try {
             const product = await productModel.findById(id);
+            return product
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getProductByCode(code) {
+        try {
+            const product = await productModel.findOne({code:code});
             return product
         } catch (error) {
             throw error

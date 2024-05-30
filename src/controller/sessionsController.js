@@ -6,8 +6,9 @@ class sessionsController{
     async logout (req, res){
         if (req.session.login) { 
             req.session.destroy() //Destruir la session actual
-            res.status(200).redirect('/')
+            return res.status(200).redirect('/')
         }
+        return res.status(400).redirect('/')
     }
     
     //ruta ¨/login¨, metodo POST como local para passport
@@ -15,8 +16,7 @@ class sessionsController{
         if(!req.user) return res.status(400).send({status: 'error', message: 'Credenciales invalidas'})
         req.session.login = true;
         req.logger.info('Sesion iniciada con local passport')
-        res.status(200).redirect('/')
-
+        return res.status(200).redirect('/')
     }
 
     //ruta ¨/failLogin¨, metodo GET

@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "testCarts": "mocha tests/carts/carts.test.js",
+    "testProducts": "mocha tests/products/products.test.js",
+    "testSupertest": "mocha tests/supertest.test.mjs",
     "dev": "nodemon src/app.js --mode development",
+    "testing": "nodemon src/app.js --mode testing",
     "start": "node src/app.js --mode production"
   },
   "keywords": [],
@@ -14,7 +17,10 @@
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
     "artillery": "^2.0.10",
-    "nodemon": "^3.0.2"
+    "chai": "^5.1.1",
+    "mocha": "^10.4.0",
+    "nodemon": "^3.0.2",
+    "supertest": "^7.0.0"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

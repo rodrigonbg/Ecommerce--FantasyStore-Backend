@@ -38,14 +38,13 @@ const initializePassport = () => {
                 const user = await UserModel.findOne({ email: email.toLowerCase()});
                 
                 if (user) return done(null, false); //user no disponible
-                console.log("hau vida aki")
                 
                 //genermaos el user y lo mandamos con done
                 const rol = (email === configObject.admin_email)? 'admin':'usuario';
                 const newUser ={
                     first_name,
                     last_name,
-                    email,
+                    email: email.toLowerCase(),
                     age,
                     password: createHash(password), 
                     rol : rol
@@ -63,7 +62,6 @@ const initializePassport = () => {
                 return done(null, result);
 
             } catch (error) {
-                res.send(error)
                 return done(error)
             }
         })

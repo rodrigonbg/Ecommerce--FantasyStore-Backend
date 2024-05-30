@@ -6,7 +6,7 @@ const {mode, p} =  program.opts();
 
 
 dotenv.config({
-    path: mode === 'production'? './.env.production':'./.env.development'
+    path: mode === 'production'? './.env.production' : (mode === 'development'? './.env.development' : './.env.testing')
 })
 
 const configObject = {
@@ -17,6 +17,9 @@ const configObject = {
     admin_email : process.env.ADMIN_EMAIL,
     admin_pass : process.env.ADMIN_PASSWORD
 }
+
+//Url de bd de Testing solo en modo de desarrollador.
+//mode === 'development' ? configObject.mongo_url_testing = process.env.MONGO_URL_TESTING : null
 
 console.log ('Objeto de configuracion gral:', configObject)
 

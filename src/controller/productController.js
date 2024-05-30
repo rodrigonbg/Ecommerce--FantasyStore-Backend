@@ -83,7 +83,7 @@ class ProductController {
             return res.status(500).send({status:500 ,message:`Error al mostrar el producto de ID ${req.params.pid}. Error (${error})`})
         }
     }
-
+    
     //ruta ¨/admin¨, metodo POST
     async addProductAdmin(req, res){
         try {
@@ -103,7 +103,7 @@ class ProductController {
             //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code, owner } = req.body;
             
             await productRepository.addProduct(req.body)
-                .then(respuesta => res.status(201).redirect("/admin"))
+                .then(respuesta => res.redirect("/admin").status(201))
         } catch (error) {
             return res.status(500).send({status:500, message:`Error al subir el nuevo producto. Error: ${error}`})
         }
