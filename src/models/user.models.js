@@ -35,8 +35,21 @@ const  userSchema = new mongoose.Schema({
     resetToken:{
         token: String,
         exipresAt: Date
+    },
+    documents:[
+        {
+            name:{
+                type:String,
+            },
+            reference: {
+                type:String,
+            }
+        }
+    ],
+    last_connection:{
+        type: Date,
+        required:true
     }
-
 })
 
 const UserModel = mongoose.model(usersCollection, userSchema)
