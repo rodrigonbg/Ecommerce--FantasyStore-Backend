@@ -8,8 +8,10 @@ const { createHash, isValidPassword }= require ('../utils/hashBcrypt')
 
 const CartsRepository = require("../repositories/cart.repository.js");
 const cartsRepository = new CartsRepository();
+const UserRepository = require('../repositories/user.repository.js');
+const userRepository = new UserRepository();
 
-const configObject = require('../config/dotenv.config.js')
+const configObject = require('../config/dotenv.config.js');
 //estrategia local
 const LocalStrategy  = local.Strategy;
 
@@ -47,7 +49,8 @@ const initializePassport = () => {
                     email: email.toLowerCase(),
                     age,
                     password: createHash(password), 
-                    rol : rol
+                    rol : rol,
+                    last_connection : new Date()
                 }
                 //creo y agrego un carrito solo si no se es admin 
                 if (rol === 'usuario') {
@@ -79,6 +82,7 @@ const initializePassport = () => {
 
                 if(!isValidPassword(password, user)) return done ('Contraseña incorrecta.')//la contrasena es incorrecta
 
+                await userRepository.updateLastConnection(user);
                 return done(null, user)
             } catch (error) {
                 return done(error)
@@ -108,7 +112,8 @@ const initializePassport = () => {
                         email : profile._json.email,
                         password : '',
                         cart: idCart,
-                        rol: rol
+                        rol: rol,
+                        last_connection : new Date()
                     }
                     //creo y agrego un carrito solo si no se es admin 
                     if (rol === 'usuario') {
@@ -121,6 +126,7 @@ const initializePassport = () => {
 
                     return done(null, result)
                 }else{
+                    await userRepository.updateLastConnection(user);
                     return done(null, user);
                 }
             } catch (error) {

@@ -78,6 +78,14 @@ class UserRepository{
         }
     }
     
+    async updateLastConnection(user){
+        try {
+            user.last_connection =  new Date();
+            await user.save();
+        } catch (error) {
+            throw `Ocurrio un error al actualizar la ultima conexión en la base de datos ${error}`
+        }
+    }
 }
 
 module.exports = UserRepository;
