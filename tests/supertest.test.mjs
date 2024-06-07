@@ -6,7 +6,9 @@ const expect = chai.expect;
 const requester = supertest("http://localhost:9000"); 
 
 import mongoose from 'mongoose';
-const mongo_url_testing = 'mongodb+srv://rodrigonbg:AtlasPass361713@cluster0.cik8wio.mongodb.net/E-Commerce-Fantasy-Store-TESTING?retryWrites=true&w=majority';
+const configObject = require('../src/config/dotenv.config.js')
+const mongo_url_testing = configObject.mongo_url ;
+
 mongoose.connect(mongo_url_testing);
 
 import CartRepository from '../src/repositories/cart.repository.js'
