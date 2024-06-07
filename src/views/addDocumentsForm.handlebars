@@ -1,0 +1,25 @@
+<header>
+    <h1>CARGA DE DOCUMENTOS</h1>
+</header>
+
+<main>
+    <div class="login">
+        <form class="loginForm" action="/api/users/{{user._id}}/documents"  method="POST">
+
+            <label for="document">Seleccione el documento</label>
+            <input type="file" name="document" id="document" required="true" />
+
+            <label for="document">Seleccione comprobante de domicilio</label>
+            <input type="file" name="homeBill" id="homeBill" required="true" />
+
+            <label for="document">Seleccione su estado de cuenta</label>
+            <input type="file" name="bankBill" id="bankBill" required="true" />
+            
+            <button type="submit">Cargar Documentos</button>
+        </form>
+    </div>
+</main>
+
+<footer>
+
+</footer>

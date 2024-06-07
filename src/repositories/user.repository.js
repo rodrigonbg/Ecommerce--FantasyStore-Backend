@@ -86,6 +86,18 @@ class UserRepository{
             throw `Ocurrio un error al actualizar la ultima conexión en la base de datos ${error}`
         }
     }
+    
+    async addDocuments(user, document=null, homeBill=null, bankBill=null){
+        try {
+            const Document = { name: 'document', reference: document}
+            const HomeBill = { name: 'homeBill', reference: homeBill}
+            const BankBill = { name: 'bankBill', reference: bankBill}
+            user.documents =[Document, HomeBill, BankBill];
+            await user.save();
+        } catch (error) {
+            throw `Ocurrio un error al cargar los documentos del usuario ${error}`
+        }
+    }
 }
 
 module.exports = UserRepository;

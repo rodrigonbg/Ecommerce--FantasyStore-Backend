@@ -22,18 +22,6 @@ app.use(addLogger);
 //instancia socket del servidor
 const io = socket(server);
 
-//Multer
-const multer = require("multer");
-const storage  = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, ".src/public/img") //carpeta donde se guardaran las imagenes 
-    },
-    filename:(req,file,cb)=>{
-        cb(null, file.originalname) //nombre con el que se guardara en el disco
-    }
-});
-app.use(multer({storage}).single("image"));
-
 //Middelwares para express
 app.use(express.json()); 
 app.use(express.urlencoded({extended: true}));

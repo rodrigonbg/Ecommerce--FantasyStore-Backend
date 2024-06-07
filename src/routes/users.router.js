@@ -13,28 +13,8 @@ const userController = new UserController();
 
 //Midlewares
 const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
-
-
-/* crear un usuario (singin) */
-/* router.post('/', async (req,res)=>{
-    const {first_name,  last_name, email , password, repeatPass, age} = req.body;
-
-    try {
-        if(repeatPass === password){
-            const user = await  UserModel.create({ first_name, last_name ,email: email.toLowerCase(), password: createHash(password), age});
-            req.session.user = user;
-            req.session.login= true;
-            (user.email === "admincoder@coder.com")? req.session.rol = 'admin' :  req.session.rol = 'usuario';
-    
-            res.status(200).redirect('/')
-        }else{
-            res.send({msg:'Las contraseñas no coinciden.'})
-        }
-
-    } catch (err) {
-        res.status(400).send({error: `error al crear un nuevo usuario. ${err}`})
-    }
-}) */
+//Multer
+const uploader = require('../middleware/multer.js')
 
 //////PASSPORT///////////
 //Registro con el middleware de passport y luego hago el login
@@ -49,5 +29,8 @@ router.post('/passwordReset', userController.passwordReset)
 
 //Cambiar rol de user a premium y viseversa
 router.get('/premium/:uid', userController.changeUserRol)
+
+//Subir documentos de los usuarios
+router.post('/:uid/documents', uploader.single('document'), uploader.single('homeBill'), uploader.single('bankBill'), userController.addDocuments)
 
 module.exports = router;

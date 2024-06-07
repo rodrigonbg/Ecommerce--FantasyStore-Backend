@@ -43,6 +43,7 @@ const  userSchema = new mongoose.Schema({
             },
             reference: {
                 type:String,
+                default: ""
             }
         }
     ],

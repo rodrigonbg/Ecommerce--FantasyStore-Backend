@@ -4,7 +4,11 @@ const productRepository = new ProductRepository();
 const CartsRepository = require("../repositories/cart.repository.js");
 const cartsRepository = new CartsRepository();
 
+const UserRepository = require("../repositories/user.repository.js");
+const userRepository = new UserRepository();
+
 const UserProfileDTO = require("../dto/userProfile.dto.js");
+const userProfileDTO = require("../dto/userProfile.dto.js");
 
 class viewsController{
 
@@ -303,7 +307,23 @@ class viewsController{
         }
     }
     
+    //Vista de formulario de documentos
+    //ruta ¨/password¨, metodo GET
+    async renderAddDocumentsForm(req, res){
+        try {
+            const correo = req.user.correo;
+            const user = await userRepository.getUserbyEmail(correo);
+            const {_id, first_name, last_name, rol, email, cart, last_connection, documents} = user
+            const userDTO = new userProfileDTO(_id.toString(), first_name, last_name, rol, email, cart, last_connection, documents)
 
+            if(!user){
+                res.status(404).send({status:404, message:'No se logró encontrar el usuario logueado en la base de datos.'})
+            }
+            res.render('addDocumentsForm', {user:userDTO});
+        } catch (err) {
+            res.send(`Error de vista de formulario de de carga de documentos. Error: ${err}`)
+        }
+    }
 }
 
 module.exports = viewsController;

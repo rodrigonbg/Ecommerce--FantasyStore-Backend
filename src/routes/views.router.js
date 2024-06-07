@@ -38,4 +38,7 @@ router.get("/reset-password", viewsController.renderResetPassword)
 //Vista de solicitud de restablecimiento de contraseña
 router.get("/password", viewsController.renderNewPasswordForm)
 
+//Vista de solicitud de carga de docuementos 
+router.get('/documents', isLoged, viewsController.renderAddDocumentsForm)
+
 module.exports = router;

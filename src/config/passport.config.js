@@ -34,9 +34,11 @@ const initializePassport = () => {
             usernameField : 'email'
         },
         async (req, username, password, done) => { //funcion CB
-            const {first_name, last_name, email, age} = req.body;
+            const {first_name, last_name, email, age, repeatPass} = req.body;
 
             try {
+                if(password !== repeatPass) throw 'las contraseñas no coinciden'
+
                 const user = await UserModel.findOne({ email: email.toLowerCase()});
                 
                 if (user) return done(null, false); //user no disponible

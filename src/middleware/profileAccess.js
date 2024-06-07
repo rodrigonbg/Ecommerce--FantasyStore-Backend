@@ -76,7 +76,7 @@ function isLoged(req, res, next, redirect='/loginForm'){
     try {
         
         if(req.session.login){
-            next();
+           return next();
         }
         res.status(401).redirect(redirect)
         
