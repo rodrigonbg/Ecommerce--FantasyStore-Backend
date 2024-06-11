@@ -51,4 +51,23 @@ const sendRecoveryPassMail = async (mailToSend, firstName, token) =>{
     }
 }
 
-module.exports = {sendPurchaseMail, sendRecoveryPassMail}
+const sendUserDeletedforIncactivity = async (mailToSend, firstName, lastName) =>{
+    try {
+        const mail = {
+            from:'FantasyStore < Rodrigonbg2@gmail.com >',
+            to: mailToSend,
+            subject: 'Usuario eliminado!',
+            html:   `<div>
+                        <h1>${firstName} ${lastName}!!!</h1>
+                        <p>Le informamos que su cuenta en Fantasy Store ha sido eliminada por inactivaidad prolongada.</p>
+                    </div>`,
+        };
+        await transporter.sendMail(mail)
+        .then(()=>console.log('Mail de usuario elminiado enviado'))
+        .catch((err)=> console.log('no se pudo enviar el mail de usuario elminiado. ', err))
+    } catch (error) {
+        return error;
+    }
+}
+
+module.exports = {sendPurchaseMail, sendRecoveryPassMail, sendUserDeletedforIncactivity}
