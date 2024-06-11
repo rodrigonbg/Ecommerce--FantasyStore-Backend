@@ -24,6 +24,9 @@ router.get('/failedRegister', userController.failRegister)
 //Enviar mail para resetear contraseña
 router.post('/requestPasswordReset', userController.requestPasswordResetEmail)
 
+//obtener todos los ususarios
+router.get('/', userController.getUsers)
+
 //Cambiar contraseña con token
 router.post('/passwordReset', userController.passwordReset)
 
