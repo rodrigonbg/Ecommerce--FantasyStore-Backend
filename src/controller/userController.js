@@ -7,6 +7,15 @@ const {isValidPassword} = require('../utils/hashBcrypt.js');
 
 class userController{
 
+    async getUsers(req, res){
+        try {
+            const users = await userRepository.getUsers();
+            res.send(users)
+        } catch (error) {
+            res.send(error)
+        }
+    }
+
     //ruta ':uid/documents', método POST
     async addDocuments(req, res){
         try {

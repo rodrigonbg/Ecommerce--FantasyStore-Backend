@@ -1,8 +1,29 @@
+const userProfileDTO = require("../dto/userProfile.dto.js");
 const userModel = require("../models/user.models.js");
 const { createHash } = require("../utils/hashBcrypt.js");
 
 class UserRepository{
     
+    async getUsers() {
+        try {
+            const users = await userModel.find(); 
+            if(!users){
+                return `No hay usuarios disponibles.`
+            }else{
+
+                const response = [];
+                users.forEach((user)=>{
+                    let userDto = new userProfileDTO(user._id, user.first_name, user.last_name, user.rol, user.correo, user.cart, user.last_connection, user.documents)
+                    response.push(userDto)
+                })
+
+                return response
+            }
+        } catch (error) {
+            throw `Ocurrio un error al obtener el usuario. ${error}`
+        }
+    }
+
     async getUserbyCartId(id) {
         try {
             const user = await userModel.findOne({ cart: id }); 
@@ -13,7 +34,7 @@ class UserRepository{
                 return user
             }
         } catch (error) {
-            return `Ocurrio un error al obtener el usuario. ${error}`
+            throw `Ocurrio un error al obtener el usuario. ${error}`
         }
     }
 
