@@ -2,10 +2,46 @@ const UserRepository = require("../repositories/user.repository.js");
 const userRepository = new UserRepository();
 
 const generateToken =  require('../utils/resetPassToken.js');
-const {sendRecoveryPassMail} = require('../services/emailsManager.js');
+const {sendRecoveryPassMail, sendUserDeletedforIncactivity} = require('../services/emailsManager.js');
 const {isValidPassword} = require('../utils/hashBcrypt.js');
 
 class userController{
+
+    async deleteInactiveUsers(req, res){
+        try {
+            const fechaActual = new Date();
+            const users = await userRepository.getUsers();
+            let inactive = [];
+
+            users.forEach((user)=>{
+                const diferenciaMilisegundos = fechaActual - user.last_connection;
+                const dias = diferenciaMilisegundos / (1000 * 60 * 60 * 24);// Convertir la diferencia a días
+
+                if(dias >= 2){
+                    inactive.push(user);
+                }
+            })
+
+            inactive.forEach(async (user)=>{
+
+                await userRepository.deleteUser(user)
+                    .then(async ()=>{
+                        await sendUserDeletedforIncactivity(user.email, user.first_name, user.last_name)
+                    })
+                    .catch((err)=> {
+                        throw `no se pudo elminar el usuario de id ${user._id}, error: ${err}`
+                    })
+            })
+
+            if (inactive.length >= 1){
+                return res.status(200).send(`Usuarios elmininados: ${inactive}`)
+                }
+            return res.status(200).send(`No hay usuarios que hayan estado incativos suficiente tiempo para eliminarlos.`)
+
+        } catch (error) {
+            res.send(error)
+        }
+    }
 
     async getUsers(req, res){
         try {

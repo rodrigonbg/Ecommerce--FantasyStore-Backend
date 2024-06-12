@@ -119,6 +119,15 @@ class UserRepository{
             throw `Ocurrio un error al cargar los documentos del usuario ${error}`
         }
     }
+
+    async deleteUser(id){
+        try {
+            const deleted = await userModel.findByIdAndDelete(id);
+            return deleted;
+        } catch (error) {
+            throw `Ocurrio un error al eliminar el usuario ${error}`
+        }
+    }
 }
 
 module.exports = UserRepository;

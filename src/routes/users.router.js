@@ -25,7 +25,10 @@ router.get('/failedRegister', userController.failRegister)
 router.post('/requestPasswordReset', userController.requestPasswordResetEmail)
 
 //obtener todos los ususarios
-router.get('/', userController.getUsers)
+router.get('/', userController.getUsers);
+
+//elmimnar usuarios inactivos
+router.delete('/', userController.deleteInactiveUsers);
 
 //Cambiar contraseña con token
 router.post('/passwordReset', userController.passwordReset)
