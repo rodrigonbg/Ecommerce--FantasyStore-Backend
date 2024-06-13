@@ -4,15 +4,18 @@
 
 <main>
     <div class="login">
-        <form class="loginForm" action="/api/users/{{user._id}}/documents"  method="POST">
+        <form class="loginForm" action="/api/users/{{user._id}}/documents"  method="POST" enctype="multipart/form-data">
 
             <label for="document">Seleccione el documento</label>
+            {{#if user.hasDocuments}} <p>documento cargado actualmente: {{user.document}}</p>{{/if}}
             <input type="file" name="document" id="document" required="true" />
 
             <label for="document">Seleccione comprobante de domicilio</label>
+            {{#if user.hasDocuments}} <p>comprobante de domicilio cargado actualmente: {{user.homeBill}}</p>{{/if}}
             <input type="file" name="homeBill" id="homeBill" required="true" />
 
             <label for="document">Seleccione su estado de cuenta</label>
+            {{#if user.hasDocuments}} <p>Estado de cuenta cargado actualmente: {{user.bankBill}}</p>{{/if}}
             <input type="file" name="bankBill" id="bankBill" required="true" />
             
             <button type="submit">Cargar Documentos</button>

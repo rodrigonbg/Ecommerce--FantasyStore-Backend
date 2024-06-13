@@ -316,6 +316,15 @@ class viewsController{
             const {_id, first_name, last_name, rol, email, cart, last_connection, documents} = user
             const userDTO = new userProfileDTO(_id.toString(), first_name, last_name, rol, email, cart, last_connection, documents)
 
+            if(documents.length > 0){
+                userDTO.hasDocuments = true;
+                userDTO.document = documents[0].reference;
+                userDTO.homeBill = documents[1].reference;
+                userDTO.bankBill = documents[2].reference;
+            }else{
+                userDTO.hasDocuments = false;
+            }
+
             if(!user){
                 res.status(404).send({status:404, message:'No se logró encontrar el usuario logueado en la base de datos.'})
             }

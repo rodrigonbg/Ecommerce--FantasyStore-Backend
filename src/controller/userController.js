@@ -55,14 +55,14 @@ class userController{
     //ruta ':uid/documents', método POST
     async addDocuments(req, res){
         try {
-            const {document, homeBill, bankBill} = req.body;
+            const {document, homeBill, bankBill} = req.files;
             const {uid} = req.params;
-
+            
             const user = await userRepository.getUserbyId(uid);
             if(!user){
                 throw 'No hay un usuario registrado con el id ingresado';
             }
-            await userRepository.addDocuments(user, document, homeBill, bankBill);
+            await userRepository.addDocuments(user, document[0].filename, homeBill[0].filename, bankBill[0].filename);
             res.status(200).redirect('/')
         } catch (error) {
             req.logger.error('error al camiar al agregar documentos al usuario.', error)
