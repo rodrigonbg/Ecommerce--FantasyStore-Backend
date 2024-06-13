@@ -13,6 +13,7 @@ const userController = new UserController();
 
 //Midlewares
 const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
+const {authAdminAccess, authNotAdminAccess, authNotUserAccess, authUserAccess,authPremiumAccess, isLoged} = require('../middleware/profileAccess.js')
 
 //Multer
 const uploader = require('../middleware/multer.js')
@@ -33,8 +34,11 @@ router.post('/requestPasswordReset', userController.requestPasswordResetEmail)
 //obtener todos los ususarios
 router.get('/', userController.getUsers);
 
-//elmimnar usuarios inactivos
-router.delete('/', userController.deleteInactiveUsers);
+//eliminar usuarios inactivos
+router.delete('/:uid', userController.deleteUserById);
+
+//eliminar usuario por id 
+router.delete('/',isLoged, authAdminAccess, userController.deleteInactiveUsers);
 
 //Cambiar contraseña con token
 router.post('/passwordReset', userController.passwordReset)

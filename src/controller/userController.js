@@ -43,6 +43,17 @@ class userController{
         }
     }
 
+    async deleteUserById(req, res){
+        try {
+            const {uid} = req.params;
+            await userRepository.deleteUser(uid);
+
+            res.send('usuario eliminado')  
+        } catch (error) {
+            res.send(error)
+        }
+    }
+
     async getUsers(req, res){
         try {
             const users = await userRepository.getUsers();

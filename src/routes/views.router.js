@@ -16,6 +16,9 @@ router.get("/", viewsController.renderProducts)
 //Ver usuario conectado
 router.get('/user', isLoged, viewsController.renderConectedUser)
 
+//Ver usuario por id (admin)
+router.get('/user/:uid', isLoged, authAdminAccess, viewsController.renderUserById)
+
  //Vista de los carritos
 router.get("/carts", isLoged, authAdminAccess, viewsController.renderCarts)
 

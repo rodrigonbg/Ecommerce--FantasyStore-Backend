@@ -1,0 +1,74 @@
+<header>
+    <h1>Usuario By ID - {{user.firstName}} {{user.lastName}}</h1>
+</header>
+<main>
+    <section  class="user">
+        <div class="info">
+            <p>Nombre: <span>{{user.firstName}} {{user.lastName}}</span></p>
+            <p>Email: <span>{{user.correo}}</span></p>
+            <p>Rol: <span>{{user.rol}}</span></p>
+            <p>Last Connection: <span>{{user.last_connection}}</span></p>
+
+            {{#if user.hasDocuments}} 
+                <p>Document: <span>{{user.document}}</span></p>
+                <p>HomeBill: <span>{{user.homeBill}}</span></p>
+                <p>BankBill: <span>{{user.bankBill}}</span></p>
+            {{else}}
+                <p>EL usuario no tine documentos cargados</p>
+            {{/if}}
+        </div>
+
+        <div class="btns">
+            {{!-- Cambiar el rol --}}
+            <form action="../api/users/premium/{{user._id}}" method="GET">
+                {{#if user.premium}}
+                    <button>Cambar rol a Usuario</button>
+                {{else}}
+                    {{#if user.hasDocuments}}
+                        <button>Cambiar rol a Premium</button>
+                    {{else}}
+                        <p>El Usuario no tiene los documentos necesarios para ser premium.</p>
+                     {{/if}}
+                {{/if}}
+            </form>
+
+            {{!-- Eliminar el usuario --}}
+            <form id="delete-form" action="../api/users/{{user._id}}" method="DELETE">
+                <input type="hidden" name="_method" value="DELETE">
+                <button>Eliminar este usuario</button>
+            </form>
+        </div>
+
+    </section>
+</main>
+
+<footer>
+    
+</footer>
+
+<script>
+    document.getElementById('delete-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
+
+        const form = event.target;
+        const actionUrl = form.action; // Obtén la URL del atributo action del formulario
+        fetch(actionUrl, {
+            method: 'DELETE',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            _method: 'DELETE'
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data =>  window.location.href = '/')
+        .catch((error) => window.location.href = '/');
+    });
+</script>
+

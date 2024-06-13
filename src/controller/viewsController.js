@@ -122,6 +122,41 @@ class viewsController{
             res.send('No hay usuario logueado')
         }
     }
+
+    //Vista de un usuario por admin
+    //ruta ¨/user/:uid¨, metodo GET
+    async renderUserById(req, res){
+        try {
+            const {uid} = req.params;
+            
+            if(!uid){
+                return res.status(400).send({status:400, message:'Parametros incorrectos'})
+            }
+
+            const user = await userRepository.getUserbyId(uid);
+            if(!user){
+                return res.status(404).send({status:404, message:'No se encontraron usuarios con esas credenciales.'})
+            }
+            const {_id, first_name, last_name, rol, email, cart, last_connection, documents} = user
+            const userDTO = new userProfileDTO(_id.toString(), first_name, last_name, rol, email, cart, last_connection, documents)
+
+            if(documents.length > 0){
+                userDTO.hasDocuments = true;
+                userDTO.document = documents[0].reference;
+                userDTO.homeBill = documents[1].reference;
+                userDTO.bankBill = documents[2].reference;
+            }else{
+                userDTO.hasDocuments = false;
+            }
+
+            userDTO.premium = (rol==='premium')? true : false;
+
+            res.render( "userById", { user : userDTO} )
+
+        } catch (error) {
+            res.send('Error al renderizar la vista de un usuario');
+        }
+    }
     
     //Vista de los carritos
     //ruta ¨/carts¨, metodo GET
