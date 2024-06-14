@@ -6,7 +6,7 @@ const ProductController = require('../controller/productController.js');
 const productcontroller = new ProductController();
 
 //Midlewares
-const {authAdminAccess, authUserAccess, isLoged, authNotUserAccess} = require('../middleware/profileAccess.js')
+const {authAdminAccess, authUserAccess, isLoged, authNotUserAccess, authPremiumAccess} = require('../middleware/profileAccess.js')
 const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
 
 //Multer
@@ -27,17 +27,17 @@ router.get("/:pid", productcontroller.getProductById)
 router.post("/admin", isLoged, authAdminAccess, handleErrorCrearProducto, uploader.array('thumbnail'), productcontroller.addProductAdmin)
 
 //Subir un producto a la base de datos (premium)
-router.post("/premium", isLoged, authNotUserAccess, handleErrorCrearProducto, uploader.array('thumbnail'), productcontroller.addProductPremium)
+router.post("/premium", isLoged, authPremiumAccess, handleErrorCrearProducto, uploader.array('thumbnail'), productcontroller.addProductPremium)
 
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar un producto en la base de datos
 router.put("/:pid", authAdminAccess, handleErrorCrearProducto, uploader.array('thumbnail'), productcontroller.updateProduct)
 
 /* ----------------------------------------DELETEs----------------------------------------------- */
-//Eliminar un producto de la base de datos
-router.delete("/:pid", authNotUserAccess, productcontroller.deleteProduct)
+//Eliminar un producto de la base de datos (admin)
+router.post("/admin/:pid", authAdminAccess, productcontroller.deleteProductAdmin)
 
-//Eliminar un producto de la base de datos(admin)
-router.post("/premium/:pid", authNotUserAccess, productcontroller.deleteProductPremium)
+//Eliminar un producto de la base de datos (premium)
+router.post("/premium/:pid", authPremiumAccess, productcontroller.deleteProductPremium)
 
 module.exports = router;

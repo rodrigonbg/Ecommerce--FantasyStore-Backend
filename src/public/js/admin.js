@@ -1,38 +1,11 @@
 //instancia de socket cliente 
 const socket = io();
 
-//Funcion para eliminar un producto, que envia el evento 'eliminarProducto' al servidor junto con el ID del prod.
-const eliminarProducto = (id) => {
-    socket.emit("eliminarProducto", id)
-}
-
 //Funcion para agregar producto. El prod se envia desde el formulario solo vacía los campos y emite el evento de recargar la pagina 
 const agregarProducto = () =>{
-/*     const producto ={
-        title: document.getElementById("title").value ,
-        description: document.getElementById("description").value ,
-        categoria: document.getElementById("idCategory").options[document.getElementById("idCategory").selectedIndex].text,
-        idCategoria: document.getElementById("idCategory").value ,
-        thumbnail: document.getElementById("img").value ,
-        price: document.getElementById("price").value ,
-        onSale: document.getElementById("onSale").value ,
-        descuento: document.getElementById("descuento").value ,
-        stock: document.getElementById("stock").value ,
-        code: document.getElementById("code").value ,
-        status: document.getElementById("status").value === "true"
-    }
-    socket.emit("agregarProducto", producto); */
 
     //El prod se manda desde el form, solo refrescamos
     socket.emit("refreshProds",null); 
-
-/*     document.getElementById("title").value = "";
-    document.getElementById("description").value  = "";
-    document.getElementById("img").value  = "";
-    document.getElementById("price").value  = "";
-    document.getElementById("descuento").value = "";
-    document.getElementById("stock").value  = "";
-    document.getElementById("code").value  = ""; */
 
 };
 
@@ -57,21 +30,17 @@ const renderProds = (productos) =>{
 
         //creo el contenido de la card
         card.innerHTML= `
+            <form action="/api/products/admin/${prod._id}" method="POST">
                 <p><span>ID</span> : ${prod._id}</p>
                 <p><span>TITULO</span> : ${prod.title}</p>
                 <p><span>PRECIO</span> : ${prod.price}</p>
                 <p><span>ESTADO</span> : ${prod.status}</p>
                 <p><span>OWNER</span> : ${prod.owner}</p>
-                <button> Eliminar Producto </button>`;
+                <button> Eliminar Producto </button>
+            </form>`;
 
         //agrego la card al contenedor
         productsContainer.appendChild(card);
-
-        //Agrego el evento 'EliminarProducto'
-        const btnEliminar = card.querySelector("button")
-        btnEliminar.addEventListener("click", ()=>{
-            eliminarProducto(prod._id)   
-        })
 
     });
 }

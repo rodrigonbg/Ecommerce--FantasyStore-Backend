@@ -1,6 +1,7 @@
 const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
 const UserRepository = require("../repositories/user.repository.js");
+const { sendProductDeleted } = require("../services/emailsManager.js");
 const userRepository = new UserRepository();
 const generarProducto = require('../utils/mocks.js')
 
@@ -100,10 +101,9 @@ class ProductController {
             
             //Se crea la owner
             req.body.owner = (rol === 'premium') ? req.user.correo : 'admin';
-            //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code, owner } = req.body;
             
-            await productRepository.addProduct(req.body)
-                .then(respuesta => res.redirect("/admin").status(201))
+            await productRepository.addProduct(req.body);
+            return res.status(201).redirect("/admin")
         } catch (error) {
             return res.status(500).send({status:500, message:`Error al subir el nuevo producto. Error: ${error}`})
         }
@@ -128,7 +128,7 @@ class ProductController {
             //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code, owner } = req.body;
             
             await productRepository.addProduct(req.body)
-                .then(respuesta => res.status(201).redirect("/premiumProducts"))
+            return res.status(201).redirect("/premiumProducts")
         } catch (error) {
             return res.status(500).send({status:500, message:`Error al subir el nuevo producto. Error: ${error}`})
         }
@@ -157,30 +157,32 @@ class ProductController {
     }
 
     //ruta ¨/:pid¨, metodo DELETE
-    async deleteProduct(req, res){
+    async deleteProductAdmin(req, res){
         try {
-            
             let pid = req.params.pid;
             if (!pid){
                 return res.status(400).send({status:400, message: 'Solicitud incorrecta. El parámetros de consulta no es válido.' })
             } 
 
-            const prod = await productRepository.getProductById(pid);
+            //Autenticación desde middleware
+
+            const prod = await productRepository.getProductById(pid)
             if (!prod){
                 return res.status(404).send({status:404, message: `No se encontró el producto de id: ${pid}`})
-            } 
+            }
             const owner = prod.owner;
 
-            if (owner === 'admin'){
+            if (owner === 'admin'){//Elimino producto de admin
                 return await productRepository.deleteProduct(pid)
-                    .then(respuesta => res.status(200).send(respuesta))
+                    .then(respuesta => res.status(200).redirect('/admin'))
             }
 
-            if(owner === req.user.correo){
-                return await productRepository.deleteProduct(pid)
-                    .then(respuesta => res.status(200).send(respuesta))
-            }
-            return res.status(403).send({status:403, message:'No tienes permisos para eliminar un producto.'})
+            return await productRepository.deleteProduct(pid)//Elimino producto de usuario
+                .then(async ()=> {
+                    const user = await userRepository.getUserbyEmail(owner);
+                    sendProductDeleted(owner, user.first_name, user.last_name, prod)
+                })
+                .then(respuesta => res.status(200).redirect('/admin'))
 
         }catch(error){
             return res.status(500).send(`Error al eliminar el producto. ERROR ${error}`)
@@ -201,17 +203,18 @@ class ProductController {
             if (!prod){
                 return res.status(404).send({status:404, message: `No se encontró el producto de id: ${pid}`})
             }
-            const owner = prod.owner;
-            console.log(prod)
 
-            if (owner === 'admin'){
-                return await productRepository.deleteProduct(pid)
-                    .then(respuesta => res.status(200).redirect('/premiumProducts'))
-            }
+            const owner = prod.owner;
+
             if(owner === req.user.correo){
-                return await productRepository.deleteProduct(pid)
+                    return await productRepository.deleteProduct(pid)
+                    .then(async ()=> {
+                        const user = await userRepository.getUserbyEmail(owner);
+                        sendProductDeleted(owner, user.first_name, user.last_name, prod)
+                    })
                     .then(respuesta => res.status(200).redirect('/premiumProducts'))
             }
+            
             return res.status(403).send({status:403, message:'No tienes permisos para eliminar un producto.'})()
 
         }catch(error){

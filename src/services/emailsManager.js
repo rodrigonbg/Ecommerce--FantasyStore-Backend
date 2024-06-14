@@ -70,4 +70,23 @@ const sendUserDeletedforIncactivity = async (mailToSend, firstName, lastName) =>
     }
 }
 
-module.exports = {sendPurchaseMail, sendRecoveryPassMail, sendUserDeletedforIncactivity}
+const sendProductDeleted = async (mailToSend, firstName, lastName, product) =>{
+    try {
+        const mail = {
+            from:'FantasyStore < Rodrigonbg2@gmail.com >',
+            to: mailToSend,
+            subject: 'Peroducto eliminado!',
+            html:   `<div>
+                        <h1>${firstName} ${lastName}!!!</h1>
+                        <p>Le informamos que su producto ${product.title} ya no se encuentra disponible para la venta.</p>
+                    </div>`,
+        };
+        await transporter.sendMail(mail)
+        .then(()=>console.log('Mail de producto elminiado enviado'))
+        .catch((err)=> console.log('no se pudo enviar el mail de producto elminiado. ', err))
+    } catch (error) {
+        return error;
+    }
+}
+
+module.exports = {sendPurchaseMail, sendRecoveryPassMail, sendUserDeletedforIncactivity, sendProductDeleted}

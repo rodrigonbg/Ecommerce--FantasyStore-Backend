@@ -17,7 +17,7 @@ function authNotAdminAccess(req, res, next){
     try {
 
         if (req.user.rol !== 'admin'){
-            next()
+            return next()
         }
         return res.status(403).send({status:403, message: 'Funcionalidad solo para administradoress'})
 
@@ -61,7 +61,7 @@ function authNotUserAccess(req, res, next){
     try {
 
         if (req.user.rol !== 'usuario'){
-            next()
+            return next()
         }
         return res.status(403).send({status:403, message: 'Funcionalidad solo para rol no usuarios'})
         
@@ -78,7 +78,7 @@ function isLoged(req, res, next, redirect='/loginForm'){
         if(req.session.login){
            return next();
         }
-        res.status(401).redirect(redirect)
+        return res.status(401).redirect(redirect)
         
     } catch (error) {
         return error
@@ -91,9 +91,9 @@ function isNotLoged(req, res, next){
     try {
 
         if(!req.session.login){
-            next();
+            return next();
         }
-        res.status(401).send({status:401, message:'Se requiere no estar logueado para acceder a este sector.'})
+        return res.status(401).send({status:401, message:'Se requiere no estar logueado para acceder a este sector.'})
         
     } catch (error) {
         return error

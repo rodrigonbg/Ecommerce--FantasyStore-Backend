@@ -48,10 +48,10 @@
 
 <script>
     document.getElementById('delete-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
+        event.preventDefault();
 
         const form = event.target;
-        const actionUrl = form.action; // Obtén la URL del atributo action del formulario
+        const actionUrl = form.action;
         fetch(actionUrl, {
             method: 'DELETE',
             headers: {

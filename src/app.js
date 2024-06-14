@@ -98,19 +98,6 @@ io.on("connection", async(socket) => {
     //envio los productos al cliente conectado
     socket.emit("productos", await productsModel.find());
 
-    //escucho el evento 'eliminarProducto' que envía el cliente
-    socket.on("eliminarProducto", async (id)=>{
-
-        await productsModel.findByIdAndDelete(id);
-        //una vez eliminado el producto, volvemos a enviar el array de productos
-        io.sockets.emit("productos", await productsModel.find());
-    })
-
-    //escucho el evento 'agregarProducto' que envia el cliente
-/*     socket.on('agregarProducto', async(producto) =>{
-        const newProd = new productsModel(producto)
-        await newProd.save(); */
-
     //Evento para refrescar los productos
     socket.on('refreshProds', async() =>{
 
