@@ -19,7 +19,7 @@
     </div>
     
     {{!-- --------------------Form para agregar prods-------------------------------- --}}
-    <form action="/api/products/premium" method="POST" class="addProductForm">
+    <form action="/api/products/premium" method="POST" class="addProductForm" enctype="multipart/form-data">
         <h2>Formulario para agregar un producto</h2>
         <input name="title" type="text" id="title" placeholder="Titulo">
         <input type="text" id="description" placeholder="Descripción" name="description">
@@ -34,7 +34,6 @@
          <!-- Campo oculto para el nombre de la categoría -->
         <input type="hidden" id="categoria" name="categoria" value="dormitorio">
 
-        <input type="text" id="img" value="[]" placeholder="imagenes (predefinido array vacio)" name="thumbnail">
         <input type="number" id="price" placeholder="Precio" name="price">
 
         <select id="onSale" name="onSale">
@@ -52,6 +51,9 @@
             <option value="false">Inactivo</option>
         </select>
 
+        <label for="thumbnail">Seleccione las imagenes</label>
+        <input type="file" id="thumbnail" name="thumbnail" multiple required="true">
+        
         <button type="submit" id="btnAdd">Agregar Producto</button>
     </form>
 </section>

@@ -8,12 +8,10 @@ const infoErrorCrearProducto = (prod) => {
     - description: String. Dato recibido-->  ${prod.description}
     - categoría: String. Dato recibido-->  ${prod.categoria}
     - idCategoria: Number. Dato recibido-->  ${prod.idCategoria}
-    - thumbnail: Array of strings. Dato recibido-->  ${prod.thumbnail}
     - price: Number. Dato recibido-->  ${prod.price}
     - onSale: Boolean. Dato recibido-->  ${prod.onSale}
     - descuento: Number. Dato recibido-->  ${prod.descuento}
     - stock: Number. Dato recibido-->  ${prod.stock}
-    - status: Boolean. Dato recibido-->  ${prod.status}
     - code: String. Dato recibido-->  ${prod.code}
     `
 }

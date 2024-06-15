@@ -16,7 +16,7 @@ const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrit
 const {authAdminAccess, authNotAdminAccess, authNotUserAccess, authUserAccess,authPremiumAccess, isLoged} = require('../middleware/profileAccess.js')
 
 //Multer
-const uploader = require('../middleware/multer.js')
+const {uploaderDocs, uploaderProds} = require('../middleware/multer.js')
 const fileds = [{ name: 'document', maxCount: 1 },{ name: 'homeBill', maxCount: 1 },{ name: 'bankBill', maxCount: 1 }]
 
 // Aplicar bodyParser antes de Multer si es necesario
@@ -47,6 +47,6 @@ router.post('/passwordReset', userController.passwordReset)
 router.get('/premium/:uid', userController.changeUserRol)
 
 //Subir documentos de los usuarios
-router.post('/:uid/documents', uploader.fields(fileds), userController.addDocuments)
+router.post('/:uid/documents', uploaderDocs.fields(fileds), userController.addDocuments)
 
 module.exports = router;

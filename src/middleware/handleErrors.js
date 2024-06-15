@@ -10,27 +10,27 @@ const productsRepository = new ProductsRepository();
 //Se ejecutarán antes del controller en las rutas verificando que los datos que lleguen al controller sean validos
 const handleErrorCrearProducto = (req, res, next)=>{
     try {
-        const {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, status, code} = req.body
+        const {title, description, categoria, idCategoria, price, onSale, descuento, stock, code} = req.body
         //Si no existe, true para entrar al if, si existe y no cumple con el typo requerido, tambien true
         const Title = title? typeof(title) !== 'string' : true
         const Description = description? typeof(description) !== 'string' : true 
         const Categoria = categoria? typeof(categoria) !== 'string' : true
         const IdCategoria = idCategoria? typeof(idCategoria) !== 'string' : true
-        const Thumbnail = thumbnail? !Array.isArray(JSON.parse(thumbnail)) : true
         const Price = price? typeof(parseInt(price)) !== 'number' : true
         const OnSale = onSale? typeof(JSON.parse(onSale)) !== "boolean" : true
         const Descuento = descuento? typeof(parseInt(descuento)) !== 'number' : true
         const Stock = stock? typeof(parseInt(stock)) !== 'number' : true
-        const Status = typeof(JSON.parse(status)) !== 'boolean'
         const Code = code? typeof(code) !== 'string' : true
-
-        if (Title || Description || Categoria || IdCategoria || Thumbnail || Price || OnSale || Descuento || Stock || Status || Code){
+        
+        
+        if (Title || Description || Categoria || IdCategoria || Price || OnSale || Descuento || Stock || Code){
+            console.log(title, description, categoria, idCategoria, price, onSale, descuento, stock, code)
             const error = CustomError.crearError({
                 nombre: "Crear Producto",
-                causa: infoErrorCrearProducto({title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, status, code}),
+                causa: infoErrorCrearProducto({title, description, categoria, idCategoria, price, onSale, descuento, stock, code}),
                 mensaje: "Error en los datos para crar un Producto.",
                 codigo: idError.TIPO_INVALIDO
-            });
+                });
             res.status(400).send({status:400, message: error.toString()})
             throw error
         }

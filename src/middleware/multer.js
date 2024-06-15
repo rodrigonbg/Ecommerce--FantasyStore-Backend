@@ -1,14 +1,14 @@
 const multer = require('multer');
 const path = require('path');
 
-const storage = multer.diskStorage({
+const storageDisk = multer.diskStorage({
     destination: (req, file, cb) => {
         let destinationFolder;
         switch (file.fieldname) {
             case "profile":
                 destinationFolder = path.resolve(__dirname, '../uploads/profiles');
                 break;
-            case "products":
+            case "thumbnail":
                 destinationFolder = path.resolve(__dirname, '../uploads/products');
                 break;
             case "homeBill":
@@ -28,18 +28,32 @@ const storage = multer.diskStorage({
     }
 });
 
-const uploader = multer({
-    storage: storage,
+const uploaderDocs = multer({
+    storage: storageDisk,
     fileFilter: function (req, file, cb) {
         const filetypes = /jpeg|jpg|png|pdf/;
         const mimetype = filetypes.test(file.mimetype);
   
         if (mimetype) {
-            return cb(null, req);
+            return cb(null, true);
         }else {
-            cb(new Error("Error: Solo se permiten imágenes (JPEG, JPG, PNG, PDF)"));
+            return cb(new Error("Error: Solo se permiten Documentos (JPEG, JPG, PNG, PDF)"));
         }
     },
 });
 
-module.exports = uploader;
+const uploaderProds = multer({
+    storage: storageDisk,
+    fileFilter: function (req, file, cb) {
+        const filetypes = /jpeg|jpg|png/;
+        const mimetype = filetypes.test(file.mimetype);
+  
+        if (mimetype) {
+            return cb(null, true);
+        }else {
+            return cb(new Error("Error: Solo se permiten imágenes (JPEG, JPG, PNG)"));
+        }
+    },
+});
+
+module.exports = {uploaderDocs, uploaderProds};

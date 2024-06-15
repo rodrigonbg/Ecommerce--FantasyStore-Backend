@@ -88,6 +88,14 @@ class ProductController {
     //ruta ¨/admin¨, metodo POST
     async addProductAdmin(req, res){
         try {
+            const files = req.files
+            let filesReferences = [];
+            files.forEach(file => {
+                filesReferences.push(file.filename)
+            });
+            req.body.thumbnail = filesReferences;
+
+
             const rol = req.user.rol;
             if(!rol){
                 return res.status(401).send({status:401, message:`Se requiere autenticación`})
@@ -112,6 +120,14 @@ class ProductController {
     //ruta ¨/premium¨, metodo POST
     async addProductPremium(req, res){
         try {
+            const files = req.files
+            let filesReferences = [];
+            files.forEach(file => {
+                filesReferences.push(file.filename)
+            });
+            req.body.thumbnail = filesReferences;
+
+
             const rol = req.user.rol;
             if(!rol){
                 return res.status(401).send({status:401, message:`Se requiere autenticación`})
@@ -125,7 +141,7 @@ class ProductController {
 
             //Se crea la owner
             req.body.owner = (rol === 'premium') ? req.user.correo : 'admin';
-            //let {title, description, categoria, idCategoria, thumbnail, price, onSale, descuento, stock, alt, status=true, code, owner } = req.body;
+            //let {title, description, categoria, idCategoria, price, onSale, descuento, stock, alt, code, owner } = req.body;
             
             await productRepository.addProduct(req.body)
             return res.status(201).redirect("/premiumProducts")
