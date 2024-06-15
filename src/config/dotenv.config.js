@@ -4,7 +4,6 @@ const program = require('../utils/commander.js')
 //Con program.opts() obtengo las opciones que se pasan por la línea de comandos
 const {mode, p} =  program.opts();
 
-
 dotenv.config({
     path: mode === 'production'? './.env.production' : (mode === 'development'? './.env.development' : './.env.testing')
 })
@@ -12,14 +11,12 @@ dotenv.config({
 const configObject = {
     mode : mode,
     mongo_url : process.env.MONGO_URL,
-    port : p? p : process.env.PORT,
-    //Si especifico el puerto por consola, uso ese, de lo contratrio uso el de .env
+    port : p? p : process.env.PORT, //Si especifico el puerto por consola, uso ese, de lo contratrio uso el del .env
     admin_email : process.env.ADMIN_EMAIL,
-    admin_pass : process.env.ADMIN_PASSWORD
+    GithubAppID: process.env.GithubAppID,
+    GithubClientID: process.env.GithubClientID,
+    GithubClientSecret : process.env.GithubClientSecret
 }
-
-//Url de bd de Testing solo en modo de desarrollador.
-//mode === 'development' ? configObject.mongo_url_testing = process.env.MONGO_URL_TESTING : null
 
 console.log ('Objeto de configuracion gral:', configObject)
 

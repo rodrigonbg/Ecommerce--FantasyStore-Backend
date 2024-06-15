@@ -2,27 +2,17 @@ const passport = require ('passport');
 const local = require ('passport-local');
 const github = require ('passport-github2');
 const DTOUser =  require('../dto/userProfile.dto.js')
-
 const UserModel = require ('../models/user.models')
 const { createHash, isValidPassword }= require ('../utils/hashBcrypt')
-
 const CartsRepository = require("../repositories/cart.repository.js");
 const cartsRepository = new CartsRepository();
 const UserRepository = require('../repositories/user.repository.js');
 const userRepository = new UserRepository();
 
 const configObject = require('../config/dotenv.config.js');
-//estrategia local
+
 const LocalStrategy  = local.Strategy;
-
-//estrategia github
 const GithubStrategy  = github.Strategy;
-
-/* 
-App ID: 851023
-Client ID: Iv1.11d64c1fa3cb63e0 
-Client secret : c99836d1197c68c06ca2f050ef69ea72c0501529
-*/
 
 //inicializador de middlewares de passport
 const initializePassport = () => {
@@ -34,13 +24,12 @@ const initializePassport = () => {
             usernameField : 'email'
         },
         async (req, username, password, done) => { //funcion CB
-            const {first_name, last_name, email, age, repeatPass} = req.body;
-
             try {
+                const {first_name, last_name, email, age, repeatPass} = req.body;
+                
                 if(password !== repeatPass) throw 'las contraseñas no coinciden'
 
                 const user = await UserModel.findOne({ email: email.toLowerCase()});
-                
                 if (user) return done(null, false); //user no disponible
                 
                 //genermaos el user y lo mandamos con done
@@ -54,16 +43,14 @@ const initializePassport = () => {
                     rol : rol,
                     last_connection : new Date()
                 }
-                //creo y agrego un carrito solo si no se es admin 
                 if (rol === 'usuario') {
                     newUser.cart = await cartsRepository.createCart().then(res=> res._id);
                 }
 
-                const  result = await UserModel.create(newUser).then((res)=>{
+                const result = await UserModel.create(newUser).then((res)=>{
                     req.logger.info('User creado con local passport')
                     return res
                 });
-                
                 return done(null, result);
 
             } catch (error) {
@@ -80,9 +67,8 @@ const initializePassport = () => {
             try {
                 const user = await UserModel.findOne({ email: email.toLowerCase()});
 
-                if(!user) return done('Usuario no encontrado.') //No existe el usuario
-
-                if(!isValidPassword(password, user)) return done ('Contraseña incorrecta.')//la contrasena es incorrecta
+                if(!user) return done('Usuario no encontrado.');
+                if(!isValidPassword(password, user)) return done ('Contraseña incorrecta.');
 
                 await userRepository.updateLastConnection(user);
                 return done(null, user)
@@ -94,15 +80,43 @@ const initializePassport = () => {
 
     passport.use('github', 
         new GithubStrategy({
-            clientID: 'Iv1.11d64c1fa3cb63e0',
-            clientSecret: 'c99836d1197c68c06ca2f050ef69ea72c0501529',
-            callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+            clientID: configObject.GithubClientID,
+            clientSecret: configObject.GithubClientSecret,
+            callbackURL: "http://localhost:8080/api/sessions/githubcallback",
+            scope: ['user:email']  // Incluye este scope
         }, 
         async (accessToken, refreshToken, profile, done)=>{
-            //en profile._json tengo los datos que quiero
-            const user = await UserModel.findOne({email : profile._json.email })
-            console.log(profile._json)
             try {
+                //en profile._json tengo los datos que quiero
+
+                if (!profile.emails || profile.emails.length === 0) {//Para traer los mails
+                    const response = await fetch('https://api.github.com/user/emails', {
+                        headers: {
+                            'Authorization': `token ${accessToken}`,
+                            'User-Agent': 'Fantasy Store'
+                        }
+                    });
+              
+                    if (response.ok) {
+                        const emails = await response.json();
+                        console.log('Emails:', emails);  // Log de los emails obtenidos
+              
+                        if (emails && emails.length > 0) {
+                            const primaryEmail = emails.find(email => email.primary).email;
+                            profile.emails = [{ value: primaryEmail }];
+                            profile._json.email = primaryEmail;  // Guardar el email en profile._json.email
+                        }
+
+                    }else {
+                        throw new Error('Failed to fetch emails');
+                    }
+
+                }else{//Si el email ya está en el perfil, asignarlo a profile._json.email
+                    profile._json.email = profile.emails[0].value;
+                }
+
+                const user = await UserModel.findOne({email : profile._json.email })
+
                 //una vez buscado el user, si no existe, lo creamos. de lo contrario lo retornamos
                 if (!user){
 
@@ -113,11 +127,9 @@ const initializePassport = () => {
                         age : 10,
                         email : profile._json.email,
                         password : '',
-                        cart: idCart,
                         rol: rol,
                         last_connection : new Date()
                     }
-                    //creo y agrego un carrito solo si no se es admin 
                     if (rol === 'usuario') {
                         newUser.cart = await cartsRepository.createCart().then(res=> res._id);
                     }
