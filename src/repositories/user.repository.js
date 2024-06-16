@@ -110,9 +110,9 @@ class UserRepository{
     
     async addDocuments(user, document=null, homeBill=null, bankBill=null){
         try {
-            const Document = { name: 'document', reference: document}
-            const HomeBill = { name: 'homeBill', reference: homeBill}
-            const BankBill = { name: 'bankBill', reference: bankBill}
+            const Document = { name: 'document', reference: `/documents/${document}`}
+            const HomeBill = { name: 'homeBill', reference: `/homeBills/${homeBill}`}
+            const BankBill = { name: 'bankBill', reference: `/bankBills/${bankBill}`}
             user.documents =[Document, HomeBill, BankBill];
             await user.save();
         } catch (error) {

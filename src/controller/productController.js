@@ -34,7 +34,7 @@ class ProductController {
 
             //en limit, page y priceOrder, uso ternarios, si exsite el valor correcto, lo uso, de lo contrario, le doy un valor por defecto
             //aunque ya estaban creados, con esto agrego mas validaciones
-            limit = parseInt(Number(req.query.limit)? req.query.limit : 10); //si el limit es un unmero y existe, tomo su valor, de lo contrario, por defecto 10
+            limit = parseInt(Number(req.query.limit)? req.query.limit : 40); //si el limit es un unmero y existe, tomo su valor, de lo contrario, por defecto 40
             page = parseInt(Number(req.query.page)? req.query.page : 1); //por defecto tiene que ser 1
             priceOrder = (req.query.priceOrder === 'asc' || req.query.priceOrder === 'des') ? req.query.priceOrder : null // por defecto no hace ordenamiento
     
@@ -91,7 +91,7 @@ class ProductController {
             const files = req.files
             let filesReferences = [];
             files.forEach(file => {
-                filesReferences.push(file.filename)
+                filesReferences.push(`/products/${new Date()}-${file.filename}`)
             });
             req.body.thumbnail = filesReferences;
 
@@ -123,7 +123,7 @@ class ProductController {
             const files = req.files
             let filesReferences = [];
             files.forEach(file => {
-                filesReferences.push(file.filename)
+                filesReferences.push(`/products/${new Date()}-${file.filename}`)
             });
             req.body.thumbnail = filesReferences;
 

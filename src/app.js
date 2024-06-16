@@ -3,6 +3,7 @@ const http = require("http");
 const socket = require("socket.io");
 const db = require("../src/database.js")
 const productsModel = require("./models/products.models.js");
+const cors = require("cors");
 
 const cookieParser =  require('cookie-parser');
 const MongoStore = require("connect-mongo")
@@ -23,6 +24,7 @@ app.use(addLogger);
 const io = socket(server);
 
 //Middelwares para express
+app.use(cors());
 app.use(express.json()); 
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("./src/public"))
@@ -36,6 +38,14 @@ app.use(session({
         ttl: 600 //10 minutos
     })
 }))
+
+//Acceso a los archivos estaticos 
+app.use('/', express.static('./src/public/img'));
+app.use('/products', express.static('./src/uploads/products'));
+app.use('/profile', express.static('./src/uploads/profiles'));
+app.use('/documents', express.static('./src/uploads/documents/document'));
+app.use('/homeBills', express.static('./src/uploads/documents/homeBills'));
+app.use('/bankBills', express.static('./src/uploads/documents/banckBills'));
 
 //Express-handlebars
 const exphbs = require("express-handlebars");

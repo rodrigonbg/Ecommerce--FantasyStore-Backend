@@ -11,8 +11,6 @@ const TicketRepository = require("../repositories/ticket.repository.js");
 const { sendPurchaseMail } = require("../services/emailsManager.js");
 const ticketRepository = new TicketRepository();
 
-
-
 class CartsController {
 
     //ruta ¨/¨, metodo GET

@@ -34,10 +34,10 @@ router.post('/requestPasswordReset', userController.requestPasswordResetEmail)
 //obtener todos los ususarios
 router.get('/', userController.getUsers);
 
-//eliminar usuarios inactivos
+//eliminar usuario por id
 router.delete('/:uid', userController.deleteUserById);
 
-//eliminar usuario por id 
+//eliminar usuarios inactivos
 router.delete('/',isLoged, authAdminAccess, userController.deleteInactiveUsers);
 
 //Cambiar contraseña con token
