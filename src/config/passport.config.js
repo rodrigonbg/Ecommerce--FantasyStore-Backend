@@ -27,10 +27,16 @@ const initializePassport = () => {
             try {
                 const {first_name, last_name, email, age, repeatPass} = req.body;
                 
-                if(password !== repeatPass) throw 'las contraseñas no coinciden'
-
-                const user = await UserModel.findOne({ email: email.toLowerCase()});
-                if (user) return done(null, false); //user no disponible
+                if(password !== repeatPass){
+                    req.flash('error', 'Las contraseñas no coinciden.')
+                    return done(null, false, {status:400, message:'Las contraseñas no coinciden.'})
+                } 
+                
+                const userDB = await UserModel.findOne({ email: email.toLowerCase()});
+                if (userDB){
+                    req.flash('error', 'Ya existe un usuario con ese email.');
+                    return done(null, false, {status:400, message:'Ya existe un usuario con ese mail.'})
+                } 
                 
                 //genermaos el user y lo mandamos con done
                 const rol = (email === configObject.admin_email)? 'admin':'usuario';
@@ -38,7 +44,7 @@ const initializePassport = () => {
                     first_name,
                     last_name,
                     email: email.toLowerCase(),
-                    age,
+                    age: age,
                     password: createHash(password), 
                     rol : rol,
                     last_connection : new Date()
@@ -51,7 +57,11 @@ const initializePassport = () => {
                     req.logger.info('User creado con local passport')
                     return res
                 });
-                return done(null, result);
+
+                const {_id, cart, last_connection, documents} = result
+                const user = new DTOUser(_id, first_name, last_name, rol, email, cart, last_connection, documents, age)
+
+                return done(null, user);
 
             } catch (error) {
                 return done(error)
@@ -65,12 +75,16 @@ const initializePassport = () => {
         },
         async (email, password, done)=>{
             try {
-                const user = await UserModel.findOne({ email: email.toLowerCase()});
+                const userDB = await UserModel.findOne({ email: email.toLowerCase()});
 
-                if(!user) return done('Usuario no encontrado.');
-                if(!isValidPassword(password, user)) return done ('Contraseña incorrecta.');
+                if(!userDB) return done('Usuario no encontrado.');
+                if(!isValidPassword(password, userDB)) return done ('Contraseña incorrecta.');
 
-                await userRepository.updateLastConnection(user);
+                await userRepository.updateLastConnection(userDB);
+
+                const {_id, first_name, last_name, rol, cart, last_connection, documents, age} = userDB
+                const user = new DTOUser(_id, first_name, last_name, rol, email, cart, last_connection, documents, age)
+
                 return done(null, user)
             } catch (error) {
                 return done(error)
@@ -99,7 +113,6 @@ const initializePassport = () => {
               
                     if (response.ok) {
                         const emails = await response.json();
-                        console.log('Emails:', emails);  // Log de los emails obtenidos
               
                         if (emails && emails.length > 0) {
                             const primaryEmail = emails.find(email => email.primary).email;

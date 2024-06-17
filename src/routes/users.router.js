@@ -25,6 +25,7 @@ router.use(bodyParser.json());
 
 //////PASSPORT///////////
 //Registro con el middleware de passport y luego hago el login
+router.post('/front', handleErrorCrearUser, passport.authenticate('register', {failureRedirect: '/api/users/failedRegister'}), sessionsController.loginFront)
 router.post('/', handleErrorCrearUser, passport.authenticate('register', {failureRedirect: '/api/users/failedRegister'}), sessionsController.login)
 router.get('/failedRegister', userController.failRegister)
 

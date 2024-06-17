@@ -1,5 +1,5 @@
 class userProfileDTO{
-    constructor(ID, firstName, lastName, rol, correo, cart, last_connection = null, documents = []){
+    constructor(ID, firstName, lastName, rol, correo, cart, last_connection = null, documents = [], age = null){
         this._id = ID,
         this.firstName = firstName;
         this.lastName = lastName;
@@ -10,6 +10,7 @@ class userProfileDTO{
         }
         this.last_connection = last_connection;
         this.documents = documents;
+        this.age = age;
     }
 }
 

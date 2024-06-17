@@ -83,7 +83,8 @@ class userController{
 
     //ruta ¨/failedRegister¨, metodo GET
     async failRegister (req,res){
-        res.send({error: 'registro fallido'})
+        const message = req.flash('error');
+        return res.status(401).send({ status:401 , message : message });
     }
 
     //ruta ¨/requestPasswordReset¨, metodo POST

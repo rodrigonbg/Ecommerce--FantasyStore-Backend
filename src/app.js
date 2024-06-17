@@ -4,6 +4,7 @@ const socket = require("socket.io");
 const db = require("../src/database.js")
 const productsModel = require("./models/products.models.js");
 const cors = require("cors");
+const flash = require('connect-flash');
 
 const cookieParser =  require('cookie-parser');
 const MongoStore = require("connect-mongo")
@@ -14,7 +15,6 @@ const PUERTO = configObject.port;
 const mongo_url = configObject.mongo_url;
 const app = express();
 const server = http.createServer(app);
-const flash = require('connect-flash');
 
 //Logger
 const addLogger = require("./utils/logger.js");
@@ -24,20 +24,31 @@ app.use(addLogger);
 const io = socket(server);
 
 //Middelwares para express
-app.use(cors());
+app.use(cors({
+    origin: (origin, callback) => {
+        callback(null, true); // Permite cualquier origen
+    },
+    credentials:true
+}));
 app.use(express.json()); 
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("./src/public"))
 app.use(cookieParser())
 app.use(session({
+    name: 'connect.sid',
     secret: 'secretPass',
     resaved: true,
     saveUnitialized:true,
     store: MongoStore.create({
         mongoUrl: mongo_url,
         ttl: 600 //10 minutos
-    })
+    }),
+    cookie: {
+        secure: false, // en true, Asegúrate de usar HTTPS en producción
+        sameSite: 'none' // Permite el envío de la cookie en contextos de terceros
+    }
 }))
+app.use(flash());
 
 //Acceso a los archivos estaticos 
 app.use('/', express.static('./src/public/img'));
@@ -58,8 +69,20 @@ const passport = require('passport')
 const initializePassport = require('./config/passport.config.js')
 initializePassport()
 app.use(passport.initialize())
-app.use(passport.session())
-app.use(flash());
+app.use(passport.session({
+    name: 'connect.sid',
+    secret: 'secretPass',
+    resaved: true,
+    saveUnitialized:true,
+    store: MongoStore.create({
+        mongoUrl: mongo_url,
+        ttl: 600 //10 minutos
+    }),
+    cookie: {
+        secure: false, // en true, Asegúrate de usar HTTPS en producción
+        sameSite: 'none' // Permite el envío de la cookie en contextos de terceros
+    }
+}))
 
 //Routing 
 const productsRouter = require("./routes/products.router.js");
