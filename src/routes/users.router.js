@@ -20,8 +20,8 @@ const {uploaderDocs, uploaderProds} = require('../middleware/multer.js')
 const fileds = [{ name: 'document', maxCount: 1 },{ name: 'homeBill', maxCount: 1 },{ name: 'bankBill', maxCount: 1 }]
 
 // Aplicar bodyParser antes de Multer si es necesario
-const bodyParser = require('body-parser');
-router.use(bodyParser.json());
+/* const bodyParser = require('body-parser');
+router.use(bodyParser.json()); */
 
 //////PASSPORT///////////
 //Registro con el middleware de passport y luego hago el login

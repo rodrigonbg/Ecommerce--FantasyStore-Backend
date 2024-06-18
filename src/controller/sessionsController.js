@@ -37,7 +37,17 @@ class sessionsController{
 
     //ruta ¨/failLogin¨, metodo GET
     async failLogin (req, res){
-        res.send({error: 'error al iniciar sesion'})
+        const error = req.flash('error')[0];
+
+        if(error.status === 404){
+            return res.status(404).send({status:404, message:'Usuario no encontrado'})
+        }
+
+        if(error.status === 401){
+            return res.status(401).send({status:401, message:'Contraseña incorrecta'})
+        }
+        
+        return res.status(500).send({status:500, message:'Error desconocido'})
     }
 
     //ruta ¨/github¨, metodo GET con github-passport
@@ -51,6 +61,13 @@ class sessionsController{
         req.session.login = true;
         req.logger.info('Sesion iniciada con github')
         res.redirect('/')
+    }
+
+    async validSession(req,res){
+        if (req.session.login) {
+            return res.status(200).send('session validada')
+        }
+        return res.status(401).send('session invalida')
     }
 }
 

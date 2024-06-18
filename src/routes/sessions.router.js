@@ -13,11 +13,15 @@ router.get('/logoutFront', sessionsController.logoutFront)
 /////PASSPORT/////////
 //local
 router.post('/login', passport.authenticate('login', {failureRedirect : '/api/sessions/failLogin'}), sessionsController.login)
+router.post('/loginFront', passport.authenticate('login', {failureRedirect : '/api/sessions/failLogin'}), sessionsController.loginFront)
 router.get('/failLogin', sessionsController.failLogin)
-router.post('/loginFront', passport.authenticate('login'), sessionsController.loginFront)
 
 //github
 router.get('/github', passport.authenticate('github', {scope : ['user:email']}), sessionsController.github)
 router.get('/githubcallback', passport.authenticate('github', {failureRedirect : '/loginForm'}), sessionsController.githubcallback)
+
+//Validar session activa
+router.get('/valid', sessionsController.validSession)
+
 
 module.exports = router;

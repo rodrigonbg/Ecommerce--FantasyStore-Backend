@@ -24,19 +24,19 @@ const handleErrorCrearProducto = (req, res, next)=>{
         
         
         if (Title || Description || Categoria || IdCategoria || Price || OnSale || Descuento || Stock || Code){
-            console.log(title, description, categoria, idCategoria, price, onSale, descuento, stock, code)
+            console.log('aki',title, description, categoria, idCategoria, price, onSale, descuento, stock, code)
             const error = CustomError.crearError({
                 nombre: "Crear Producto",
                 causa: infoErrorCrearProducto({title, description, categoria, idCategoria, price, onSale, descuento, stock, code}),
                 mensaje: "Error en los datos para crar un Producto.",
                 codigo: idError.TIPO_INVALIDO
-                });
-            res.status(400).send({status:400, message: error.toString()})
-            throw error
+            });
+            
+            return res.status(400).send({status:400, message: error.toString()})
         }
         next()
     }catch (error) {
-        return error
+        next(error)
     }
 }
 
@@ -62,13 +62,12 @@ const handleErrorCrearUser = (req, res, next)=>{
                 mensaje: "Error en los datos para crar un usuario.",
                 codigo: idError.TIPO_INVALIDO
             });
-            res.status(400).send({status:400, message: error.toString()})
-            throw error
+            return res.status(400).send({status:400, message: error.toString()})
         }
         
         next()
     } catch (error) {
-        return error
+        next(error)
     }
 }
 
@@ -87,8 +86,7 @@ const handleErrorAgregarACarrito = async (req, res, next)=>{
                 mensaje: "Error en los datos para agregar un prod a un carrito.",
                 codigo: idError.TIPO_INVALIDO
             });
-            res.status(400).send({status:400, message: error.toString()})
-            throw error
+            return res.status(400).send({status:400, message: error.toString()})
 
         }else{
             //Devuelven el elemento o un strign. 
@@ -107,14 +105,13 @@ const handleErrorAgregarACarrito = async (req, res, next)=>{
                     mensaje: "No se encontraron documentos en la BD para los datos recibidos",
                     codigo: idError.BD
                 });
-                res.status(400).send({status:400, message: error.toString()})
-                throw error
+                return res.status(400).send({status:400, message: error.toString()})
             }
         }            
         next()
         
     } catch (error) {
-        return error
+        next(error)
     }
 }
 

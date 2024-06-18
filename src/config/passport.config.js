@@ -29,13 +29,13 @@ const initializePassport = () => {
                 
                 if(password !== repeatPass){
                     req.flash('error', 'Las contraseñas no coinciden.')
-                    return done(null, false, {status:400, message:'Las contraseñas no coinciden.'})
+                    return done(null, false, {status:401, message:'Las contraseñas no coinciden.'})
                 } 
                 
                 const userDB = await UserModel.findOne({ email: email.toLowerCase()});
                 if (userDB){
                     req.flash('error', 'Ya existe un usuario con ese email.');
-                    return done(null, false, {status:400, message:'Ya existe un usuario con ese mail.'})
+                    return done(null, false, {status:401, message:'Ya existe un usuario con ese mail.'})
                 } 
                 
                 //genermaos el user y lo mandamos con done
@@ -71,14 +71,21 @@ const initializePassport = () => {
 
     passport.use('login',
         new LocalStrategy({
+            passReqToCallback: true, //acceso al objeto req
             usernameField : 'email'
         },
-        async (email, password, done)=>{
+        async (req ,email, password, done)=>{
             try {
                 const userDB = await UserModel.findOne({ email: email.toLowerCase()});
 
-                if(!userDB) return done('Usuario no encontrado.');
-                if(!isValidPassword(password, userDB)) return done ('Contraseña incorrecta.');
+                if(!userDB){
+                    req.flash('error', {status:404, message:'Usuario no encontrado'});
+                    return done(null, false, {status:404, message:'Usuario no encontrado'});
+                } 
+                if(!isValidPassword(password, userDB)){
+                    req.flash('error', {status:401, message:'Contraseña incorrecta'});
+                    return done(null, false, {status:401, message:'Contraseña incorrecta'});
+                }
 
                 await userRepository.updateLastConnection(userDB);
 
