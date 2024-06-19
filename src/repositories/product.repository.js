@@ -5,10 +5,10 @@ class ProductRepository{
     async addProduct(Objeto){
         try {
             //Desestructuro el objeto para hacer las validaciones.
-            let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status = true, stock, alt, owner} = Objeto;
+            let {title, descripcion, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status = true, stock, alt, owner} = Objeto;
     
             //valido campos no vacios y que code no se repita
-            if(!title || !description || !categoria || !idCategoria || !price || !code || !stock){
+            if(!title || !descripcion || !categoria || !idCategoria || !price || !code || !stock){
                 throw new Error ('Deben completarse todos los campos.\n');
             }
             
@@ -18,7 +18,7 @@ class ProductRepository{
             }else{
                 const newProduct = new productModel({
                     title: title,
-                    description: description,
+                    descripcion: descripcion,
                     categoria: categoria,
                     idCategoria: idCategoria,
                     thumbnail: thumbnail,

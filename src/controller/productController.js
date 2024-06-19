@@ -90,8 +90,9 @@ class ProductController {
         try {
             const files = req.files
             let filesReferences = [];
+
             files.forEach(file => {
-                filesReferences.push(`/products/${new Date()}-${file.filename}`)
+                filesReferences.push(`/products/${file.filename}`)
             });
             req.body.thumbnail = filesReferences;
 
@@ -113,7 +114,7 @@ class ProductController {
             await productRepository.addProduct(req.body);
             return res.status(201).redirect("/admin")
         } catch (error) {
-            return res.status(500).send({status:500, message:`Error al subir el nuevo producto. Error: ${error}`})
+            return res.status(500).send({status:500, message:`${error}`})
         }
     }
 
@@ -123,7 +124,7 @@ class ProductController {
             const files = req.files
             let filesReferences = [];
             files.forEach(file => {
-                filesReferences.push(`/products/${new Date()}-${file.filename}`)
+                filesReferences.push(`/products/${file.filename}`)
             });
             req.body.thumbnail = filesReferences;
 
@@ -146,7 +147,7 @@ class ProductController {
             await productRepository.addProduct(req.body)
             return res.status(201).redirect("/premiumProducts")
         } catch (error) {
-            return res.status(500).send({status:500, message:`Error al subir el nuevo producto. Error: ${error}`})
+            return res.status(500).send({status:500, message:`${error}`})
         }
     }
 

@@ -24,7 +24,9 @@ const storageDisk = multer.diskStorage({
         cb(null, destinationFolder);
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname);
+        let numeroAleatorio = Math.floor(Math.random() * 10000000000).toString().padStart(10, '0');
+        let newName = `${numeroAleatorio}-${file.originalname}`
+        cb(null, newName);
     }
 });
 
@@ -41,7 +43,7 @@ const uploaderDocs = multer({
         }
     },
 });
-
+let numeroAleatorio = Math.floor(Math.random() * 10000000000).toString().padStart(10, '0');
 const uploaderProds = multer({
     storage: storageDisk,
     limits: { fileSize: 50 * 1024 * 1024 },

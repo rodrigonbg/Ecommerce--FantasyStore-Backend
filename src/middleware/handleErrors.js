@@ -10,10 +10,10 @@ const productsRepository = new ProductsRepository();
 //Se ejecutarán antes del controller en las rutas verificando que los datos que lleguen al controller sean validos
 const handleErrorCrearProducto = (req, res, next)=>{
     try {
-        const {title, description, categoria, idCategoria, price, onSale, descuento, stock, code} = req.body
+        const {title, descripcion, categoria, idCategoria, price, onSale, descuento, stock, code} = req.body
         //Si no existe, true para entrar al if, si existe y no cumple con el typo requerido, tambien true
         const Title = title? typeof(title) !== 'string' : true
-        const Description = description? typeof(description) !== 'string' : true 
+        const Description = descripcion? typeof(descripcion) !== 'string' : true 
         const Categoria = categoria? typeof(categoria) !== 'string' : true
         const IdCategoria = idCategoria? typeof(idCategoria) !== 'string' : true
         const Price = price? typeof(parseInt(price)) !== 'number' : true
@@ -24,11 +24,11 @@ const handleErrorCrearProducto = (req, res, next)=>{
         
         
         if (Title || Description || Categoria || IdCategoria || Price || OnSale || Descuento || Stock || Code){
-            console.log('aki',title, description, categoria, idCategoria, price, onSale, descuento, stock, code)
+            console.log('aki',title, descripcion, categoria, idCategoria, price, onSale, descuento, stock, code)
             const error = CustomError.crearError({
                 nombre: "Crear Producto",
-                causa: infoErrorCrearProducto({title, description, categoria, idCategoria, price, onSale, descuento, stock, code}),
-                mensaje: "Error en los datos para crar un Producto.",
+                causa: infoErrorCrearProducto({title, descripcion, categoria, idCategoria, price, onSale, descuento, stock, code}),
+                mensaje: "Error en los datos para crear un Producto.",
                 codigo: idError.TIPO_INVALIDO
             });
             
@@ -36,7 +36,7 @@ const handleErrorCrearProducto = (req, res, next)=>{
         }
         next()
     }catch (error) {
-        next(error)
+        return res.status(500).send({status:500, message: error.toString()})
     }
 }
 
