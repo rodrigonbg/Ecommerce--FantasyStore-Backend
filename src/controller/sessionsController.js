@@ -65,7 +65,7 @@ class sessionsController{
 
     async validSession(req,res){
         if (req.session.login) {
-            return res.status(200).send('session validada')
+            return res.status(200).send(req.user)
         }
         return res.status(401).send('session invalida')
     }

@@ -30,7 +30,7 @@ class CartsRepository {
             if ( !cart ) {//Valido que el carrito exista
                 const error = new Error()
                 error.message = `No se encontró el carrito con el id: ${id}`
-                error.name('Cart not found')
+                error.name = 'Cart not found'
                 throw error
             }
             return cart
@@ -47,7 +47,7 @@ class CartsRepository {
             if(!idCart || !idProd){
                 const error = new Error()
                 error.message = `Parametros invalidos`
-                error.name('Parametros invalidos')
+                error.name = 'Parametros invalidos'
                 throw error
             }
 
@@ -55,7 +55,7 @@ class CartsRepository {
             if(!cart){
                 const error = new Error()
                 error.message = `No se encontró el carrito con el id: ${idCart}`
-                error.name('Cart not found')
+                error.name ='Cart not found'
                 throw error
             }
 
@@ -63,25 +63,31 @@ class CartsRepository {
             if(!prod){
                 const error = new Error()
                 error.message = `No se encontró el Producto con el id: ${idCart}`
-                error.name('Product not found')
+                error.name='Product not found'
                 throw error
             }
 
+   
             if (prod.status != true){
                 const error = new Error()
                 error.message = `Este producto se encuentra inactivo.`
-                error.name('Inactive Product')
+                error.name='Inactive Product'
                 throw error
             }
 
             //Veo si en el carrito está el producto
-            const indexInCart = cart.products.findIndex((prod) => prod.product._id.toString() === idProd)
-            
-            if (indexInCart !== -1) {//Si el producto está en el carrito, incremento en la cantidad q por defecto es 1
-                cart.products[indexInCart].quantity += quantityProd;
-            
-            }else{//Si el prod no está, lo creo y lo pusheo
+            if(cart.products.length === 0){
+                
                 cart.products.push({product: idProd, quantity: quantityProd})
+            }else{
+                const indexInCart = cart.products.findIndex((prod) => prod.product._id.toString() === idProd)
+                
+                if (indexInCart !== -1) {//Si el producto está en el carrito, incremento en la cantidad q por defecto es 1
+                    cart.products[indexInCart].quantity += quantityProd;
+                
+                }else{//Si el prod no está, lo creo y lo pusheo
+                    cart.products.push({product: idProd, quantity: quantityProd})
+                }
             }
 
             //Marcamos la propiedad 'products' como modificada antes de guardar
@@ -103,7 +109,7 @@ class CartsRepository {
             if ( !cart ) {//Valido que el carrito exista
                 const error = new Error()
                 error.message = `No se encontró el carrito con el id: ${idCart}`
-                error.name('Cart not found')
+                error.name='Cart not found'
                 throw error
             }
             
@@ -125,14 +131,14 @@ class CartsRepository {
             if(!idCart || !idProd || !quantityProd){
                 const error = new Error()
                 error.message = `Todos los parametros y la cantidad de productos son necesarios`
-                error.name('Parametros invalidos')
+                error.name='Parametros invalidos'
                 throw error
             }
             
             if(!Number.isInteger(parseInt(quantityProd))){
                 const error = new Error()
                 error.message = `La cantidad del producto debe ser un entero.`
-                error.name('Parametros invalidos')
+                error.name='Parametros invalidos'
                 throw error
             }
 
@@ -140,7 +146,7 @@ class CartsRepository {
             if(!cart){
                 const error = new Error()
                 error.message = `No se encontró el carrito con el id: ${idCart}`
-                error.name('Cart not found')
+                error.name='Cart not found'
                 throw error
             }
 
@@ -148,14 +154,14 @@ class CartsRepository {
             if(!prod){
                 const error = new Error()
                 error.message = `No se encontró el producto con el id: ${idProd}`
-                error.name('Product not found')
+                error.name='Product not found'
                 throw error
             }
 
            if (prod.status != true){
                 const error = new Error()
                 error.message = `Este producto se encuentra inactivo.`
-                error.name('Inactive product')
+                error.name='Inactive product'
                 throw error
  
             }
@@ -168,7 +174,7 @@ class CartsRepository {
             }else{//Si el prod no está, informo del error
                 const error = new Error()
                 error.message = `No se encontró el producto con el id: ${idProd} en el carrito.`
-                error.name('Product not found in cart')
+                error.name='Product not found in cart'
                 throw error
             }
 
@@ -186,7 +192,7 @@ class CartsRepository {
             if(!idCart || !idProd){
                 const error = new Error()
                 error.message = `Parametros invalidos`
-                error.name('Parametros invalidos')
+                error.name='Parametros invalidos'
                 throw error
             }
 
@@ -194,7 +200,7 @@ class CartsRepository {
             if(!cart){
                 const error = new Error()
                 error.message = `No se encontró el carrito con el id: ${idCart}`
-                error.name('Cart not found')
+                error.name='Cart not found'
                 throw error
             }
 
@@ -206,7 +212,7 @@ class CartsRepository {
             }else{//Si el prod no está, evio mensaje
                 const error = new Error()
                 error.message = `El  producto con ID "${idProd}" no se encuentra en este carrito.`
-                error.name('Product not found in cart')
+                error.name='Product not found in cart'
                 throw error
             }
             
@@ -225,7 +231,7 @@ class CartsRepository {
             if ( !cart ) {//Valido que el carrito exista
                 const error = new Error()
                 error.message = `No se encontró el carrito con el id: ${idCart}`
-                error.name('Cart not found')
+                error.name='Cart not found'
                 throw error
             }
             return cart

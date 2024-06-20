@@ -67,7 +67,7 @@ const handleErrorCrearUser = (req, res, next)=>{
         
         next()
     } catch (error) {
-        next(error)
+        return res.status(500).send({status:500, message: error.toString()})
     }
 }
 
@@ -111,7 +111,7 @@ const handleErrorAgregarACarrito = async (req, res, next)=>{
         next()
         
     } catch (error) {
-        next(error)
+        return res.status(500).send({status:500, message: error.toString()})
     }
 }
 

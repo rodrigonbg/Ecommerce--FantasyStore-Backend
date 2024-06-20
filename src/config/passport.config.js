@@ -176,7 +176,7 @@ const initializePassport = () => {
 
     passport.deserializeUser( async (id ,done) =>{
         const user = await UserModel.findById({_id : id});
-        const dtoUser = new DTOUser(user._id, user.first_name, user.last_name, user.rol, user.email, user.cart);
+        const dtoUser = new DTOUser(user._id, user.first_name, user.last_name, user.rol, user.email, user.cart, user.last_connection, user.documents, user.age);
         done(null, dtoUser);
     })
 

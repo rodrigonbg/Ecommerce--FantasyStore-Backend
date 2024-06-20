@@ -35,13 +35,13 @@ class CartsController {
         try {
             let cid = req.params.cid;
             if (!cid){
-                return res.status(400).send({status:400, message: 'Solicitud incorrecta. El parámetros de consulta no es válido.' })
+                return res.status(400).send({status:400, message: 'Solicitud incorrecta. No se encontró un ID de cart asignado.' })
             } 
             
             const cart = await cartsRepository.getCartbyId(cid)
             
             if(!cart || cart.length === 0){
-                return res.status(404).send({status:404, message: 'No se encontró el carrito.'})
+                return res.status(404).send({status:404, message: 'No se encontró el carrito con el ID asignado.'})
             }
             
             req.logger.info('carrito por id obtenido con exito')
@@ -49,7 +49,7 @@ class CartsController {
 
         } catch (error) {
             req.logger.error('No se pudo obtener el carrito por id. ', error)
-            res.status(500).send({status:500, message: `Ocurrio un error interno del servidor. Error: ${error}` })
+            res.status(500).send({status:500, message: `${error}` })
         }
     }
     

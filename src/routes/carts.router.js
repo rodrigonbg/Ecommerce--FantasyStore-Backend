@@ -31,7 +31,7 @@ router.get("/:cid/purchase",isLoged, cartController.finishPurchase)//Para prueba
 
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar carrito con arreglo
-router.put('/:cid',isLoged, authAdminAccess, cartController.updateProductsWithArrayInCart)
+router.put('/:cid',isLoged, cartController.updateProductsWithArrayInCart)
 
 //Actualizar cantidad de un prod en el carrito
 router.put('/:cid/products/:pid', cartController.updateQuantityOfProdInCart)
