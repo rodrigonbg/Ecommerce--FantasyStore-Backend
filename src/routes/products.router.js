@@ -18,6 +18,9 @@ const {uploaderDocs, uploaderProds} = require('../middleware/multer.js')
 router.get("/", productcontroller.getProducts)
 router.get("/mockingproducts", isLoged, authAdminAccess, productcontroller.getProductsFaker)
 
+//productos por owner
+router.get("/productsOwner", isLoged, productcontroller.getProductsOwner)
+
 //productos por ID
 router.get("/:pid", productcontroller.getProductById)
 
@@ -31,6 +34,8 @@ router.post("/premium", uploaderProds.array('thumbnail'), isLoged, authPremiumAc
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar un producto en la base de datos
 router.put("/:pid", authAdminAccess, handleErrorCrearProducto, uploaderProds.array('thumbnail'), productcontroller.updateProduct)
+
+
 
 /* ----------------------------------------DELETEs----------------------------------------------- */
 //Eliminar un producto de la base de datos (admin)

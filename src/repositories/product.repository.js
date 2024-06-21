@@ -57,7 +57,7 @@ class ProductRepository{
 
     async getProductsByOwner (email) {
         try {
-            const products = await productModel.find({ owner: email })
+            const products = await productModel.find({ owner: email.toString() })
             return products;
         } catch (error) {
             throw error;

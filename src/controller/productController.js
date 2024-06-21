@@ -17,7 +17,7 @@ class ProductController {
 
             return res.status(200).send(arrayProductos)
         } catch (error) {
-            return res.status(500).send(`Error al mostrar los productos con faker. Error: ${error}`)
+            return res.status(500).json({status:500, message: `${error}`});
         }
     }
 
@@ -56,10 +56,26 @@ class ProductController {
             return res.status(200).send(arrayProductos)
     
         } catch (error) {
-            // Por defecto, si ocurre un error no especificado
-            return res.status(500).json({status:500,
-                message: `Error interno del servidor. No se pudieron obtener los productos. Error: ${error}`
-            });
+            return res.status(500).json({status:500, message: `${error}`});
+        }
+    }
+
+    //ruta ¨/premiumProducts¨, metodo GET
+    async getProductsOwner(req, res){
+        try {
+
+            const owner = req.user.correo === 'admincoder@coder.com' ? 'admin' : req.user.correo
+
+            if(!owner){
+                return res.status(401).json({status:401, message: `No hay usuario logueado`});
+            }
+
+            const arrayProductos = await productRepository.getProductsByOwner(owner);
+
+            return res.status(200).send(arrayProductos)
+    
+        } catch (error) {
+            return res.status(500).json({status:500, message: `${error}`});
         }
     }
 
@@ -81,7 +97,7 @@ class ProductController {
 
             return res.status(200).send(prod);
         }catch(error){
-            return res.status(500).send({status:500 ,message:`Error al mostrar el producto de ID ${req.params.pid}. Error (${error})`})
+            return res.status(500).json({status:500, message: `${error}`});
         }
     }
     
@@ -169,7 +185,7 @@ class ProductController {
             if(error.name === 'Product not found'){
                 res.status(404).send({status:404, message: error.message})
             }
-            res.status(500).send({status:500, message:`Error al actualizar el producto. ERROR ${error}`})
+            return res.status(500).json({status:500, message: `${error}`});
         }
     }
 
@@ -202,7 +218,7 @@ class ProductController {
                 .then(respuesta => res.status(200).redirect('/admin'))
 
         }catch(error){
-            return res.status(500).send(`Error al eliminar el producto. ERROR ${error}`)
+            return res.status(500).json({status:500, message: `${error}`});
         }
     }
 
@@ -235,7 +251,7 @@ class ProductController {
             return res.status(403).send({status:403, message:'No tienes permisos para eliminar un producto.'})()
 
         }catch(error){
-            return res.status(500).send({status:500, message:`Error al eliminar el producto. ERROR ${error}`})
+            return res.status(500).json({status:500, message: `${error}`});
         }
     }
 }
