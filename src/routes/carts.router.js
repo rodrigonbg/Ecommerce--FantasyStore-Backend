@@ -15,8 +15,15 @@ const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrit
 //GET todos los carritos
 router.get("/", cartController.getCarts)
 
+//GET todos los tickets
+router.get("/tickets", cartController.getTickets)
+
 //carrito por ID
 router.get("/:cid", cartController.getCartbyId)
+
+
+//ticket por email
+router.get("/tickets/:email", cartController.getTicketByPurchaser)
 
 /* ----------------------------------------POSTs----------------------------------------------- */
 //Crear un nuevo carrito

@@ -43,6 +43,24 @@ class TicketsRepository{
         }
     }
 
+    async getTickets(){
+        try {
+            const tickets = await TicketsModel.find()
+            return tickets
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getTicketByPurchaser(email){
+        try {
+            //guardo el nuevo ticket
+            const tickets = await TicketsModel.find({ purchaser: email.toString() })
+            return tickets
+        } catch (error) {
+            throw error
+        }
+    }
     
 }
 

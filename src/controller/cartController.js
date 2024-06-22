@@ -8,8 +8,8 @@ const ProductsRepository = require("../repositories/product.repository.js");
 const productsRepository = new ProductsRepository();
 
 const TicketRepository = require("../repositories/ticket.repository.js");
-const { sendPurchaseMail } = require("../services/emailsManager.js");
 const ticketRepository = new TicketRepository();
+const { sendPurchaseMail } = require("../services/emailsManager.js");
 
 class CartsController {
 
@@ -26,7 +26,7 @@ class CartsController {
 
         } catch (error) {
             req.logger.error('No se pudieron obtener los carritos: ', error)
-            return res.status(500).send({status:404, message:`Error interno del servidor. No se pudieron obtener los carritos. ERROR ${error}`})
+            return res.status(500).send({status:500, message:`${error}`})
         }
     }
     
@@ -49,10 +49,50 @@ class CartsController {
 
         } catch (error) {
             req.logger.error('No se pudo obtener el carrito por id. ', error)
-            res.status(500).send({status:500, message: `${error}` })
+            return res.status(500).send({status:500, message: `${error}` })
         }
     }
     
+    //ruta ¨/tickets¨, metodo GET
+    async getTickets(req, res){
+        try {
+            const tickets = await ticketRepository.getTickets()
+            if (!tickets) {
+                return res.status(404).send({status:404, message: "No se encontraron tickets."});
+            }
+            
+            req.logger.info('tickets obtenidos con exito')
+            return res.status(200).send(tickets);
+
+        } catch (error) {
+            req.logger.error('No se pudieron obtener los tickets: ', error)
+            return res.status(500).send({status:500, message:`${error}`})
+        }
+    }
+    
+    //ruta ¨/tickets/:email, metodo GET
+    async getTicketByPurchaser(req, res) {
+        try {
+            let email = req.params.email;
+            if (!email){
+                return res.status(400).send({status:400, message: 'Solicitud incorrecta. No se encontró un email del owner de los tickets.' })
+            } 
+            
+            const tickets = await ticketRepository.getTicketByPurchaser(email)
+            
+            if(!tickets){
+                return res.status(404).send({status:404, message: 'No se encontraron tickets con el email asignado.'})
+            }
+            
+            req.logger.info('tickets por email obtenidos con exito')
+            return res.status(200).send(tickets)
+
+        } catch (error) {
+            req.logger.error('No se pudo obtener el tickets por email. ', error)
+            return res.status(500).send({status:500, message: `${error}` })
+        }
+    }
+
     //ruta ¨/¨, metodo POST
     async createCart(req, res){
         try {
@@ -130,42 +170,51 @@ class CartsController {
                     if(productoBD.stock >= prod.quantity){
                             
                         //Me creo el prod a guardar en el ticket
-                        const {_id, title, price, onSale, descuento, code}= prod.product;
+                        const {_id, title, price, onSale, thumbnail, descuento, code, owner}= prod.product;
                         const ticketProd = {
                             _id: _id,
                             title: title,
+                            thumbnail: thumbnail,
                             price: price,
                             onSale :onSale,
                             descuento: descuento,
-                            code: code
+                            code: code,
+                            owner: owner
                         }
                             
                         purchase.push({product: ticketProd, quantity: prod.quantity})
                         amount += (prod.product.price - (prod.product.descuento * prod.product.price /100)) * prod.quantity
-                        const updatedProd = await productsRepository.subtractStock(prod.product._id ,prod.quantity);
                     }else{
                         //si no hay stock lo agrego a otro arreglo para gestionarlo luego
                         cartNonStock.push(prod);
                     }
                 };
-                    
+
                 if(purchase.length > 0){
                     //Genero el ticket con el total de la compra 
                     const ticket = await ticketRepository.addTicket(amount, user.email, purchase)
-                                        .then((ticket)=> {
-                                            req.logger.info('nuevo ticket generado')
-                                            return ticket;
-                                        })
-                                        .catch((error)=>{
-                                            req.logger.error(`error al generar el ticket, ${error}`)
-                                            return res.status(400).send({status:400, message: `error al generar el ticket, ${error}`})
-                                        })
+                        .then(async (ticket)=> {
 
-                    //actualizo el carrito con solo los prods que no se pudieron comprar.
-                    await cartsRepository.updateProductsWithArrayInCart(cid, cartNonStock)
-                                        .then(()=>req.logger.info('carrito actualizado'))
+                            //Si se genera el ticket, resto el stock de los productos
+                            for (const item of purchase){
+                                await productsRepository.subtractStock(item.product._id ,item.quantity);
+                            }
 
-                    await sendPurchaseMail(user.email, user.first_name, ticket);
+                            //actualizo el carrito con solo los prods que no se pudieron comprar.
+                            await cartsRepository.updateProductsWithArrayInCart(cid, cartNonStock)
+                                .then(()=>req.logger.info('carrito actualizado'))
+
+                            //Envio el ticket de compra
+                            await sendPurchaseMail(user.email, user.first_name, ticket);
+
+                            req.logger.info('nuevo ticket generado')
+                                return ticket;
+                        })
+
+                        .catch((error)=>{
+                            req.logger.error(`error al generar el ticket, ${error}`)
+                            return res.status(400).send({status:400, message: `error al generar el ticket, ${error}`})
+                        })
                     
                     return res.status(201).send(ticket);
                 }else{
