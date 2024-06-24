@@ -9,7 +9,7 @@ const cookieParser =  require('cookie-parser');
 const MongoStore = require("connect-mongo")
 const session = require('express-session')
 const configObject = require('./config/dotenv.config.js')
-const PUERTO = configObject.port;
+const PUERTO = configObject.port||8080;
 const mongo_url = configObject.mongo_url;
 
 const app = express();
