@@ -13,7 +13,7 @@ class UserRepository{
 
                 const response = [];
                 users.forEach((user)=>{
-                    let userDto = new userProfileDTO(user._id, user.first_name, user.last_name, user.rol, user.correo, user.cart, user.last_connection, user.documents)
+                    let userDto = new userProfileDTO(user._id, user.first_name, user.last_name, user.rol, user.email, user.cart, user.last_connection, user.documents)
                     response.push(userDto)
                 })
 
