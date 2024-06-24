@@ -99,7 +99,7 @@ Algunas de rutas a las que se puede acceder una vez el servidor está iniciado s
     Este proyecto backend está diseñado para ser utilizado con un frontend ya que las vistas con handlebars son muy básicas. 
     Puedes encontrar un proyecto frontend desarrollado con react al cual se encuentra conectado en el siguiente repositorio:
     ```
-    -----------
+    main--front-fantasy-store.netlify.app/
     ```
     El frontend se conecta a este backend para proporcionar una interfaz de usuario amigable y funcional para el e-commerce.
 
@@ -111,8 +111,7 @@ Algunas de rutas a las que se puede acceder una vez el servidor está iniciado s
     Abre un Pull Request.
 
 Licencia
-Este proyecto está bajo la licencia MIT. Consulta el archivo LICENSE para más detalles.
-Contacto
+Este proyecto está bajo la licencia MIT.
 
     Autor: Rodrigo Rodirguez
     Correo: Rodrigonbg@hotmail.com
