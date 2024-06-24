@@ -1,13 +1,11 @@
 const express = require("express");
 const router = express.Router();
-
-//Cart Controller
 const CartController = require("../controller/cartController.js")
 const cartController = new CartController()
 
 //Midlewares
-const {authAdminAccess, authUserAccess, isLoged} = require('../middleware/profileAccess.js')
-const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
+const {authAdminAccess, isLoged} = require('../middleware/profileAccess.js')
+const {handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
 
 //ROUTING
 
@@ -25,6 +23,7 @@ router.get("/:cid", cartController.getCartbyId)
 //ticket por email
 router.get("/tickets/:email", cartController.getTicketByPurchaser)
 
+
 /* ----------------------------------------POSTs----------------------------------------------- */
 //Crear un nuevo carrito
 router.post("/", authAdminAccess, cartController.createCart)
@@ -36,12 +35,14 @@ router.post("/:cid/products/:pid",isLoged, handleErrorAgregarACarrito, cartContr
 router.post("/:cid/purchase",isLoged, cartController.finishPurchase)
 router.get("/:cid/purchase",isLoged, cartController.finishPurchase)//Para pruebas
 
+
 /* ----------------------------------------PUTs----------------------------------------------- */
 //Actualizar carrito con arreglo
 router.put('/:cid',isLoged, cartController.updateProductsWithArrayInCart)
 
 //Actualizar cantidad de un prod en el carrito
 router.put('/:cid/products/:pid', cartController.updateQuantityOfProdInCart)
+
 
 /* ----------------------------------------DELETEs----------------------------------------------- */
 //Eliminar un carrito

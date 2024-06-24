@@ -11,6 +11,7 @@ const niveles = {
         http: 4,
         debug: 5
     },
+    
     //Colores para formatear la salida 
     colores: {
         fatal: "red",

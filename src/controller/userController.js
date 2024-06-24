@@ -1,9 +1,9 @@
 const UserRepository = require("../repositories/user.repository.js");
-const userRepository = new UserRepository();
-
 const generateToken =  require('../utils/resetPassToken.js');
 const {sendRecoveryPassMail, sendUserDeletedforIncactivity} = require('../services/emailsManager.js');
 const {isValidPassword} = require('../utils/hashBcrypt.js');
+
+const userRepository = new UserRepository();
 
 class userController{
 
@@ -23,7 +23,6 @@ class userController{
             })
 
             inactive.forEach(async (user)=>{
-
                 await userRepository.deleteUser(user)
                     .then(async ()=>{
                         await sendUserDeletedforIncactivity(user.email, user.first_name, user.last_name)
@@ -35,11 +34,11 @@ class userController{
 
             if (inactive.length >= 1){
                 return res.status(200).send(`Usuarios elmininados: ${inactive}`)
-                }
+            }
             return res.status(200).send(`No hay usuarios que hayan estado incativos suficiente tiempo para eliminarlos.`)
 
         } catch (error) {
-            res.send(error)
+            return res.status(500).send(`${error}`)
         }
     }
 
@@ -48,25 +47,24 @@ class userController{
             const {uid} = req.params;
             await userRepository.deleteUser(uid);
 
-            res.send('usuario eliminado')  
+            return res.send('usuario eliminado')  
         } catch (error) {
-            res.send(error)
+            return res.status(500).send(`${error}`)
         }
     }
 
     async getUsers(req, res){
         try {
             const users = await userRepository.getUsers();
-            res.send(users)
+            return res.send(users)
         } catch (error) {
-            res.send(error)
+            return res.status(500).send(`${error}`)
         }
     }
 
     //ruta ':uid/documents', método POST
     async addDocuments(req, res){
         try {
-            console.log(req.files)
             const {document, homeBill, bankBill} = req.files;
             const {uid} = req.params;
             
@@ -110,7 +108,7 @@ class userController{
                 
         } catch (error) {
             req.logger.error('error al enviar mail de recuepracion.', error)
-            res.send(error)
+            return res.status(500).send(`${error}`)
         }
     }
 
@@ -141,7 +139,7 @@ class userController{
 
         } catch (error) {
             req.logger.error('error al resetaear la contraseña.', error)
-            res.send(error)
+            return res.status(500).send(`${error}`)
         }
 
     }
@@ -149,7 +147,6 @@ class userController{
     //ruta ¨//premium/:uid¨, metodo POST
     async changeUserRol(req,res){
         try {
-            //Me guardo el id del user
             let uid = req.params.uid;
 
             const user = await userRepository.getUserbyId(uid);
@@ -181,9 +178,8 @@ class userController{
 
         } catch (error) {
             req.logger.error('error al camiar el rol del user.', error)
-            res.send(error)
+            return res.status(500).send(`${error}`)
         }
-
     }
 }
 

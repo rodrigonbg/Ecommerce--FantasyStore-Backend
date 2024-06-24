@@ -1,11 +1,8 @@
 const mongoose = require('mongoose');
 const assert = require('assert');
-const { ObjectId } = require('mongodb');
-
 const ProductRepository = require('../../src/repositories/product.repository.js')
 
 const mongo_url_testing = 'mongodb+srv://rodrigonbg:AtlasPass361713@cluster0.cik8wio.mongodb.net/E-Commerce-Fantasy-Store-TESTING?retryWrites=true&w=majority';
-
 mongoose.connect(mongo_url_testing);
 
 describe('Testing de módulo de productos.', async function(){
@@ -26,10 +23,10 @@ describe('Testing de módulo de productos.', async function(){
             description: 'Producto agregado para testear el funcionamiento de la función.',
             categoria: 'testing',
             idCategoria: 10,
-            //thumbnail: not required
+            thumbnail: [],
             price: 5000,
             onSale: false,
-            descuento: 0, //si esta en venta se puede poner un descuento
+            descuento: 0,
             stock: 10,
             //alt: not required,
             status: true,

@@ -20,9 +20,10 @@ const sendPurchaseMail = async (mailToSend, firstName, ticket) =>{
                         <p>Tu número de orden es: ${ticket.code}</p>
                     </div>`,
         };
+
         await transporter.sendMail(mail)
-        .then(()=>console.log('Mail de compra enviado'))
-        .catch((err)=> console.log('no se pudo enviar el mail de compra ', err))
+            .then(()=>console.log('Mail de compra enviado'))
+            .catch((err)=> console.log('no se pudo enviar el mail de compra ', err))
     } catch (error) {
         return error;
     }
@@ -43,9 +44,10 @@ const sendRecoveryPassMail = async (mailToSend, firstName, token) =>{
                         <p>Si no solicitaste este restablecimiento, ignora este correo.</p>
                     </div>`,
         };
+
         await transporter.sendMail(mail)
-        .then(()=>console.log('Mail de restablecimiento enviado'))
-        .catch((err)=> console.log('no se pudo enviar el mail de restablecimiento ', err))
+            .then(()=>console.log('Mail de restablecimiento enviado'))
+            .catch((err)=> console.log('no se pudo enviar el mail de restablecimiento ', err))
     } catch (error) {
         return error;
     }
@@ -62,9 +64,10 @@ const sendUserDeletedforIncactivity = async (mailToSend, firstName, lastName) =>
                         <p>Le informamos que su cuenta en Fantasy Store ha sido eliminada por inactivaidad prolongada.</p>
                     </div>`,
         };
+
         await transporter.sendMail(mail)
-        .then(()=>console.log('Mail de usuario elminiado enviado'))
-        .catch((err)=> console.log('no se pudo enviar el mail de usuario elminiado. ', err))
+            .then(()=>console.log('Mail de usuario elminiado enviado'))
+            .catch((err)=> console.log('no se pudo enviar el mail de usuario elminiado. ', err))
     } catch (error) {
         return error;
     }
@@ -81,9 +84,10 @@ const sendProductDeleted = async (mailToSend, firstName, lastName, product) =>{
                         <p>Le informamos que su producto ${product.title} ya no se encuentra disponible para la venta.</p>
                     </div>`,
         };
+        
         await transporter.sendMail(mail)
-        .then(()=>console.log('Mail de producto elminiado enviado'))
-        .catch((err)=> console.log('no se pudo enviar el mail de producto elminiado. ', err))
+            .then(()=>console.log('Mail de producto elminiado enviado'))
+            .catch((err)=> console.log('no se pudo enviar el mail de producto elminiado. ', err))
     } catch (error) {
         return error;
     }

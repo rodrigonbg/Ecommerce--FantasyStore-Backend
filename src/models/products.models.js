@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2")
 
-
-//colleccion
 const productsCollection = "products";
 
-//Esquema del modelo de productos
 const  productSchema = new mongoose.Schema({
     title:{ type: String, require: true}, 
     descripcion: { type: String, require: true},
@@ -14,7 +11,7 @@ const  productSchema = new mongoose.Schema({
     thumbnail: { type:[String], require: false},
     price: { type: Number, require: true},
     onSale: { type: Boolean, require: true},
-    descuento: { type: Number, require: true}, //si esta en venta se puede poner un descuento
+    descuento: { type: Number, require: true},
     stock: { type: Number, require: true},
     alt: { type: String, require: false},
     status: { type: Boolean, require: true},
@@ -25,7 +22,6 @@ const  productSchema = new mongoose.Schema({
 //Plugin de paginate
 productSchema.plugin(mongoosePaginate)
 
-//Definimos el modelo
 const  ProductsModel= mongoose.model(productsCollection ,productSchema);
 
 module.exports = ProductsModel;

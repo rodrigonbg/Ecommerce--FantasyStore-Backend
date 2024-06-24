@@ -16,7 +16,6 @@ class BaseDatos {
             .catch(err => console.log(err))
     }
 
-    //el metodo tambien le pertenece a la clase
     static getInstancia() {
         //Si existe una instancia, la retonramos
         if(this.#instancia) {

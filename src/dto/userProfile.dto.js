@@ -14,5 +14,4 @@ class userProfileDTO{
     }
 }
 
-
 module.exports = userProfileDTO;

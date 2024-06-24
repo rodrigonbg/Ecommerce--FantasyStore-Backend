@@ -1,27 +1,16 @@
 const express = require("express");
 const router = express.Router();
-
 const passport = require("passport");
-
-//Sessions Controller
 const SessionsController = require('../controller/sessionsController.js');
 const sessionsController = new SessionsController();
-
-//User Controller
 const UserController = require('../controller/userController.js');
 const userController = new UserController();
 
 //Midlewares
-const {handleErrorCrearProducto, handleErrorCrearUser, handleErrorAgregarACarrito} =require('../middleware/handleErrors.js')
-const {authAdminAccess, authNotAdminAccess, authNotUserAccess, authUserAccess,authPremiumAccess, isLoged} = require('../middleware/profileAccess.js')
-
-//Multer
-const {uploaderDocs, uploaderProds} = require('../middleware/multer.js')
+const {handleErrorCrearUser} =require('../middleware/handleErrors.js')
+const {authAdminAccess, isLoged} = require('../middleware/profileAccess.js')
+const {uploaderDocs} = require('../middleware/multer.js')
 const fileds = [{ name: 'document', maxCount: 1 },{ name: 'homeBill', maxCount: 1 },{ name: 'bankBill', maxCount: 1 }]
-
-// Aplicar bodyParser antes de Multer si es necesario
-/* const bodyParser = require('body-parser');
-router.use(bodyParser.json()); */
 
 //////PASSPORT///////////
 //Registro con el middleware de passport y luego hago el login

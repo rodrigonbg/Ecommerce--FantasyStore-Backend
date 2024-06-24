@@ -24,7 +24,7 @@ class TicketsRepository{
                 throw error
             }
 
-            const str = Math.random().toString(36).substring(2);//String randome
+            const str = Math.random().toString(36).substring(2);//String random
             const date =  new Date();
 
             const newTicket = new TicketsModel({
@@ -35,7 +35,6 @@ class TicketsRepository{
                 products: prods
             })
     
-            //guardo el nuevo ticket
             const ticket = await newTicket.save().then(res => res).catch(err => err); 
             return ticket
         } catch (error) {
@@ -54,7 +53,6 @@ class TicketsRepository{
 
     async getTicketByPurchaser(email){
         try {
-            //guardo el nuevo ticket
             const tickets = await TicketsModel.find({ purchaser: email.toString() })
             return tickets
         } catch (error) {

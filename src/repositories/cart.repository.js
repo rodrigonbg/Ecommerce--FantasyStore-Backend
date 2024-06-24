@@ -2,13 +2,10 @@ const cartsModel = require("../models/carts.models");
 const productsModel = require("../models/products.models.js")
 
 class CartsRepository {
+
     async createCart(){
         try {
-            const newCart = new cartsModel ({
-                products : []// Por defecto se crea vacío
-            })
-            
-            //Guardo el carrito en la base de datos
+            const newCart = new cartsModel ({products : []})// Por defecto se crea vacío
             const respuesta = await newCart.save()
             return respuesta
         } catch (error) {
@@ -27,7 +24,7 @@ class CartsRepository {
     async getCartbyId(id) {
         try {
             const cart = await cartsModel.findById(id)
-            if ( !cart ) {//Valido que el carrito exista
+            if ( !cart ) {
                 const error = new Error()
                 error.message = `No se encontró el carrito con el id: ${id}`
                 error.name = 'Cart not found'
@@ -40,7 +37,6 @@ class CartsRepository {
     }
 
     async addProductToCart(idCart, idProd, quantityProd=1){
-        //Para agregar un producto al carrito, le paso directamente el id del carrito, del prod y la cantidad que por defecto es 1
         //Si el prod ya está en el carrito, actualizo la acantidad. De lo contrario lo agrego.
         try {
             
@@ -77,7 +73,6 @@ class CartsRepository {
 
             //Veo si en el carrito está el producto
             if(cart.products.length === 0){
-                
                 cart.products.push({product: idProd, quantity: quantityProd})
             }else{
                 const indexInCart = cart.products.findIndex((prod) => prod.product._id.toString() === idProd)
@@ -85,15 +80,13 @@ class CartsRepository {
                 if (indexInCart !== -1) {//Si el producto está en el carrito, incremento en la cantidad q por defecto es 1
                     cart.products[indexInCart].quantity += quantityProd;
                 
-                }else{//Si el prod no está, lo creo y lo pusheo
+                }else{
                     cart.products.push({product: idProd, quantity: quantityProd})
                 }
             }
 
             //Marcamos la propiedad 'products' como modificada antes de guardar
             cart.markModified('products')
-
-            //Finalmente guardo el carrito actualizado
             return await cart.save();
         } catch (error) {
             throw error
@@ -101,25 +94,18 @@ class CartsRepository {
     }
 
     async updateProductsWithArrayInCart(idCart, arrayProds=[]){
-        //Por defecto, el array de prods es vacío
         try {
-            //me traigo el carrito y el producto
-            const cart = await cartsModel.findById(idCart)
 
-            if ( !cart ) {//Valido que el carrito exista
+            const cart = await cartsModel.findById(idCart)
+            if ( !cart ) {
                 const error = new Error()
                 error.message = `No se encontró el carrito con el id: ${idCart}`
                 error.name='Cart not found'
                 throw error
             }
             
-            //actualizo el carrito
             cart.products = arrayProds;
-
-            //Marcamos la propiedad 'products' como modificada antes de guardar
             cart.markModified('products')
-
-            //Finalmente guardo el carrito actualizado
             return await cart.save();
         } catch (error) {
             throw error
@@ -180,7 +166,6 @@ class CartsRepository {
 
             //Marcamos la propiedad 'products' como modificada antes de guardar
             cart.markModified('products')
-
             return await cart.save();
         } catch (error) {
             throw error
@@ -204,22 +189,20 @@ class CartsRepository {
                 throw error
             }
 
-            //Veo si en el carrito está el producto
             const indexInCart = cart.products.findIndex((prod) => prod.product._id.toString() === idProd)
     
-            if (indexInCart !== -1) {//Si el producto está en el carrito, lo borro
+            if (indexInCart !== -1) {
                 cart.products.splice(indexInCart, 1);
-            }else{//Si el prod no está, evio mensaje
+            }else{
                 const error = new Error()
                 error.message = `El  producto con ID "${idProd}" no se encuentra en este carrito.`
                 error.name='Product not found in cart'
                 throw error
             }
             
-            //Marcamos la propiedad 'products' como modificada antes de guardar
             cart.markModified('products')
             return await cart.save()
-            
+        
         } catch (error) {
             throw error
         }
@@ -228,14 +211,13 @@ class CartsRepository {
     async deleteCart(idCart){
         try {
             const cart = await cartsModel.findByIdAndDelete(idCart);
-            if ( !cart ) {//Valido que el carrito exista
+            if ( !cart ) {
                 const error = new Error()
                 error.message = `No se encontró el carrito con el id: ${idCart}`
                 error.name='Cart not found'
                 throw error
             }
             return cart
-
         } catch (error) {
            throw error
         }

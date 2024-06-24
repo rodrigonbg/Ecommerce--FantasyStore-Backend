@@ -1,10 +1,9 @@
 const idError = require('../services/errors/idErrors.js')
 const CustomError = require('../services/errors/custom-error.js')
 const {infoErrorCrearProducto, infoErrorCrearUser, infoErrorAgregarACarrito} = require('../services/errors/info.js')
-
 const CartsRepository = require("../repositories/cart.repository.js");
-const cartsRepository = new CartsRepository();
 const ProductsRepository = require("../repositories/product.repository.js");
+const cartsRepository = new CartsRepository();
 const productsRepository = new ProductsRepository();
 
 //Se ejecutarán antes del controller en las rutas verificando que los datos que lleguen al controller sean validos
@@ -24,16 +23,15 @@ const handleErrorCrearProducto = (req, res, next)=>{
         
         
         if (Title || Description || Categoria || IdCategoria || Price || OnSale || Descuento || Stock || Code){
-            console.log('aki',title, descripcion, categoria, idCategoria, price, onSale, descuento, stock, code)
             const error = CustomError.crearError({
                 nombre: "Crear Producto",
                 causa: infoErrorCrearProducto({title, descripcion, categoria, idCategoria, price, onSale, descuento, stock, code}),
                 mensaje: "Error en los datos para crear un Producto.",
                 codigo: idError.TIPO_INVALIDO
             });
-            
             return res.status(400).send({status:400, message: error.toString()})
         }
+
         next()
     }catch (error) {
         return res.status(500).send({status:500, message: error.toString()})
@@ -44,18 +42,13 @@ const handleErrorCrearUser = (req, res, next)=>{
     try {
         const {first_name, last_name, email, age, password, cart, rol} = req.body
         
-        //si el valor no exite, como no es necesario, false. en el caso de existir veo que sea del  typo q quiero
         const Age = !age? typeof(age) !== 'number' : false 
         const Last_name = !last_name? typeof(last_name) !== 'string' : false 
-        
-        //Si no existe, true para entrar al if 
         const First_name = first_name? typeof(first_name) !== 'string' : true
         const Email = email? typeof(email) !== 'string' : true 
         const Password = password? typeof(password) !== 'string' : true
-        //const Rol = rol? (rol !== 'admin' || rol !== 'usuario'): true
-        //const Cart = cart? false : true
         
-        if (First_name || Email || Password || Last_name || Age){//No me fijo en el rol y el cart porqe se agregan en el apso siguiente por local passport
+        if (First_name || Email || Password || Last_name || Age){//No me fijo en el rol y el cart porqe se agregan en el paso siguiente por local passport
             const error = CustomError.crearError({
                 nombre: "Crear User",
                 causa: infoErrorCrearUser({first_name, last_name, email, age, password, cart, rol}),
@@ -75,7 +68,6 @@ const handleErrorAgregarACarrito = async (req, res, next)=>{
     try {
         const {pid, cid} = req.params
     
-        //Si no existe, true para entrar al if 
         const Pid = pid? typeof(pid) !== 'string': true
         const Cid = cid? typeof(cid) !== 'string' : true 
         
@@ -88,12 +80,10 @@ const handleErrorAgregarACarrito = async (req, res, next)=>{
             });
             return res.status(400).send({status:400, message: error.toString()})
 
-        }else{
-            //Devuelven el elemento o un strign. 
+        }else{ 
             const cart = await cartsRepository.getCartbyId(cid);
             const prod = await productsRepository.getProductById(pid);
             
-            //Si el retorno es valido, true (si no existe, false. Si existe y no es string, true)
             const Cart = !cart? false : typeof(cart) !== 'string'
             const Prod = !prod? false : typeof(prod) !== 'string'
 

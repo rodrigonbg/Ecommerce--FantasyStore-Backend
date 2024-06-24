@@ -9,6 +9,7 @@ const productsRepository = new ProductsRepository();
 
 const TicketRepository = require("../repositories/ticket.repository.js");
 const ticketRepository = new TicketRepository();
+
 const { sendPurchaseMail } = require("../services/emailsManager.js");
 
 class CartsController {
@@ -39,7 +40,6 @@ class CartsController {
             } 
             
             const cart = await cartsRepository.getCartbyId(cid)
-            
             if(!cart || cart.length === 0){
                 return res.status(404).send({status:404, message: 'No se encontró el carrito con el ID asignado.'})
             }
@@ -79,7 +79,6 @@ class CartsController {
             } 
             
             const tickets = await ticketRepository.getTicketByPurchaser(email)
-            
             if(!tickets){
                 return res.status(404).send({status:404, message: 'No se encontraron tickets con el email asignado.'})
             }
@@ -101,7 +100,7 @@ class CartsController {
                 .then(()=> req.logger.info('carrito nuevo creado con exito'))
         } catch (error) {
             req.logger.error('No se pudo crear el carrito.', error)
-            return  res.status(500).send({status:500, message:`Error interno del servidor. ${error}`})
+            return  res.status(500).send({status:500, message:`${error}`})
         }
     }
 
@@ -134,14 +133,13 @@ class CartsController {
             if(error.name==='Inactive Product'){
                 return res.status(400).send({status:403, message: error.message})
             }
-            return  res.status(500).send({status:500, message:`Error interno del servidor. ${error}`})
+            return  res.status(500).send({status:500, message:`${error}`})
         }
     }
 
     //ruta ¨/:cid/purchase¨, metodo POST
     async finishPurchase(req, res){
         try {
-            //Me guardo el id del carrito y traigo el carrito
             let cid = req.params.cid
             if (!cid ){
                 return res.status(400).send({status:400, message: 'Solicitud incorrecta. El parámetros de consulta no es válido.' })
@@ -166,7 +164,7 @@ class CartsController {
                 for (const prod of cart.products){
                     const productoBD = await productsRepository.getProductById(prod.product._id);
                                                
-                    //Si hay Stock, aumento el precio y resto el stock de los productos en la bd
+                    //Separo los prods con stock sufuiciente
                     if(productoBD.stock >= prod.quantity){
                             
                         //Me creo el prod a guardar en el ticket
@@ -182,15 +180,16 @@ class CartsController {
                             owner: owner
                         }
                             
-                        purchase.push({product: ticketProd, quantity: prod.quantity})
-                        amount += (prod.product.price - (prod.product.descuento * prod.product.price /100)) * prod.quantity
+                        purchase.push({product: ticketProd, quantity: prod.quantity});
+                        amount += (prod.product.price - (prod.product.descuento * prod.product.price /100)) * prod.quantity;
+
                     }else{
-                        //si no hay stock lo agrego a otro arreglo para gestionarlo luego
                         cartNonStock.push(prod);
                     }
                 };
 
                 if(purchase.length > 0){
+
                     //Genero el ticket con el total de la compra 
                     const ticket = await ticketRepository.addTicket(amount, user.email, purchase)
                         .then(async (ticket)=> {
@@ -210,7 +209,6 @@ class CartsController {
                             req.logger.info('nuevo ticket generado')
                                 return ticket;
                         })
-
                         .catch((error)=>{
                             req.logger.error(`error al generar el ticket, ${error}`)
                             return res.status(400).send({status:400, message: `error al generar el ticket, ${error}`})
@@ -231,7 +229,7 @@ class CartsController {
             if(error.name === 'Error de datos'){
                 return res.status(400).send({status:404, message: error.message})
             }
-            return res.status(500).send({status:500, message: `Error interno del servidor al eliminar el carrito. Error ${error}` })
+            return res.status(500).send({status:500, message: `${error}` })
         }
     }
 
@@ -246,14 +244,14 @@ class CartsController {
             let arrayProds = req.body
         
             await cartsRepository.updateProductsWithArrayInCart(cid, arrayProds)//por defecto es vacío
-                .then((respuesta)=> res.send(respuesta))
-                .then(()=>{res.status(200)})
+                .then((respuesta)=> res.stauts(200).send(respuesta))
+
         } catch (error) {
             req.logger.error('No se pudo actrualizar el carrito con array.', error)
             if(error.name === 'Cart not found'){
                 return res.status(404).send({status:404, message:'Carrito no encontrado'})
             }
-            return res.status(500).send({status:500, message: `Error interno del servidor al actualizar el carrito. Error ${error}` })
+            return res.status(500).send({status:500, message: `${error}` })
         }
     }
 
@@ -283,7 +281,7 @@ class CartsController {
                 res.status(404).send({status:404, message: error.message})
             }
 
-            res.status(500).send({status:500,message:`Error Interno del servidor al actualizar carrito. ERROR ${error}`})
+            return res.status(500).send({status:500,message:`${error}`})
         }
     }
 
@@ -296,7 +294,6 @@ class CartsController {
                 return res.status(400).send({status:400, message: 'Solicitud incorrecta. El parámetros de consulta no es válido.' })
             }
 
-            //Elimino el carrito
             await cartsRepository.deleteProductFromCart(cid, pid)
                 .then(respuesta => res.status(200).send(respuesta))
 
@@ -311,20 +308,18 @@ class CartsController {
             if(error.name === 'Product not found in cart'){
                 return res.status(404).send({status:404, message: error.message})
             }
-            return res.status(500).send({status:500, message: `Error interno del servidor al eliminar el carrito. Error ${error}` })
+            return res.status(500).send({status:500, message: `${error}` })
         }
     }
 
     //ruta ¨/:cid¨, metodo DELETE 
     async deleteCart(req, res){
         try{
-            //Me guardo el id del carrito
             let cid = req.params.cid
             if (!cid){
                 return res.status(400).send({status:400, message: 'Solicitud incorrecta. El parámetros de consulta no es válido.' })
             } 
             
-            //Elimino el carrito
             await cartsRepository.deleteCart(cid)
                 .then(respuesta => res.status(200).send(respuesta))
             
@@ -333,7 +328,7 @@ class CartsController {
             if(error.name === 'Cart not found'){
                 return res.status(404).send({status:404, message: error.message})
             }
-            return res.status(500).send({status:500, message: `Error interno del servidor al eliminar el carrito. Error ${error}` })
+            return res.status(500).send({status:500, message: `${error}` })
         }
     }
 }

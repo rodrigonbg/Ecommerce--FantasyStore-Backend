@@ -30,9 +30,9 @@ class UserRepository{
 
             if(!user){
                 return `No existe un usuario con el carrito asociado.`
-            }else{
-                return user
             }
+            return user
+            
         } catch (error) {
             throw `Ocurrio un error al obtener el usuario. ${error}`
         }
@@ -44,9 +44,9 @@ class UserRepository{
 
             if(!user){
                 throw `No existe un usuario con ese email.`
-            }else{
-                return user
             }
+            return user
+            
         } catch (error) {
             throw `Ocurrio un error al obtener el usuario. ${error}`
         }
@@ -58,9 +58,9 @@ class UserRepository{
 
             if(!user){
                 throw `No existe un usuario con ese id.`
-            }else{
-                return user
             }
+            return user
+            
         } catch (error) {
             throw `Ocurrio un error al obtener el usuario. ${error}`
         }

@@ -5,14 +5,13 @@ const db = require("../src/database.js")
 const productsModel = require("./models/products.models.js");
 const cors = require("cors");
 const flash = require('connect-flash');
-
 const cookieParser =  require('cookie-parser');
 const MongoStore = require("connect-mongo")
 const session = require('express-session')
-
 const configObject = require('./config/dotenv.config.js')
 const PUERTO = configObject.port;
 const mongo_url = configObject.mongo_url;
+
 const app = express();
 const server = http.createServer(app);
 

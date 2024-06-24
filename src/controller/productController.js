@@ -1,20 +1,20 @@
 const ProductRepository = require("../repositories/product.repository.js");
-const productRepository = new ProductRepository();
 const UserRepository = require("../repositories/user.repository.js");
 const { sendProductDeleted } = require("../services/emailsManager.js");
-const userRepository = new UserRepository();
 const generarProducto = require('../utils/mocks.js')
+const configObject = require('../config/dotenv.config.js');
+
+const productRepository = new ProductRepository();
+const userRepository = new UserRepository();
 
 class ProductController {
 
     getProductsFaker(req, res){
         try {
-            //Cargamos el array de productos
             const arrayProductos = []
             for( let i=0 ; i<100 ; i++ ){
                 arrayProductos.push(generarProducto())
             }
-
             return res.status(200).send(arrayProductos)
         } catch (error) {
             return res.status(500).json({status:500, message: `${error}`});
@@ -27,15 +27,12 @@ class ProductController {
             //Guardamos los query (recordar que el query se levantan con ?limit=5&page=2...)
             let { limit, page, priceOrder, ...queryObject} = req.query
     
-            //Validacion de parametros de consulta
             if (limit <= 0 || page <= 0) {
                 return res.status(400).json({stauts:400, message: "Solicitud incorrecta. Los parámetros de consulta no son válidos."});
             }
 
-            //en limit, page y priceOrder, uso ternarios, si exsite el valor correcto, lo uso, de lo contrario, le doy un valor por defecto
-            //aunque ya estaban creados, con esto agrego mas validaciones
-            limit = parseInt(Number(req.query.limit)? req.query.limit : 40); //si el limit es un unmero y existe, tomo su valor, de lo contrario, por defecto 40
-            page = parseInt(Number(req.query.page)? req.query.page : 1); //por defecto tiene que ser 1
+            limit = parseInt(Number(req.query.limit)? req.query.limit : 40); //si el limit es un numero y existe, tomo su valor, de lo contrario, por defecto 40
+            page = parseInt(Number(req.query.page)? req.query.page : 1);
             priceOrder = (req.query.priceOrder === 'asc' || req.query.priceOrder === 'des') ? req.query.priceOrder : null // por defecto no hace ordenamiento
     
             //Creo el objeto de orden si es que hay
@@ -63,9 +60,7 @@ class ProductController {
     //ruta ¨/premiumProducts¨, metodo GET
     async getProductsOwner(req, res){
         try {
-
-            const owner = req.user.correo === 'admincoder@coder.com' ? 'admin' : req.user.correo
-
+            const owner = (req.user.correo === configObject.admin_email)? 'admin' : req.user.correo;
             if(!owner){
                 return res.status(401).json({status:401, message: `No hay usuario logueado`});
             }
@@ -82,15 +77,12 @@ class ProductController {
     //ruta ¨/:pid¨, metodo GET
     async getProductById(req, res){
         try{
-            //Me guardo el id 
             let pid = req.params.pid
-
             if (!pid){
                 return res.status(400).send({status:400, message: 'Solicitud incorrecta. El parámetros de consulta no es válido.' })
             } 
 
             const prod = await productRepository.getProductById(pid);
-    
             if(!prod){
                 return res.status(404).send(`No se encontró el producto con ID: ${pid}.`)
             }
@@ -112,7 +104,6 @@ class ProductController {
             });
             req.body.thumbnail = filesReferences;
 
-
             const rol = req.user.rol;
             if(!rol){
                 return res.status(401).send({status:401, message:`Se requiere autenticación`})
@@ -122,12 +113,10 @@ class ProductController {
                 return res.status(403).send({status:403, message:'No tienes permisos para agregar un producto.'})
             }
 
-            //Verificación de los datos desde middleware.
-            
-            //Se crea la owner
+            //Verificación de los datos en el body desde middleware.
             req.body.owner = (rol === 'premium') ? req.user.correo : 'admin';
-            
             await productRepository.addProduct(req.body);
+
             return res.status(201).redirect("/admin")
         } catch (error) {
             return res.status(500).send({status:500, message:`${error}`})
@@ -144,7 +133,6 @@ class ProductController {
             });
             req.body.thumbnail = filesReferences;
 
-
             const rol = req.user.rol;
             if(!rol){
                 return res.status(401).send({status:401, message:`Se requiere autenticación`})
@@ -154,12 +142,8 @@ class ProductController {
                 return res.status(403).send({status:403, message:'No tienes permisos para agregar un producto.'})
             }
 
-            //Verificación de los datos desde middleware.
-
-            //Se crea la owner
+            //Verificación de los datos en el body desde middleware.
             req.body.owner = (rol === 'premium') ? req.user.correo : 'admin';
-            //let {title, description, categoria, idCategoria, price, onSale, descuento, stock, alt, code, owner } = req.body;
-            
             await productRepository.addProduct(req.body)
             return res.status(201).redirect("/premiumProducts")
         } catch (error) {
@@ -238,12 +222,11 @@ class ProductController {
             }
 
             const owner = prod.owner;
-
             if(owner === req.user.correo){
                     return await productRepository.deleteProduct(pid)
                     .then(async ()=> {
                         const user = await userRepository.getUserbyEmail(owner);
-                        sendProductDeleted(owner, user.first_name, user.last_name, prod)
+                        sendProductDeleted(owner, user.first_name, user.last_name, prod)//Mail al usuario
                     })
                     .then(respuesta => res.status(200).redirect('/premiumProducts'))
             }

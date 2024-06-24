@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
-//Sessions Controller
 const SessionsController = require('../controller/sessionsController.js');
 const sessionsController = new SessionsController();
 

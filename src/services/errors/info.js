@@ -1,4 +1,4 @@
-//Info es una pequeña funcion me me va a mostrar donde esta el error.
+//Fucnion para mostrarme donde está el error que ocurra
 
 const infoErrorCrearProducto = (prod) => {
     return `Ocurrió un error al crear el producto.

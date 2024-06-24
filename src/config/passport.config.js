@@ -1,15 +1,15 @@
 const passport = require ('passport');
 const local = require ('passport-local');
 const github = require ('passport-github2');
-const DTOUser =  require('../dto/userProfile.dto.js')
-const UserModel = require ('../models/user.models')
-const { createHash, isValidPassword }= require ('../utils/hashBcrypt')
+const DTOUser =  require('../dto/userProfile.dto.js');
+const UserModel = require ('../models/user.models');
 const CartsRepository = require("../repositories/cart.repository.js");
-const cartsRepository = new CartsRepository();
 const UserRepository = require('../repositories/user.repository.js');
-const userRepository = new UserRepository();
-
 const configObject = require('../config/dotenv.config.js');
+const { createHash, isValidPassword }= require ('../utils/hashBcrypt');
+
+const cartsRepository = new CartsRepository();
+const userRepository = new UserRepository();
 
 const LocalStrategy  = local.Strategy;
 const GithubStrategy  = github.Strategy;
@@ -18,7 +18,7 @@ const GithubStrategy  = github.Strategy;
 const initializePassport = () => {
     
     //La estrategia despues de usarla me genera el req.user con la info
-    passport.use('register', //nombre de la estrategia
+    passport.use('register',
         new LocalStrategy({
             passReqToCallback: true, //acceso al objeto req
             usernameField : 'email'
@@ -38,7 +38,6 @@ const initializePassport = () => {
                     return done(null, false, {status:401, message:'Ya existe un usuario con ese mail.'})
                 } 
                 
-                //genermaos el user y lo mandamos con done
                 const rol = (email === configObject.admin_email)? 'admin':'usuario';
                 const newUser ={
                     first_name,
@@ -61,7 +60,7 @@ const initializePassport = () => {
                 const {_id, cart, last_connection, documents} = result
                 const user = new DTOUser(_id, first_name, last_name, rol, email, cart, last_connection, documents, age)
 
-                return done(null, user);
+                return done(null, user);//Se envia user con done
 
             } catch (error) {
                 return done(error)
@@ -71,7 +70,7 @@ const initializePassport = () => {
 
     passport.use('login',
         new LocalStrategy({
-            passReqToCallback: true, //acceso al objeto req
+            passReqToCallback: true,
             usernameField : 'email'
         },
         async (req ,email, password, done)=>{
@@ -109,8 +108,9 @@ const initializePassport = () => {
         async (accessToken, refreshToken, profile, done)=>{
             try {
                 //en profile._json tengo los datos que quiero
-
-                if (!profile.emails || profile.emails.length === 0) {//Para traer los mails
+                
+                //Para traer los mails
+                if (!profile.emails || profile.emails.length === 0) {
                     const response = await fetch('https://api.github.com/user/emails', {
                         headers: {
                             'Authorization': `token ${accessToken}`,
@@ -136,10 +136,7 @@ const initializePassport = () => {
                 }
 
                 const user = await UserModel.findOne({email : profile._json.email })
-
-                //una vez buscado el user, si no existe, lo creamos. de lo contrario lo retornamos
                 if (!user){
-
                     const rol = (email === configObject.admin_email)? 'admin':'usuario';
                     const newUser = {
                         first_name : profile._json.name,
@@ -166,7 +163,6 @@ const initializePassport = () => {
             } catch (error) {
                 return done (error)
             }
-            
         })
     )
 

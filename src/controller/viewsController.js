@@ -8,11 +8,9 @@ const UserRepository = require("../repositories/user.repository.js");
 const userRepository = new UserRepository();
 
 const UserProfileDTO = require("../dto/userProfile.dto.js");
-const userProfileDTO = require("../dto/userProfile.dto.js");
 
 class viewsController{
 
-    //Vista de los productos
     //ruta ¨/¨, metodo GET
     async renderProducts(req, res){
         console.log('renderProds ',req.user)
@@ -21,10 +19,9 @@ class viewsController{
             //Guardamos los query (recordar que el query se levantan con ?limit=5&page=2...)
             let { limit, page, priceOrder, ...queryObject} = req.query
     
-            //en limit, page y priceOrder, uso ternarios, si exsite el valor correcto, lo uso, de lo contrario, le doy un valor por defecto
-            //Unque ya estaban creados, con esto agrego mas validaciones
-            limit = parseInt(Number(req.query.limit)? req.query.limit : 10); //si el limit es un unmero y existe, tomo su valor, de lo contrario, por defecto 10
-            page = parseInt(Number(req.query.page)? req.query.page : 1); //por defecto tiene que ser 1
+
+            limit = parseInt(Number(req.query.limit)? req.query.limit : 10);
+            page = parseInt(Number(req.query.page)? req.query.page : 1);
             priceOrder = (req.query.priceOrder === 'asc' || req.query.priceOrder === 'des') ? req.query.priceOrder : null // por defecto no hace ordenamiento
     
             //Creo el objeto de orden si es que hay
@@ -101,25 +98,24 @@ class viewsController{
                 resp.admin = req.user.rol === 'admin'
             }
 
-            //le paso la respuesta al index y lo renderizo
-            res.render('index',{info: resp});
+            return res.render('index',{info: resp});
             
         } catch (err) {
-            res.status(500).json({
-                error: `Error al obtener los productos. Error: ${err}`
-            })
+            return res.status(500).json({error: `Error al obtener los productos. Error: ${err}`})
         }
     }
 
-    
     //Vista del usuario conectado
     //ruta ¨/user¨, metodo GET
     async renderConectedUser(req, res){
-        if(req.user){
-            const profile = new UserProfileDTO(req.user._id ,req.user.firstName, req.user.lastName, req.user.rol, req.user.correo, req.user.cart);
-            res.render( "profile", { user : profile} )
-        }else{
+        try {
+            if(req.user){
+                const profile = new UserProfileDTO(req.user._id ,req.user.firstName, req.user.lastName, req.user.rol, req.user.correo, req.user.cart);
+                return res.render( "profile", { user : profile} )
+            }
             res.send('No hay usuario logueado')
+        } catch (err) {
+            return res.status(500).json({error: `Error de vista usuario. Error: ${err}`})
         }
     }
 
@@ -151,10 +147,10 @@ class viewsController{
 
             userDTO.premium = (rol==='premium')? true : false;
 
-            res.render( "userById", { user : userDTO} )
+            return res.render( "userById", { user : userDTO} )
 
-        } catch (error) {
-            res.send('Error al renderizar la vista de un usuario');
+        } catch (err) {
+            return res.status(500).json({error: `Error al renderizar la vista de un usuario: ${err}`})
         }
     }
     
@@ -162,10 +158,8 @@ class viewsController{
     //ruta ¨/carts¨, metodo GET
     async renderCarts(req, res){
         try {
-            //Traigo los carritos
             const carts = await cartsRepository.getCarts();
     
-            //Creo nuevamente el array para renderizar porq handlebars es una ...
             let toRender=[];
             carts.forEach((cart) =>{
     
@@ -190,9 +184,7 @@ class viewsController{
             res.render('carts', {carts: toRender});
     
         } catch (err) {
-            res.status(500).json({
-                error: `Error al obtener los carritoss. Error: ${err}`
-            })
+            res.status(500).json({error: `Error al obtener los carritoss. Error: ${err}`})
         }
     }
     
@@ -200,11 +192,9 @@ class viewsController{
     //ruta ¨/carts/:cid¨, metodo GET
     async renderCart(req, res){
         try {
-            //Traigo los carritos
             let cid= req.params.cid;
             const cart = await cartsRepository.getCartbyId(cid);
-    
-            //Creo nuevamente el objeto para renderizar porq handlebars es una ...
+
             let products = []; 
             cart.products.forEach((prod)=>{
                 products.push({
@@ -225,9 +215,7 @@ class viewsController{
             res.render('cart', {cart: toRender});
     
         } catch (err) {
-            res.status(500).json({
-                error: `Error al obtener los carritoss. Error: ${err}`
-            })
+            res.status(500).json({error: `Error al obtener los carritoss. Error: ${err}`})
         }
     }
     
@@ -235,20 +223,15 @@ class viewsController{
     //ruta ¨/admin¨, metodo GET
     async renderRealTimeProducts(req, res){
         try {
-            //renderizo realTimeProducts
             const rol = req.user.rol;
-            res.render('admin',{rol});
-    
+            return res.render('admin',{rol});
         } catch (err) {
-            res.status(500).json({
-                error: `Error al obtener los productos en tiempo real. Error: ${err}`
-            })
+            return res.status(500).json({error: `Error al obtener los productos en tiempo real. Error: ${err}`})
         }
     }
 
     async renderPremiumProducts(req, res){
         try {
-            //renderizo realTimeProducts
             const prods = await productRepository.getProductsByOwner(req.user.correo);
             
             const products = prods.map(prod => {
@@ -268,61 +251,53 @@ class viewsController{
                 products,
                 user: req.user                
             }
-            res.render('premiumProducts',{payload});
+
+            return res.render('premiumProducts',{payload});
     
         } catch (err) {
-            res.status(500).json({
-                error: `Error al obtener los productos de usuario premium. Error: ${err}`
-            })
+            return res.status(500).json({error: `Error al obtener los productos de usuario premium. Error: ${err}`})
         }
     }
     
-    //Vista de login (iniciar sesion)
+    //Vista de login
     //ruta ¨/loginForm¨, metodo GET
     async renderLoginForm(req, res){
         try {
             if(req.session.login){
-                res.send({msg: "Ya hay un usuario registrado"})
-            }else{
-                //renderizo login
-                res.render('loginForm');
+                return res.send({msg: "Ya hay un usuario registrado"})
             }
-    
+            return res.render('loginForm');
         } catch (err) {
-            res.send(`Error de vista login. Error: ${err}`)
+            return res.status(500).json({error: `Error de vista login. Error: ${err}`})
         }
     }
     
-    //Vista de singin (registrarse)
+    //Vista de singin
     //ruta ¨/singinForm¨, metodo GET
     async renderSinginForm(req, res){
         try {
             if(req.session.login){
-                res.send({msg: "Primero debes cerrar la sesión actual para registrarte."})
-            }else{
-                //renderizo login
-                res.render('singinForm');
+                return res.send({msg: "Primero debes cerrar la sesión actual para registrarte."})
             }
-    
+
+            return res.render('singinForm');
+            
         } catch (err) {
-            res.send(`Error de vista sing in. Error: ${err}`)
+            return res.status(500).json({error: `Error de vista singIn. Error: ${err}`})
         }
     }
-    
     
     //Vista de 'enviar correo de restablecimiento'
     //ruta ¨/reset-password¨, metodo GET
     async renderResetPassword(req, res){
         try {
             if(req.session.login){
-                res.send({msg: "Usted ya tiene una sesion iniciada."})
-            }else{
-                //renderizo
-                res.render('resetPassword');
+                return res.send({msg: "Usted ya tiene una sesion iniciada."})
             }
+            return res.render('resetPassword');
     
         } catch (err) {
-            res.send(`Error de vista de solicitud de restablecimiento de contraseña. Error: ${err}`)
+            return res.status(500).json({error: `Error de vista de solicitud de restablecimiento de contraseña. Error: ${err}`})
         }
     }
 
@@ -331,14 +306,12 @@ class viewsController{
     async renderNewPasswordForm(req, res){
         try {
             if(req.session.login){
-                res.send({msg: "no puede estár logueado para resetear la contraseña."})
-            }else{
-                //renderizo
-                res.render('newPasswordForm');
+                return res.send({msg: "no puede estár logueado para resetear la contraseña."})
             }
+            return res.render('newPasswordForm');
     
         } catch (err) {
-            res.send(`Error de vista de formulario de restablecimiento de contraseña. Error: ${err}`)
+            return res.status(500).json({error: `Error de vista de formulario de restablecimiento de contraseña. Error: ${err}`})
         }
     }
     
@@ -349,7 +322,7 @@ class viewsController{
             const correo = req.user.correo;
             const user = await userRepository.getUserbyEmail(correo);
             const {_id, first_name, last_name, rol, email, cart, last_connection, documents} = user
-            const userDTO = new userProfileDTO(_id.toString(), first_name, last_name, rol, email, cart, last_connection, documents)
+            const userDTO = new UserProfileDTO(_id.toString(), first_name, last_name, rol, email, cart, last_connection, documents)
 
             if(documents.length > 0){
                 userDTO.hasDocuments = true;
@@ -363,9 +336,9 @@ class viewsController{
             if(!user){
                 res.status(404).send({status:404, message:'No se logró encontrar el usuario logueado en la base de datos.'})
             }
-            res.render('addDocumentsForm', {user:userDTO});
+            return res.render('addDocumentsForm', {user:userDTO});
         } catch (err) {
-            res.send(`Error de vista de formulario de de carga de documentos. Error: ${err}`)
+            return res.status(500).json({error: `Error de vista de formulario de de carga de documentos. Error: ${err}`})
         }
     }
 }

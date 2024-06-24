@@ -1,5 +1,3 @@
-const configObject = require('../config/dotenv.config.js')
-
 class sessionsController{
 
     //ruta ¨/logout¨, metodo GET
@@ -10,10 +8,11 @@ class sessionsController{
         }
         return res.status(400).redirect('/')
     }
+
     //ruta ¨/logoutFront¨, metodo GET
     async logoutFront (req, res){
         if (req.session.login) { 
-            req.session.destroy() //Destruir la session actual
+            req.session.destroy()
             return res.status(200).send('session cerrada')
         }
         return res.status(400).send('no habia una session')
@@ -51,16 +50,14 @@ class sessionsController{
     }
 
     //ruta ¨/github¨, metodo GET con github-passport
-    async github (req, res){
-       
-    }
+    async github (req, res){}
 
     //ruta ¨/githubcallback¨, metodo GET con github-passport
     async githubcallback (req, res){
         req.session.user = req.user;
         req.session.login = true;
         req.logger.info('Sesion iniciada con github')
-        res.redirect('/')
+        return res.redirect('/')
     }
 
     async validSession(req,res){

@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
-
-//Views Controller
 const ViewsController = require('../controller/viewsController.js');
 const viewsController = new ViewsController();
 
-const {authAdminAccess, authNotAdminAccess, authNotUserAccess, authUserAccess,authPremiumAccess, isLoged} = require('../middleware/profileAccess.js')
+const {authAdminAccess, authPremiumAccess, isLoged} = require('../middleware/profileAccess.js')
 
 //ROUTING
 

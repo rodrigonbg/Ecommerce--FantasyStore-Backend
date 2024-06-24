@@ -4,10 +4,7 @@ class ProductRepository{
 
     async addProduct(Objeto){
         try {
-            //Desestructuro el objeto para hacer las validaciones.
             let {title, descripcion, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status = true, stock, alt, owner} = Objeto;
-    
-            //valido campos no vacios y que code no se repita
             if(!title || !descripcion || !categoria || !idCategoria || !price || !code || !stock){
                 throw new Error ('Deben completarse todos los campos.\n');
             }
@@ -98,9 +95,7 @@ class ProductRepository{
 
     async updateProduct(id, updatedProd){
         try{
-            //Desestructuro el producto actualizado y creo un nuevo objeto para agregarlo al array de productos.
             let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status = true, stock, alt} = updatedProd;
-
             const updatedProduct ={
                 title: title,
                 description: description,
@@ -133,8 +128,6 @@ class ProductRepository{
 
     async subtractStock(id, amountToSubtract){
         try{
-
-            //TRaigo el prod de la bd y lo desestructuro
             let {title, description, categoria, idCategoria, price, thumbnail, onSale, descuento, code, status, stock, alt} = await this.getProductById(id);
 
             if(stock - amountToSubtract >=0){
