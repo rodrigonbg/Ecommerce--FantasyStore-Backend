@@ -37,6 +37,7 @@ class sessionsController{
     //ruta ¨/failLogin¨, metodo GET
     async failLogin (req, res){
         const error = req.flash('error')[0];
+        console.log(error)
 
         if(error.status === 404){
             return res.status(404).send({status:404, message:'Usuario no encontrado'})
