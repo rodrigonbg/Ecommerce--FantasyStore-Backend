@@ -45,8 +45,9 @@ app.use(session({
         ttl: 600 //10 minutos
     }),
     cookie: {
+        secure: configObject.mode === 'prodution', // en true, Asegúrate de usar HTTPS en producción
+        httpOnly: true, // Cookie solo accesible por el servidor
         sameSite: 'None', // Permite el envío de la cookie en contextos de terceros
-        secure: false, // en true, Asegúrate de usar HTTPS en producción
     }
 }))
 app.use(flash());
@@ -80,8 +81,9 @@ app.use(passport.session({
         ttl: 600 //10 minutos
     }),
     cookie: {
+        secure: configObject.mode === 'prodution', // en true, Asegúrate de usar HTTPS en producción
+        httpOnly: true, // Cookie solo accesible por el servidor
         sameSite: 'None', // Permite el envío de la cookie en contextos de terceros
-        secure: false, // en true, Asegúrate de usar HTTPS en producción
     }
 }))
 
