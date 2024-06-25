@@ -1,5 +1,6 @@
 const express = require("express");
 const http = require("http");
+const https = require("https");
 const socket = require("socket.io");
 const db = require("../src/database.js")
 const productsModel = require("./models/products.models.js");
@@ -45,7 +46,7 @@ app.use(session({
     }),
     cookie: {
         sameSite: 'None', // Permite el envío de la cookie en contextos de terceros
-        secure: true, // en true, Asegúrate de usar HTTPS en producción
+        secure: false, // en true, Asegúrate de usar HTTPS en producción
     }
 }))
 app.use(flash());
@@ -80,7 +81,7 @@ app.use(passport.session({
     }),
     cookie: {
         sameSite: 'None', // Permite el envío de la cookie en contextos de terceros
-        secure: true, // en true, Asegúrate de usar HTTPS en producción
+        secure: false, // en true, Asegúrate de usar HTTPS en producción
     }
 }))
 
