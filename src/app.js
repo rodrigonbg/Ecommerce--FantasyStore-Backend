@@ -38,8 +38,8 @@ app.use(cookieParser())
 app.use(session({
     name: 'connect.sid',
     secret: 'secretPass',
-    resaved: true,
-    saveUnitialized:true,
+    resave : true,
+    saveUninitialized :true,
     store: MongoStore.create({
         mongoUrl: mongo_url,
         ttl: 600 //10 minutos
@@ -74,8 +74,8 @@ app.use(passport.initialize())
 app.use(passport.session({
     name: 'connect.sid',
     secret: 'secretPass',
-    resaved: true,
-    saveUnitialized:true,
+    resave : true,
+    saveUninitialized :true,
     store: MongoStore.create({
         mongoUrl: mongo_url,
         ttl: 600 //10 minutos
