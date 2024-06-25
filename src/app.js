@@ -25,9 +25,7 @@ const io = socket(server);
 
 //Middelwares para express
 app.use(cors({
-    origin: (origin, callback) => {
-        callback(null, true); // Permite cualquier origen
-    },
+    origin: configObject.FRONT,
     credentials:true
 }));
 
