@@ -45,9 +45,9 @@ app.use(session({
         ttl: 600 //10 minutos
     }),
     cookie: {
-        secure:false /* configObject.MODE === 'production' */, // en true, Asegúrate de usar HTTPS en producción
+        secure: configObject.MODE === 'production', // true solo en production. usa HTTPS
         httpOnly: true, // Cookie solo accesible por el servidor
-        sameSite: 'None', // Permite el envío de la cookie en contextos de terceros
+        sameSite: configObject.MODE === 'production'? 'None' : 'lax' // Permite el envío de la cookie en contextos de terceros
     }
 }))
 app.use(flash());
