@@ -72,21 +72,7 @@ const passport = require('passport')
 const initializePassport = require('./config/passport.config.js')
 initializePassport()
 app.use(passport.initialize())
-app.use(passport.session({
-    name: 'connect.sid',
-    secret: 'secretPass',
-    resave : true,
-    saveUninitialized :true,
-    store: MongoStore.create({
-        mongoUrl: mongo_url,
-        ttl: 600 //10 minutos
-    }),
-    cookie: {
-        secure: configObject.MODE === 'production', // en true, usa HTTPS en producción
-        httpOnly: true, // Cookie solo accesible por el servidor
-        sameSite: configObject.MODE === 'production'? 'None' : 'lax', // Permite el envío de la cookie en contextos de terceros
-    }
-}))
+app.use(passport.session())
 
 //Routing 
 const productsRouter = require("./routes/products.router.js");
