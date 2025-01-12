@@ -25,9 +25,7 @@ const io = socket(server);
 
 //Middelwares para express
 app.use(cors({
-    origin: (origin, callback) => {
-        callback(null, true); // Permite cualquier origen
-    },
+    origin: configObject.MODE === 'production'? 'https://main--front-fantasy-store.netlify.app' : '*',  // Solo permite el frontend de Netlify si estoy en production,
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true  // Permite el envío de cookies o credenciales en la solicitud
