@@ -27,7 +27,7 @@ const io = socket(server);
 app.use(cors({
     origin: configObject.MODE === 'production'? configObject.FRONT : 'http://localhost:3000',  // Solo permite el frontend de Netlify si estoy en production,
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
-    allowedHeaders: 'Content-Type, Authorization',
+    allowedHeaders: 'Content-Type, Authorization, Set-Cookie',
     credentials: true  // Permite el envío de cookies o credenciales en la solicitud
 
 }));
