@@ -28,7 +28,10 @@ app.use(cors({
     origin: (origin, callback) => {
         callback(null, true); // Permite cualquier origen
     },
-    credentials:true
+    methods: 'GET, POST, PUT, DELETE, OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true  // Permite el envío de cookies o credenciales en la solicitud
+
 }));
 
 app.use((req, res, next) => {
