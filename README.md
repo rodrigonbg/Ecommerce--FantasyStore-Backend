@@ -96,7 +96,7 @@ Algunas de rutas a las que se puede acceder una vez el servidor está iniciado s
     Administrador: Puede eliminar usuarios, productos, agregar nuevos productos, y tiene acceso a todas las funcionalidades del sistema.
 
 ## Conexión con el Frontend
-Este proyecto backend está diseñado para ser utilizado con un frontend ya que las vistas con handlebars son muy básicas. 
+Este proyecto backend está diseñado para ser utilizado con un frontend ya que las vistas con handlebars son muy básicas (https://ecommerce-fantasystore-backend.onrender.com) . 
 Puedes encontrar un proyecto frontend desarrollado con react al cual se encuentra conectado en el siguiente repositorio:
 [FrontEnd Fantasy Store](https://main--front-fantasy-store.netlify.app/)
 
