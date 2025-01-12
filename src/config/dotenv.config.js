@@ -9,7 +9,7 @@ dotenv.config({
 })
 
 const configObject = {
-    FRONT:'https://tu-dominio-de-netlify.netlify.app',
+    FRONT: process.env.FRONT,
     MODE : process.env.MODE,
     mode : mode,
     mongo_url : process.env.MONGO_URL,
