@@ -25,7 +25,7 @@ const io = socket(server);
 
 //Middelwares para express
 app.use(cors({
-    origin: configObject.MODE === 'production'? configObject.FRONT : '*',  // Solo permite el frontend de Netlify si estoy en production,
+    origin: configObject.MODE === 'production'? configObject.FRONT : 'http://localhost:3000',  // Solo permite el frontend de Netlify si estoy en production,
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true  // Permite el envío de cookies o credenciales en la solicitud
@@ -46,9 +46,9 @@ app.use(session({
         ttl: 600 //10 minutos
     }),
     cookie: {
-        secure: true, // true solo en production. usa HTTPS
+        secure: false, // true solo en production. usa HTTPS
         httpOnly: true, // Cookie solo accesible por el servidor
-        sameSite: 'None' // Permite el envío de la cookie en contextos de terceros
+        sameSite: 'lax' // Permite el envío de la cookie en contextos de terceros
     }
 }))
 app.use(flash());
