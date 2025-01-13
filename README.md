@@ -32,6 +32,7 @@ Ejecutar el comando
     MONGO_URL = <Url de tu base de datos mongoDB>
     PORT = <puerto de preferencia>
     ADMIN_EMAIL = 'admincoder@coder.com'
+    MODE = 'development'
     GithubAppID = <tu app ID de github>
     GithubClientID = <tu cliente ID de github>
     GithubClientSecret = <tu cliente secreto de github>
@@ -40,8 +41,9 @@ Ejecutar el comando
 ## Uso
 Ejecutar el comando 
     ```
-    npm start
+    npm run dev
     ```
+Una vez se levante el servidor, podras acceder a las vistas basicas desde http://localhost:8080 o podras hacer uso de él desde el FrontEnd: [FrontEnd Fantasy Store](https://main--front-fantasy-store.netlify.app/)
 
 ## Endpoints
 Algunas de rutas a las que se puede acceder una vez el servidor está iniciado son:
