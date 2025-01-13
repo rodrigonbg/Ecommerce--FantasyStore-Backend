@@ -43,7 +43,7 @@ Ejecutar el comando
     ```
     npm run dev
     ```
-Una vez se levante el servidor, podras acceder a las vistas basicas desde http://localhost:8080 o podras hacer uso de él desde el FrontEnd: [FrontEnd Fantasy Store]([https://main--front-fantasy-store.netlify.app/](https://github.com/rodrigonbg/Ecommerce--FantasyStore-Frontend))
+Una vez se levante el servidor, podras acceder a las vistas basicas desde http://localhost:8080 o podras hacer uso de él desde el FrontEnd: [FrontEnd Fantasy Store](https://github.com/rodrigonbg/Ecommerce--FantasyStore-Frontend)
 
 ## Endpoints
 Algunas de rutas a las que se puede acceder una vez el servidor está iniciado son:
